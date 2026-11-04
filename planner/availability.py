@@ -41,7 +41,7 @@ def post(person, data, request):
             reply["kinds"] = [k for k, _ in KINDS]
         return reply, 200
     same = (Plan.objects.filter(owner=person, date=fields["date"], part=fields["part"],
-                                status__in=("open", "asking", "confirmed", "final", "finding_places"))
+                                status__in=("draft", "open", "asking", "confirmed", "final", "finding_places"))
             .select_related("area").order_by("pk").first())
     if same:  # an agent that retries after a timeout gets the first plan back, not a second one (T28)
         return {**plan_json(request, same), "duplicate": True}, 200
@@ -52,14 +52,23 @@ def post(person, data, request):
         area=fields["area"], radius_km=radius, group_size=group,
         min_guests=GROUP_MIN if group_dinner else 1 if group <= 2 else 2,
         fill_by=engine.default_fill_by(fields["date"]) if group_dinner else None,
-        status="open", llm_backend=fields.get("backend", ""), any_part=bool(fields["part_default"]),
+        status="draft", llm_backend=fields.get("backend", ""), any_part=bool(fields["part_default"]),
         kind_named=fields["kind_named"], wants=fields["wants"])
-    note = []  # T255: the place step ranks on the wants; the owner's own dislikes are never offered
-    options, pick = matching.place_options(plan, exclude_tags=person.dislikes or (), note=note)
-    if note:
-        plan.wants = {**plan.wants, "note": note[0]}
-        plan.save(update_fields=["wants"])
-    plan.options.set(options)
+    # T403 QA: the plan stays 'draft' while the place step runs (the Muse tool loop takes seconds).
+    # engine.tick, rematch_open and a friend's post match only 'open' and 'asking' plans, so no
+    # offer goes out before plan.options and wants['pick'] are saved. 'finally': a crash in the
+    # place step still opens the plan, with no options, as before T403.
+    pick = {}
+    try:
+        note = []  # T255: the place step ranks on the wants; the owner's own dislikes are never offered
+        options, pick = matching.place_options(plan, exclude_tags=person.dislikes or (), note=note)
+        if note:
+            plan.wants = {**plan.wants, "note": note[0]}
+            plan.save(update_fields=["wants"])
+        plan.options.set(options)
+    finally:
+        plan.status = "open"
+        plan.save(update_fields=["status"])
     log_post(plan, text or data, fields)
     log_pick(plan, pick)
     engine.match_new_availability(plan)

@@ -449,10 +449,15 @@ def share_wants(plan, person):
         return
     if new == {k: v for k, v in w.items() if k != "pick"}:
         return
+    before = (w.get("pick") or {}).get("id")
     plan.wants = new
     avoid = set(plan.owner.dislikes or []) | set(person.dislikes or [])
-    rows, _ = matching.place_options(plan, exclude_tags=avoid)
+    rows, pick = matching.place_options(plan, exclude_tags=avoid)
     plan.options.set(rows)
+    if pick.get("place") is not None and pick["place"].pk != before:
+        # T403 QA: the shared wants changed the pick, so the log names the place the offer names
+        from .availability import log_pick
+        log_pick(plan, pick)
 
 
 def _sent(offer, plan, reason_cause):

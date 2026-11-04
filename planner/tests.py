@@ -6801,7 +6801,7 @@ class GroupDinnerPlaceTimeTests(Base):
         """T329: a guest's pick reads as a vote next to the group's votes so far; the guest whose pick
         lost reads 'Most of the group picked X' in the final line; the why line never names another place."""
         from . import messages
-        from .models import Offer
+        from django.db.models import Q
         plan = self.run_group(picks=[2, 2, 0])
         win, lose = self.asked_options[0][2], self.asked_options[0][0]
         asks = list(plan.log.filter(type="ask_owner").order_by("pk"))
@@ -8538,3 +8538,57 @@ class MuseToolTests(Base):
             self.assertEqual(llm.pick_place(self.plan, self.places)["place"], target)
         self.assertEqual(c.call_count, 1)
         self.assertEqual(self.tool_rows(), [])
+
+
+class DraftWhilePickTests(ProposalBase):
+    """T403 QA 2b7c14: with the Muse tool loop the place step takes seconds. Live plan 217 got its offer
+    from another process before the pick was saved ('Idea: Hayes Valley.'), and plan 218 named another
+    place than the 'picked' row. A new plan stays 'draft' until plan.options and wants['pick'] are saved."""
+
+    def post(self, handle, body):
+        return self.client.post("/api/v1/availability/", data=json.dumps(body), content_type="application/json",
+                                **self.auth[handle])
+
+    def test_no_offer_before_the_pick_and_the_offer_names_the_pick(self):
+        from django.db.models import Q
+        day = {"date": SUNDAY.isoformat(), "part": "lunch", "kind": "lunch", "area": "SoMa"}
+        seen = []
+
+        def slow_pick(backend, facts, **kw):
+            # Another process (the tick timer, a friend's post) runs while the model thinks.
+            draft = Plan.objects.filter(status="draft").order_by("-pk").first()
+            if draft is not None:
+                seen.append(draft.owner.handle)
+                try:
+                    engine.rematch_open()
+                    engine.tick()
+                except Exception as e:  # noqa: BLE001 - shown in the assert below
+                    seen.append(repr(e))
+                # an assert in here would be caught by pick_place's fallback, so record and check after
+                seen.append(Offer.objects.filter(Q(plan=draft) | Q(person=draft.owner)).exists())
+            return {"id": int(re.findall(r"id (\d+):", facts)[-1]), "why": "Close to you."}
+
+        with override_settings(LLM_BACKEND="meta"), mock.patch("planner.llm._pick_call", side_effect=slow_pick):
+            r = self.post("aa", {**day, "text": "free for lunch near SoMa"})
+            self.assertEqual(r.status_code, 201, r.content)
+            pa = Plan.objects.get(pk=r.json()["availability_id"])
+            self.assertEqual(pa.status, "open")
+            r = self.post("bb", {**day, "text": "free for lunch near SoMa"})
+            self.assertIn(r.status_code, (200, 201), r.content)
+        self.assertEqual(seen, ["aa", False, "bb", False])
+        offer = Offer.objects.filter(Q(plan__owner=self.people["aa"]) | Q(plan__owner=self.people["bb"])).first()
+        self.assertIsNotNone(offer)
+        sent = AgentMessage.objects.filter(plan=offer.plan, type="offer").order_by("-pk").first()
+        picked = AgentMessage.objects.filter(plan=offer.plan, type="place_pick").order_by("-pk").first()
+        name = Activity.objects.get(pk=picked.payload["place_id"]).name
+        self.assertIn(f"Idea: {name}", sent.payload["text"])
+
+    def test_a_crash_in_the_place_step_still_opens_the_plan(self):
+        day = {"date": SUNDAY.isoformat(), "part": "lunch", "kind": "lunch", "area": "SoMa"}
+        with mock.patch("planner.matching.place_options", side_effect=RuntimeError("boom")):
+            try:
+                r = self.post("aa", {**day, "text": "free for lunch near SoMa"})
+                self.assertEqual(r.status_code, 500)  # the API turns the crash into a JSON 500
+            except RuntimeError:
+                pass
+        self.assertEqual(Plan.objects.get(owner=self.people["aa"]).status, "open")
