@@ -6,6 +6,8 @@ Rules (SPEC.md, "Gentle matching"):
 3. A friend who was never asked hears nothing.
 4. "Did not work out" names no person and gives no reason. It always ends with other options.
 """
+import re
+
 from .models import WEEKDAYS
 
 # T258 (F6c) + T319: the time Mifgash sets by itself when both sides are in. ONE source: the
@@ -30,6 +32,11 @@ KIND_WORDS = {"lunch": "lunch", "kids": "an outing with the kids", "evening": "a
 # The kind word for a plan whose person named no kind (T112): it comes from the part of the day.
 PART_KIND_WORDS = {"morning": "a morning meetup", "lunch": "lunch", "afternoon": "an afternoon meetup",
                    "evening": "an evening out"}
+
+
+def kind_label(kind):
+    """The kind without the article, for a log line: 'group dinner', never 'group_dinner' (T354)."""
+    return re.sub(r"^(?:a|an) ", "", KIND_WORDS.get(kind, str(kind).replace("_", " ")))
 
 
 def kind_word(plan):

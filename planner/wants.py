@@ -9,6 +9,7 @@ import re
 FOODS = ("sushi", "falafel", "hummus", "pizza", "burger", "vegan", "asian", "italian", "coffee",
          "mexican", "greek", "seafood", "sandwich", "brunch", "ramen", "thai", "indian", "chinese",
          "french", "californian", "tacos", "burrito", "wine", "cocktails", "beer")
+KIND_GROUP_RE = re.compile(r"\bgroup\s+(?:dinner|lunch|meal|outing|of)\b")
 FOOD_RE = re.compile(r"\b(" + "|".join(FOODS) + r")\b")
 TASTES = ("quiet", "outdoor", "indoor", "kid-friendly", "new place", "cheap", "quick",
           "sea", "group", "historic", "loud", "crowded")
@@ -103,6 +104,8 @@ def _plain(out, part):
         out["food"] = m.group(1)
     for w in TASTES:
         if re.search(r"\b" + re.escape(w) + r"\b", part):
+            if w == "group" and KIND_GROUP_RE.search(part):
+                continue  # T354: 'group dinner' names the kind, not a taste ('Wants: group')
             _add(out["tastes"], w)
 
 

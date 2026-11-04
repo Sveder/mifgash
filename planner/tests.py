@@ -6169,6 +6169,22 @@ class GroupDinnerTests(Base):
         self.assertEqual(llm.group_rule("group_dinner", 1), ("group_dinner", 2))
         self.assertEqual(llm.group_rule("group_dinner", None), ("group_dinner", 3))
 
+    def test_group_kind_words_in_read_as_and_no_wants_group(self):
+        """T354: the read-as row says 'group dinner' (no underscore), and 'group' is the kind, not a want."""
+        r = self.api("oz", "post", "/api/v1/availability/",
+                     {"text": "group dinner Saturday evening with 2 friends near SoMa"})
+        self.assertEqual(r.status_code, 201, r.content)
+        d = r.json()
+        self.assertEqual(d["kind"], "group_dinner")
+        self.assertNotIn("group", (d.get("wants") or {}).get("tastes") or [])
+        self.assertNotIn("group", d.get("wants_text", ""))
+        row = Plan.objects.get(pk=d["availability_id"]).log.get(type="read_as")
+        self.assertIn("Read as: group dinner, ", row.payload["text"])
+        self.assertNotIn("_", row.payload["text"])
+        self.assertNotIn("Wants", row.payload["text"])
+        from .wants import read
+        self.assertEqual(read("quiet place, good for a group")["tastes"], ["quiet", "group"])  # a real taste stays
+
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
     def test_fills_at_n_yes(self):
         plan = self.post_group(3)

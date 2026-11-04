@@ -688,7 +688,7 @@ def read_as_text(plan, fields):
         notes.append(f"{fields['area_default']} area taken")
     tail = f" ({', '.join(notes)})" if notes else ""
     # not 'evening, Fri 30/10 evening', and no kind the person did not name (T112)
-    kind = "" if plan.kind == plan.part or not plan.kind_named else f"{plan.kind}, "
+    kind = "" if plan.kind == plan.part or not plan.kind_named else f"{messages.kind_label(plan.kind)}, "
     from . import wants as wants_mod
     want = wants_mod.summary(plan.wants)
     want = f". Wants: {want}" if want else ""
