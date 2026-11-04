@@ -137,6 +137,8 @@ class FriendAgent:
             key = o.get("plan_id")
             if o.get("status") == "proposed" and o.get("proposed_by") not in (None, "you"):
                 o = self.confirm_proposed(o)
+            elif o.get("status") == "final" and o.get("time") and not o.get("time_moved"):
+                o = self.move_final(o)
             if o.get("status") not in ("confirmed", "final") or self.seen.get(key) == o.get("status"):
                 continue
             self.seen[key] = o["status"]
@@ -146,6 +148,31 @@ class FriendAgent:
                 line += f" {o.get('time') or ''} ics {o.get('ics_url', '')} gcal {o.get('google_calendar_url', '')}"
             self.log(line)
 
+
+    def move_final(self, o):
+        """T268: Mifgash set the time of the outing by itself (T258), so the outing is final at once.
+        When that time is 30 min or more away from the persona's time, move it ONE time with
+        finalize. Nobody moves it again: the server says time_moved after the first move, and this
+        agent never moves one plan twice. Returns the outing as it is after the call."""
+        if o["plan_id"] in self.countered:
+            return o
+        d, used = brain.decide_time(self.backend, self.prefs, dict(o, proposed_time=o["time"]))
+        if d["decision"] != "counter" or d["time"] == o["time"]:
+            return o
+        self.countered.add(o["plan_id"])
+        body = {"time": d["time"]}
+        if used in ("claude", "meta"):
+            body["backend"] = used
+        try:
+            r = self.call("POST", f"outings/{o['plan_id']}/finalize/", body)
+        except ApiError as e:
+            self.log(f"outing {o['plan_id']} final {o['time']} -> move to {d['time']} -> error {e.status}: {e}")
+            return o
+        self.log(f"outing {o['plan_id']} final {o['time']} set by Mifgash -> moved to {r.get('time') or d['time']}"
+                 f" [{used}] -> {r.get('status')}")
+        return dict(o, time=r.get("time") or d["time"], time_moved=True, moved_by="you",
+                    ics_url=r.get("ics_url", o.get("ics_url")),
+                    google_calendar_url=r.get("google_calendar_url", o.get("google_calendar_url")))
 
     def confirm_proposed(self, o):
         """The other side proposed an exact time and place: send the same back to make the

@@ -901,6 +901,13 @@ def my_outing_json(request, plan, person, offer):
         row["waiting_for"] = [first_name(p) for p in people if p.pk not in agreed and p.pk != person.pk]
     if plan.status == "final":
         row.update(calendar.links(plan, person, calendar.public_base(request)))
+        # T268: Mifgash set the time itself (T258). Once a side moved it, a friend agent leaves it.
+        moved = plan.log.filter(type="time_change").order_by("pk").first()
+        row["time_moved"] = moved is not None
+        row["moved_by"] = None
+        if moved:
+            by = next((p for p in people if p.address == moved.sender), None)
+            row["moved_by"] = "you" if by and by.pk == person.pk else (first_name(by) if by else None)
     return row
 
 

@@ -88,9 +88,12 @@ def main(argv=None):
         if p["role"] == "owner":
             r = chris.call("POST", f"proposals/{p['id']}/respond/", {"answer": "accept"})
             say(f"Chris approves {p['friend']['name']} -> {r.get('status')}")
-    rows = [o for o in chris.call("GET", "outings/")["outings"] if o["status"] == "confirmed"]
+    # T268: since T258 Mifgash sets the time itself, so the outing is final at once (old: confirmed)
+    rows = [o for o in chris.call("GET", "outings/")["outings"] if o["status"] in ("confirmed", "final")]
     if len(rows) != 1 or rows[0].get("who") != ["Maria"]:
-        raise SystemExit(f"expected one confirmed outing with Maria, got {rows}")
+        raise SystemExit(f"expected one confirmed or final outing with Maria, got {rows}")
+    if rows[0]["status"] == "final":
+        say(f"Mifgash set {rows[0].get('time')} at {(rows[0].get('place') or {}).get('name')} by itself -> final")
     o = rows[0]
     res["plan_id"] = o["plan_id"]
     places = {}
@@ -102,7 +105,7 @@ def main(argv=None):
         raise SystemExit(f"{PLACE} is not a place of the plan: {sorted(places)}")
     r = chris.call("POST", f"outings/{o['plan_id']}/finalize/",
                    {"time": TIME, "activity_id": places[PLACE], "backend": a.backend})
-    say(f"Chris's agent proposes {TIME} at {PLACE} -> {r.get('status')}")
+    say(f"Chris's agent {'moves the outing to' if r.get('changed') else 'proposes'} {TIME} at {PLACE} -> {r.get('status')}")
     maria.poll()
     mine = next(x for x in chris.call("GET", "outings/")["outings"] if x["plan_id"] == o["plan_id"])
     say(f"Maria's agent answers -> {mine['status']} {mine.get('time')} {(mine.get('place') or {}).get('name')}")
@@ -112,6 +115,7 @@ def main(argv=None):
     res["ics_url"] = mine.get("ics_url")
     res["calendar_short"] = mine.get("google_calendar_short")
     res["outing"] = mine
+    say(f"outing: {mine['url']}")
     res["plan_uid"] = mine["url"].rstrip("/").rsplit("/", 1)[-1]  # F8a (T260): public URLs use the uuid
     for ag in (chris, lena):
         r = ag.post_availability(SECOND[ag.handle])

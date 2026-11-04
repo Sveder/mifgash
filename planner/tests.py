@@ -6846,6 +6846,64 @@ class AutoTimeTests(ProposalBase):
         self.assertEqual(AgentMessage.objects.filter(plan=pa, type="time_change").count(), 1)
         self.assertEqual(self.fin("aa", pa, time="1pm").status_code, 400)
 
+    def test_outing_row_says_if_a_side_moved_the_time(self):
+        """T268: a final outing says time_moved / moved_by, so a friend agent moves it only once."""
+        pa, first, _ = self.both_in()
+        row = lambda h: next(x for x in self.client.get("/api/v1/outings/", **self.auth[h]).json()["outings"]  # noqa: E731
+                             if x["plan_id"] == pa.pk)
+        self.assertEqual((row("aa")["time_moved"], row("aa")["moved_by"]), (False, None))
+        self.fin("aa", pa, time="13:30")
+        self.assertEqual((row("aa")["time_moved"], row("aa")["moved_by"]), (True, "you"))
+        self.assertEqual((row(first)["time_moved"], row(first)["moved_by"]), (True, "AA"))
+
+    def friend_agent(self, handle, prefs):
+        """demo/friend_agent.py on the test client, with the handle's key (T268)."""
+        import importlib.util
+        import io
+        import pathlib
+        path = pathlib.Path(__file__).resolve().parent.parent / "demo" / "friend_agent.py"
+        spec = importlib.util.spec_from_file_location("friend_agent_t268", path)
+        fa = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fa)
+        agent = fa.FriendAgent(handle, handle, "k", prefs, out=io.StringIO())
+        auth = self.auth[handle]
+
+        def call(method, path, body=None, auth_=True):
+            url = "/api/v1/" + path
+            if method == "GET":
+                r = self.client.get(url, **auth)
+            else:
+                r = self.client.post(url, data=json.dumps(body or {}), content_type="application/json", **auth)
+            if r.status_code >= 400:
+                raise fa.ApiError(r.status_code, r.json())
+            return r.json()
+        agent.call = call
+        return agent
+
+    def test_friend_agent_moves_the_auto_time_once_and_a_second_friend_leaves_it(self):
+        """T268: Mifgash set lunch at 12:30; the friend's persona wants 13:30, so the friend's agent
+        moves it once. The owner's agent, with a 14:30 persona, sees time_moved and leaves it."""
+        pa, first, _ = self.both_in()
+        self.assertEqual(pa.exact_time, dt.time(12, 30))
+        friend = self.friend_agent(first, {"preferred_times": {"lunch": "13:30"}})
+        friend.poll_outings()
+        pa.refresh_from_db()
+        self.assertEqual((pa.status, pa.exact_time), ("final", dt.time(13, 30)))
+        friend.seen.clear()
+        friend.poll_outings()  # never twice on one plan
+        owner = self.friend_agent("aa", {"preferred_times": {"lunch": "14:30"}})
+        owner.poll_outings()
+        pa.refresh_from_db()
+        self.assertEqual(pa.exact_time, dt.time(13, 30))
+        self.assertEqual(AgentMessage.objects.filter(plan=pa, type="time_change").count(), 1)
+        self.assertIn("set by Mifgash -> moved to 13:30 [stub] -> final", friend.out.getvalue())
+
+    def test_friend_agent_leaves_a_close_auto_time(self):
+        pa, first, _ = self.both_in()
+        self.friend_agent(first, {"preferred_times": {"lunch": "12:45"}}).poll_outings()
+        self.friend_agent(first, {}).poll_outings()
+        self.assertFalse(AgentMessage.objects.filter(plan=pa, type="time_change").exists())
+
     def test_dashboard_change_time_chips_and_other_select(self):
         pa, first, _ = self.both_in()
         self.dash_login(first)
