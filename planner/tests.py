@@ -2283,15 +2283,19 @@ class LandingTests(Base):
                                 "5. Maria's agent: yes", "6. A place you both like, in your calendar"])
         for text in (">You<", ">Maria<", ">Sam<", "Free Thursday lunch", "Likes ramen", "Not this time",
                      "Yes, ramen works", "Lunch with Maria", "Thu Nov 12, 12:30", 'class="m-ab"',
-                     'href="#bot-claw"', 'href="#bot-muse"', 'href="#bot-instinct"', ">OpenClaw<", ">Muse<"):
+                     'logos/openclaw.svg', 'logos/meta-ai.svg', 'logos/instinct.svg', ">OpenClaw<", ">Meta Muse<"):
             self.assertIn(text, ex)
         # F1 (T236): no random-roll step and no 'Nobody sees a no' line anywhere on the landing
         for gone in ("x-dice", "at random", "Nobody sees", "random order"):
             self.assertNotIn(gone, html)
-        # the 'Works with' row names the agents, with the generic one too
-        works = html.split('class="works"', 1)[1].split("</div>", 1)[0]
-        for name in ("Muse", "OpenClaw", "Instinct", "Any agent"):
+        # T272: the 'Works with' row (How it works) shows the 3 real logos and an 'and others' chip, no drawn glyphs
+        works = html.split('id="works-how"', 1)[1].split("</div>", 1)[0]
+        for name in ("Meta Muse", "OpenClaw", "Instinct", "and any agent that reads", "logos/meta-ai.svg",
+                     "logos/openclaw.svg", "logos/instinct.svg", "logos/agent.svg"):
             self.assertIn(name, works)
+        for gone in ("#bot-", "ChatGPT", "Perplexity", "Grok", "Manus"):
+            self.assertNotIn(gone, works)
+        self.assertNotIn("<symbol id=\"bot-", html)
         # Gentle no: grey, and no X mark or red anywhere in the explainer
         self.assertIn('class="x-bub no"', ex)
         self.assertNotIn("\u2715", ex)
@@ -2368,7 +2372,8 @@ class LandingTests(Base):
         hero = html.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
         # F1 (T236): Michael's lead line names Mifgash once; the h1 does not
         self.assertNotIn("Mifgash", re.sub(r'<p class="lead">.*?</p>', "", hero, flags=re.S))
-        self.assertNotIn("logo", html)
+        # T272: the agent logo files under planner/logos/ are fine; no other 'logo' word on the page
+        self.assertNotIn("logo", html.replace("planner/logos/", ""))
 
     def test_logo_has_no_hebrew_word_and_no_letter_m_avatar(self):
         """T164 (M4): the brand is the circles mark + 'Mifgash'; no Hebrew word, no 'm' avatar."""
@@ -6470,6 +6475,21 @@ class SetupPageTests(TestCase):
         self.assertContains(r, ">Copy</button>")
         self.assertContains(r, 'href="https://mifgash.sveder.com/agents.md"')
         self.assertContains(r, 'href="/join/" id="setup-join"')
+
+    def test_works_with_logos_are_real_files_with_credits(self):
+        # T272: /setup/ shows the 3 real logos; every logo file exists and CREDITS.txt names a source for each
+        r = self.client.get("/setup/")
+        self.assertContains(r, 'id="works-setup"')
+        logos = Path(settings.BASE_DIR) / "planner" / "static" / "planner" / "logos"
+        credits = (logos / "CREDITS.txt").read_text()
+        for f in ("meta-ai.svg", "openclaw.svg", "instinct.svg", "agent.svg"):
+            self.assertContains(r, f"planner/logos/{f}")
+            self.assertTrue((logos / f).read_text().lstrip().startswith("<svg"), f)
+            self.assertNotIn("<script", (logos / f).read_text(), f)
+            self.assertIn(f, credits)
+        self.assertIn("https://commons.wikimedia.org/wiki/File:Meta_AI_Logo_(Ring_Only).svg", credits)
+        self.assertIn("https://instinct.com/favicon.svg", credits)
+        self.assertIn("## Trademarks", (Path(settings.BASE_DIR) / "demo" / "CREDITS.md").read_text())
 
     def test_no_bare_dashboard_link_label(self):
         root = Path(settings.BASE_DIR)

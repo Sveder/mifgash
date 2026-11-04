@@ -1,0 +1,11 @@
+Logos in this folder. Each file is the owner's own image, copied byte for byte (no redrawing).
+The names and logos are trademarks of their owners. Mifgash shows them only to say which
+assistants can use the Mifgash API. No owner endorses Mifgash.
+
+openclaw.svg  OpenClaw mascot icon. Source: the official OpenClaw package, file
+              ui favicon (dist/control-ui/favicon.svg), https://github.com/openclaw/openclaw (MIT).
+meta-ai.svg   Meta AI ring logo (Meta AI and Muse Spark). Source:
+              https://commons.wikimedia.org/wiki/File:Meta_AI_Logo_(Ring_Only).svg
+              (Meta Platforms, Inc.; marked public domain on Wikimedia Commons).
+instinct.svg  Instinct app icon. Source: https://instinct.com/favicon.svg (Instinct's own site).
+agent.svg     Generic agent icon. Drawn for Mifgash, MIT like the rest of the repo.

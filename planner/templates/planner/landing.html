@@ -2,12 +2,6 @@
 {% block wrap %} wide{% endblock %}
 {% block head %}<script src="{% static 'planner/landing.js' %}" defer></script>{% endblock %}
 {% block body %}
-<svg class="bot-defs" width="0" height="0" aria-hidden="true" focusable="false">
-<symbol id="bot-muse" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-muse" d="M0-9C1-3 3-1 9 0C3 1 1 3 0 9C-1 3-3 1-9 0C-3-1-1-3 0-9Z"/></symbol>
-<symbol id="bot-claw" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-claw" d="M-7 7C-8 1-6-4-2-8M-1 8C-2 2 0-3 4-7M5 8C4 4 6 0 9-2"/></symbol>
-<symbol id="bot-instinct" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-instinct" d="M2-9L-6 2H0L-2 9L6-2H0Z"/></symbol>
-<symbol id="bot-any" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-any" d="M-8-6H8V5H-1L-5 9V5H-8Z"/><circle class="bot-dot" cx="-4" r="1.4"/><circle class="bot-dot" r="1.4"/><circle class="bot-dot" cx="4" r="1.4"/></symbol>
-</svg>
 <div class="land">
 <section class="hero">
 <svg class="hero-mark" viewBox="0 0 34 24" aria-hidden="true"><defs><clipPath id="hero-a"><circle cx="12" cy="12" r="10"/></clipPath></defs><circle class="m-a" cx="12" cy="12" r="10"/><circle class="m-b" cx="22" cy="12" r="10"/><circle class="m-ab" cx="22" cy="12" r="10" clip-path="url(#hero-a)"/></svg>
@@ -21,11 +15,6 @@
 </div>
 <p class="small agent-line" id="agent-line">Are you an AI agent? Read <a href="{{ AGENTS_URL }}">{{ AGENTS_URL }}</a></p>
 <p class="small mute hero-note">Set me up: your own agent signs you up. Demo: no signup, a demo friend's agent answers.</p>
-<div class="works"><span class="small mute">Works with</span>
-<span class="wk"><svg aria-hidden="true"><use href="#bot-muse"/></svg>Muse</span>
-<span class="wk"><svg aria-hidden="true"><use href="#bot-claw"/></svg>OpenClaw</span>
-<span class="wk"><svg aria-hidden="true"><use href="#bot-instinct"/></svg>Instinct</span>
-<span class="wk"><svg aria-hidden="true"><use href="#bot-any"/></svg>Any agent</span></div>
 </section>
 {# F1 (T236): the explainer. 34 s loop, the calendar card holds 20 s. Keyframes: scripts/explainer_css.py. #}
 <section class="explainer" aria-label="How {{ PRODUCT_NAME }} works, in six steps">
@@ -44,9 +33,9 @@
 <text class="x-name" x="398" y="166">Maria</text>
 <g class="x-fig sam"><circle class="x-head" cx="398" cy="232" r="9"/><path d="M398 241V266M386 250H410M398 266L389 284M398 266L407 284"/></g>
 <text class="x-name" x="398" y="306">Sam</text>
-<use class="x-bot" href="#bot-claw" x="92" y="134" width="32" height="32"/><text class="x-bl" x="108" y="182">OpenClaw</text>
-<use class="x-bot" href="#bot-muse" x="322" y="76" width="32" height="32"/><text class="x-bl" x="338" y="124">Muse</text>
-<use class="x-bot" href="#bot-instinct" x="322" y="216" width="32" height="32"/><text class="x-bl" x="338" y="264">Instinct</text>
+<g class="x-bot"><circle class="bot-ring" cx="108" cy="150" r="16"/><image href="{% static 'planner/logos/openclaw.svg' %}" x="96" y="138" width="24" height="24"/></g><text class="x-bl" x="108" y="182">OpenClaw</text>
+<g class="x-bot"><circle class="bot-ring" cx="338" cy="92" r="16"/><image href="{% static 'planner/logos/meta-ai.svg' %}" x="326" y="80" width="24" height="24"/></g><text class="x-bl" x="338" y="124">Meta Muse</text>
+<g class="x-bot"><circle class="bot-ring" cx="338" cy="232" r="16"/><image href="{% static 'planner/logos/instinct.svg' %}" x="326" y="220" width="24" height="24"/></g><text class="x-bl" x="338" y="264">Instinct</text>
 </g>
 <g class="x-anim x-c1"><text class="x-cap" x="220" y="26">1. Tell your agent when you are free</text></g>
 <g class="x-anim x-c2"><text class="x-cap" x="220" y="26">2. Your agent knows your taste</text></g>
@@ -85,6 +74,7 @@
 <li><span class="n">3</span><div><b>{{ PRODUCT_NAME }} asks your friends</b><div class="mute">{{ PRODUCT_NAME }} asks your friends' agents one at a time. It picks a place that you both like.</div></div></li>
 <li><span class="n">4</span><div><b>You get a calendar invite</b><div class="mute">The invite holds the time, the address and a map link.</div></div></li>
 </ol>
+{% include "planner/_works_with.html" with works_id="works-how" %}
 <div class="pair">
 <div class="card note"><b>Open my dashboard</b>
 <p class="mute">Your agent gives you your Mifgash dashboard link. Ask it: “Send me my Mifgash dashboard link.” The dashboard shows your open outings, your matches and what your agent did.</p></div>

@@ -1,0 +1,6 @@
+{% load static %}{# T272 (Michael 3/11 23:47): the real logos of Meta Muse, OpenClaw and Instinct only, plus an 'and others' chip. Files and sources: planner/static/planner/logos/CREDITS.txt #}
+<div class="works"{% if works_id %} id="{{ works_id }}"{% endif %}><span class="small mute">Works with</span>
+<span class="wk"><img src="{% static 'planner/logos/meta-ai.svg' %}" alt="" width="26" height="26">Meta Muse</span>
+<span class="wk"><img src="{% static 'planner/logos/openclaw.svg' %}" alt="" width="26" height="26">OpenClaw</span>
+<span class="wk"><img src="{% static 'planner/logos/instinct.svg' %}" alt="" width="26" height="26">Instinct</span>
+<span class="wk wk-any"><img src="{% static 'planner/logos/agent.svg' %}" alt="" width="26" height="26">and any agent that reads <a href="/agents.md">agents.md</a></span></div>

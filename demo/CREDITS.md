@@ -14,3 +14,8 @@
 ## Music bed
 - Made by `demo/make_narration.py` with ffmpeg `aevalsrc` from plain sine waves (two chords,
   C major 7 and A minor 7, peak about -28 dBFS). No third-party audio file.
+
+## Trademarks
+- OpenClaw, Meta AI, Muse Spark and Instinct are trademarks of their owners. The site and the
+  video show their real logos only to say which assistants can use the Mifgash API. No owner
+  endorses Mifgash. Each logo file and its source: `planner/static/planner/logos/CREDITS.txt`.
