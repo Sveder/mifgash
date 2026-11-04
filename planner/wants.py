@@ -8,7 +8,19 @@ import re
 
 FOODS = ("sushi", "falafel", "hummus", "pizza", "burger", "vegan", "asian", "italian", "coffee",
          "mexican", "greek", "seafood", "sandwich", "brunch", "ramen", "thai", "indian", "chinese",
-         "french", "californian", "tacos", "burrito", "wine", "cocktails", "beer")
+         "french", "californian", "tacos", "burrito", "wine", "cocktails", "beer", "vegetarian")
+# T325: a food word -> the place tags that serve it. 'tacos' finds a 'mexican' place, 'vegetarian' a 'vegan' one.
+FOOD_TAGS = {"tacos": {"mexican", "tex-mex", "taco"}, "taco": {"mexican", "tex-mex", "tacos"},
+             "burrito": {"mexican", "tex-mex"}, "burritos": {"mexican", "tex-mex", "burrito"},
+             "ramen": {"japanese", "noodle"}, "sushi": {"japanese"}, "pizza": {"italian"},
+             "pasta": {"italian", "pizza"}, "falafel": {"middle eastern", "mediterranean", "lebanese", "israeli"},
+             "hummus": {"middle eastern", "mediterranean", "lebanese", "israeli", "falafel"},
+             "pho": {"vietnamese"}, "dumplings": {"chinese", "dim sum"}, "dim sum": {"chinese"},
+             "curry": {"indian", "thai"}, "noodles": {"asian", "chinese", "noodle", "thai", "vietnamese"},
+             "asian": {"chinese", "japanese", "thai", "vietnamese", "korean", "sushi", "ramen"},
+             "burger": {"burgers", "american"}, "coffee": {"cafe", "coffee shop"},
+             "seafood": {"fish", "fish and chips", "oysters"}, "vegetarian": {"vegan"},
+             "cocktails": {"cocktail", "bar"}, "wine": {"wine bar"}, "beer": {"pub", "brewery"}}
 KIND_GROUP_RE = re.compile(r"\bgroup\s+(?:dinner|lunch|meal|outing|of)\b")
 FOOD_RE = re.compile(r"\b(" + "|".join(FOODS) + r")\b")
 TASTES = ("quiet", "outdoor", "indoor", "kid-friendly", "new place", "cheap", "quick",
@@ -175,6 +187,31 @@ def merge(*parts):
     return out
 
 
+KEYS = ("food", "tastes", "likes", "dislikes")
+
+
+def own(w):
+    """T325: the owner's own wants. A matched plan keeps them under 'own' while the place step runs
+    on both sides' wants, so the owner's card and the API never show the friend's tastes."""
+    w = w or {}
+    return w.get("own") or {k: v for k, v in w.items() if k not in ("pick", "with")}
+
+
+def has_any(w):
+    return bool(w) and any(w.get(k) for k in KEYS)
+
+
+def combine(a, b):
+    """T325: the wants of two people for ONE place. Likes of both, dislikes of both (a place either
+    one avoids is out), the first food wins and the second food counts as a taste."""
+    out = merge(a, b)
+    other = _clean((b or {}).get("food") or "")
+    if other and other != out["food"] and other not in out["tastes"] and other not in NOT_WANTS:
+        out["tastes"].insert(0, other)
+    out["text"] = ""
+    return out
+
+
 def place_words(a):
     return {t.lower() for t in (a.tags or [])}, a.name.lower()
 
@@ -199,7 +236,9 @@ def food_match(a, food):
     if not food:
         return False
     tags, name = place_words(a)
-    return food in tags or food in name
+    food = _clean(food)
+    return (food in tags or food in name or _one(food) in tags
+            or bool(FOOD_TAGS.get(food, set()) & tags))
 
 
 def score(a, wants):
@@ -227,9 +266,10 @@ def shown(phrase):
 
 def summary(wants):
     """One short line for the log and the API: 'sushi; quiet; likes ferry building; avoids loud'."""
+    wants = own(wants) if wants else wants
     if not wants:
         return ""
     bits = ([wants["food"]] if wants.get("food") else []) + list(wants.get("tastes") or [])
-    bits += [f"likes {shown(w)}" for w in wants.get("likes") or []]
+    bits += [f"likes {shown(w)}" for w in wants.get("likes") or [] if w != wants.get("food")]  # T326: no 'tacos; likes tacos'
     bits += [f"avoids {shown(w)}" for w in wants.get("dislikes") or []]
     return "; ".join(bits)

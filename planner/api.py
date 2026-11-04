@@ -535,6 +535,12 @@ def place_pick_json(plan):
                            "model": llm.model_label(pick.get("backend"))}}
 
 
+def own_wants(plan):
+    """T325: the owner's own wants, never the friend's tastes the place step also used."""
+    from . import wants as wants_mod
+    return wants_mod.own(plan.wants)
+
+
 def wants_summary(wants):
     """T320: the display line ('avoids Mission Playground'), so an agent relays names in title case."""
     from . import wants as wants_mod
@@ -554,7 +560,7 @@ def plan_json(request, plan):
         "group_size": plan.group_size,
         **({"fill_by": plan.fill_by.isoformat()} if plan.fill_by else {}),
         "text": plan.raw_text,
-        **({"wants": {k: v for k, v in plan.wants.items() if k not in ("note", "pick")}} if plan.wants else {}),
+        **({"wants": {k: v for k, v in own_wants(plan).items() if k not in ("note", "pick")}} if plan.wants else {}),
         **({"wants_text": wants_summary(plan.wants)} if wants_summary(plan.wants) else {}),
         **place_pick_json(plan),
         **({"place_note": plan.wants["note"]} if (plan.wants or {}).get("note") else {}),

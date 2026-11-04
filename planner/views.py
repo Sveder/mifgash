@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from . import api, calendar, demo, engine, finalize, llm, matching, messages, sandbox_agent
+from . import wants as wants_mod
 from .models import AgentMessage, ChatTurn, Friendship, Invite, MagicLink, Offer, Person, Plan, Slot
 from .seed import demo_friends
 
@@ -785,7 +786,8 @@ def dashboard(request):
                 state = f"{messages.first_name(ask.plan.owner)} is free too. Answer above."
         group = group_progress(pl)
         open_rows.append({"plan": pl, "when": messages.card_when(pl), "state": state, "ask": ask,
-                          "group": group, "go_with": group and go_with(pl)})
+                          "group": group, "go_with": group and go_with(pl),
+                          "wants": wants_mod.summary(pl.wants).replace("; ", ", ")})  # T326
     waiting = []
     for o in Offer.objects.filter(plan__owner=p, status="owner_wait", plan__status="asking").select_related(
             "person", "choice__area", "plan__area"):

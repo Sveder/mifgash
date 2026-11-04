@@ -6,8 +6,10 @@
   manage.py import_venues --overpass-json F --area NAME   parse one saved Overpass answer (tests)
 
 Each OSM place goes to the NEAREST area centre only, so two areas never share a row. Per area at most
-40 rows: 22 food places (restaurant, cafe), 10 drink places (bar, pub), 4 parks (2 rows each: kids and
-weekend). Places with a cuisine tag and a street address come first. A load matches on name + area +
+40 places: 22 food places (restaurant, cafe), 10 drink places (bar, pub), 4 parks (2 rows each: kids and
+weekend). A restaurant has 2 rows too: lunch, and evening with the tags 'dinner' and 'food' (T324), so a
+dinner plan gets a restaurant, not only bars. OSM diet:vegetarian / diet:vegan (yes or only) become the
+tags 'vegetarian' / 'vegan' (a vegan place is vegetarian too). Places with a cuisine tag and a street address come first. A load matches on name + area +
 kind, so a second load updates rows and makes no duplicates. Hackathon seed rows are never changed.
 The data is (c) OpenStreetMap contributors, ODbL.
 """
@@ -73,6 +75,16 @@ def _words(raw):
     return [w.strip().replace("_", " ").lower() for w in str(raw or "").split(";") if w.strip()]
 
 
+def diet_tags(t):
+    """T324: OSM diet:* keys -> tags. 'yes' or 'only' counts; a vegan place is vegetarian too."""
+    out = []
+    if t.get("diet:vegan") in ("yes", "only"):
+        out += ["vegan", "vegetarian"]
+    if t.get("diet:vegetarian") in ("yes", "only") and "vegetarian" not in out:
+        out.append("vegetarian")
+    return out
+
+
 def entries_from(data, area, areas=None):
     """Overpass JSON -> venue dicts for one area. With `areas`, a place nearer another area centre
     is dropped (that area's own query gets it)."""
@@ -96,6 +108,9 @@ def entries_from(data, area, areas=None):
                 tags.append(w)
         if t.get("outdoor_seating") == "yes" and "outdoor" not in tags:
             tags.append("outdoor")
+        for diet in diet_tags(t):
+            if diet not in tags:
+                tags.insert(0, diet)  # before the cap of 8 tags, so a diet tag is never cut
         street = t.get("addr:street", "")
         address = " ".join(x for x in (t.get("addr:housenumber", ""), street) if x)[:120]
         hours = t.get("opening_hours", "")
@@ -116,6 +131,9 @@ def entries_from(data, area, areas=None):
                 out.append({**base, "kind": "weekend"})
             else:
                 out.append({**base, "kind": KIND[kind_key]})
+                if kind_key == "restaurant":  # T324: a restaurant serves dinner plans too
+                    extra = [w for w in ("dinner", "food") if w not in base["tags"]]
+                    out.append({**base, "kind": "evening", "tags": base["tags"] + extra})
     return out
 
 

@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from . import fallback, llm, matching, messages, push
+from . import wants as wants_mod
 from .models import AgentMessage, ChatTurn, Offer, Plan
 
 PROTOCOL = "mifgash/0.1"
@@ -413,6 +414,7 @@ def send_offer(offer, now):
     ttl = dt.timedelta(minutes=settings.OFFER_TTL_MINUTES)
     start_at = timezone.make_aware(dt.datetime.combine(plan.date, dt.time(12)))
     reason_cause = ""
+    share_wants(plan, offer.person)
     if not offer.reason:  # one model call per offer (T78), outside the lock
         offer.reason, offer.reason_backend, reason_cause = llm.match_reason_detail(
             plan, offer.person, (plan.option_list() or [None])[0])
@@ -425,6 +427,32 @@ def send_offer(offer, now):
         offer.save()
     _sent(offer, plan, reason_cause)  # after the commit: a webhook push must not hold the lock
     return True
+
+
+def share_wants(plan, person):
+    """T325: before a 1:1 offer goes out, the place step runs again on BOTH sides' wants: the
+    owner's and those of the friend's own fitting open time (likes of both first, a place either
+    one avoids never). The owner's own wants stay under wants['own']. A friend with no wants of
+    their own gets the owner's wants back. Group dinners keep their own place rule."""
+    if plan.group_size > 1 or plan.kind != matching.base_kind(plan.kind):
+        return
+    w = plan.wants or {}
+    mine = wants_mod.own(w)
+    q = matching.open_plan_for(person, plan)
+    theirs = wants_mod.own(q.wants) if q else None
+    if wants_mod.has_any(theirs):
+        new = {**mine, **wants_mod.combine(mine, theirs), "own": mine, "with": person.pk}
+        new["text"] = mine.get("text", "")
+    elif "own" in w:
+        new = dict(mine)
+    else:
+        return
+    if new == {k: v for k, v in w.items() if k != "pick"}:
+        return
+    plan.wants = new
+    avoid = set(plan.owner.dislikes or []) | set(person.dislikes or [])
+    rows, _ = matching.place_options(plan, exclude_tags=avoid)
+    plan.options.set(rows)
 
 
 def _sent(offer, plan, reason_cause):

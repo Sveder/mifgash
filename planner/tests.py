@@ -5393,6 +5393,21 @@ class HumanFormsTests(TestCase):
         self.assertTrue(Plan.objects.filter(owner=self.erin, date=self.day).exists())
         self.assertContains(self.client.get("/d/"), "Posted.")
 
+    def test_web_post_card_shows_wants_and_dinner_title(self):
+        """T326: Sofia's 'Dinner in the evening near Mission, I like tacos and quiet places' showed only
+        'Evening out ...' on the card; now the card says Dinner and 'Wants: tacos, quiet'."""
+        self.client.post("/d/free/", {"date": self.day,
+                                      "text": "Dinner in the evening near Mission, I like tacos and quiet places"})
+        plan = Plan.objects.get(owner=self.erin, date=self.day)
+        self.assertEqual(plan.title, "Dinner")
+        d = self.client.get("/d/").content.decode()
+        m = re.search(r"<div class=\"mute\" data-wants>Wants: ([^<]+)</div>", d)
+        self.assertTrue(m, "no Wants line on the open card")
+        self.assertIn("tacos", m.group(1))
+        self.assertIn("quiet", m.group(1))
+        self.assertNotIn("likes tacos", m.group(1))
+        self.assertIn('<div class="big">Dinner</div>', d)
+
     def test_human_posts_a_free_time_and_a_friend_is_asked(self):
         self.Friendship.link(self.erin, self.maria)
         r = self.client.post("/api/v1/availability/", data=json.dumps(
@@ -7208,6 +7223,51 @@ class WantsTests(Base):
 
 
 
+class BothTastesTests(ProposalBase):
+    """T325: Ava (vegetarian, avoids loud bars) posts first, Ben (sushi; likes Foreign Cinema) second.
+    Live 4/11 00:30 the proposal idea was Ava's pick, a bar; the why line said 'live or work'."""
+
+    def post(self, handle, body):
+        return self.client.post("/api/v1/availability/", data=json.dumps(body), content_type="application/json",
+                                **self.auth[handle])
+
+    def test_proposal_place_fits_both_and_is_never_a_bar(self):
+        day = {"date": SUNDAY.isoformat(), "part": "evening", "kind": "evening", "area": "Mission"}
+        r = self.post("aa", {**day, "text": "free for dinner near Mission",
+                             "preferences": "I am vegetarian, avoid loud bars"})
+        self.assertEqual(r.status_code, 201, r.content)
+        pa = Plan.objects.get(pk=r.json()["availability_id"])
+        r = self.post("bb", {**day, "text": "free for dinner near Mission",
+                             "preferences": "sushi; likes Foreign Cinema"})
+        self.assertIn(r.status_code, (200, 201), r.content)
+        pa.refresh_from_db()
+        offer = pa.offers.get(person=self.people["bb"])
+        self.assertEqual(pa.option_list()[0].name, "Foreign Cinema")
+        for a in pa.option_list():
+            self.assertNotIn("bar", a.tags, a.name)
+        self.assertIn("vegetarian", pa.wants["food"])
+        self.assertIn("foreign cinema", pa.wants["likes"])
+        self.assertNotIn("live", offer.reason.lower())
+        self.assertIn("Foreign Cinema", offer.reason)  # the why line names a taste (fallback sentence)
+        # the owner's own view shows the owner's wants only
+        mine = self.client.get(f"/api/v1/availability/{pa.pk}/", **self.auth["aa"])
+        if mine.status_code == 200:
+            self.assertNotIn("sushi", json.dumps(mine.json().get("wants", {})))
+
+    def test_tacos_finds_the_mexican_place(self):
+        from . import wants
+        from .models import Activity
+        la = Activity.objects.create(name="La Sample Taqueria", area=area("Mission"), kind="lunch",
+                                     tags=["mexican", "street food", "cheap"], source="osm")
+        self.assertTrue(wants.food_match(la, "tacos"))
+        self.assertTrue(wants.food_match(la, "burrito"))
+        w = wants.merge(wants.read("I love tacos near the Mission"))
+        note = []
+        rows = matching.suggest_activities("lunch", area("Mission"), 3.0, limit=8, wants=w, note=note)
+        self.assertEqual(note, [])
+        self.assertTrue(wants.food_match(rows[0], "tacos"), rows[0].name)
+
+
 class AutoTimeTests(ProposalBase):
     """T258 (F6c): when both sides are in, Mifgash sets the exact time itself and the outing is
     final at once; any side can still move the time (API, dashboard chips, the /h/ page)."""
@@ -7513,15 +7573,16 @@ class ImportVenuesTest(Base):
         rows = Activity.objects.filter(source="osm", area__name="SoMa")
         names = set(rows.values_list("name", flat=True))
         self.assertIn("Sakana", names)
-        sakana = rows.get(name="Sakana")
+        sakana = rows.get(name="Sakana", kind="lunch")
         self.assertEqual(sakana.kind, "lunch")
         self.assertIn("sushi", sakana.tags)
+        self.assertIn("dinner", rows.get(name="Sakana", kind="evening").tags)  # T324
         self.assertEqual(sakana.address, "605 Post Street")
         self.assertTrue(sakana.note.startswith("Hours: "))
-        self.assertIn("seafood", rows.get(name="John's Grill Live Jazz").tags)
-        self.assertIn("outdoor", rows.get(name="John's Grill Live Jazz").tags)
+        self.assertIn("seafood", rows.get(name="John's Grill Live Jazz", kind="lunch").tags)
+        self.assertIn("outdoor", rows.get(name="John's Grill Live Jazz", kind="lunch").tags)
         self.assertNotIn("Peet's Coffee", names)  # Montgomery St is nearer the Financial District centre
-        self.assertIn("coffee", rows.get(name="Brickhouse Cafe and Bar").tags)
+        self.assertIn("coffee", rows.filter(name="Brickhouse Cafe and Bar").first().tags)
         self.assertEqual(rows.get(name="Sample Corner Pub").kind, "evening")
         self.assertIn("beer", rows.get(name="Sample Corner Pub").tags)
         self.assertEqual(set(rows.filter(name="Sample Square Park").values_list("kind", flat=True)), {"kids", "weekend"})
@@ -7530,6 +7591,39 @@ class ImportVenuesTest(Base):
         out = self.run_import()
         self.assertEqual(Activity.objects.filter(source="osm", area__name="SoMa").count(), n)
         self.assertIn("0 new", out)
+
+    def test_restaurant_serves_dinner_and_diet_tags(self):
+        """T324: a restaurant gets an evening row ('dinner', 'food'); OSM diet:* tags are imported."""
+        from planner.management.commands.import_venues import entries_from
+        data = {"elements": [
+            {"type": "node", "id": 1, "lat": area("Mission").lat, "lon": area("Mission").lon,
+             "tags": {"amenity": "restaurant", "name": "Green Sample Kitchen", "cuisine": "mexican",
+                      "diet:vegan": "yes", "addr:street": "Valencia Street"}},
+            {"type": "node", "id": 2, "lat": area("Mission").lat, "lon": area("Mission").lon + 0.001,
+             "tags": {"amenity": "bar", "name": "Sample Loud Bar"}}]}
+        rows = entries_from(data, area("Mission"))
+        green = [r for r in rows if r["name"] == "Green Sample Kitchen"]
+        self.assertEqual({r["kind"] for r in green}, {"lunch", "evening"})
+        evening = next(r for r in green if r["kind"] == "evening")
+        for tag in ("vegan", "vegetarian", "mexican", "dinner", "food"):
+            self.assertIn(tag, evening["tags"])
+        self.assertEqual([r["kind"] for r in rows if r["name"] == "Sample Loud Bar"], ["evening"])
+
+    def test_vegetarian_dinner_near_mission_gets_a_restaurant(self):
+        """T324: 'free Friday for dinner near Mission. I am vegetarian.' -> a restaurant, no 'No vegetarian' note."""
+        from planner import wants as wants_mod
+        from planner.management.commands.import_venues import load
+        mission = area("Mission")
+        load([{"name": f"Sample Bar {i}", "area": "Mission", "kind": "evening", "tags": ["bar"], "source": "osm"}
+              for i in range(6)]
+             + [{"name": "Sample Veggie Place", "area": "Mission", "kind": "evening",
+                 "tags": ["vegetarian", "vegan", "dinner", "food"], "source": "osm"}])
+        w = wants_mod.merge(wants_mod.read("I am vegetarian"))
+        self.assertEqual(w["food"], "vegetarian")
+        note = []
+        rows = matching.suggest_activities("evening", mission, 3.0, limit=llm.PICK_MAX, wants=w, note=note)
+        self.assertEqual(rows[0].name, "Sample Veggie Place")
+        self.assertEqual(note, [])
 
     def test_hackathon_row_is_never_changed(self):
         ferry = Activity.objects.get(name="Ferry Building Marketplace")

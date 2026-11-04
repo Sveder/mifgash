@@ -213,12 +213,27 @@ def is_group(plan):
     return plan.kind == "group_dinner" or (plan.group_size or 1) > 1
 
 
+def both_wants(plan):
+    """T325: the taste words of a plan whose place step used both sides' wants (wants['with']):
+    food, tastes, liked places. No avoided place, no person."""
+    from .wants import shown
+    w = plan.wants or {}
+    if not w.get("with"):
+        return []
+    bits = ([w["food"]] if w.get("food") else []) + list(w.get("tastes") or [])
+    bits += [shown(x) for x in w.get("likes") or []]
+    return [b for b in bits if not b.startswith("age ")][:3]
+
+
 def reason_fallback(plan):
     """The fixed sentence when no model is used or the model answer fails a check (T78).
     'both' only for two people (T322)."""
     from .messages import kind_word
     if is_group(plan):
         return f"You are free for {kind_word(plan)} near {plan.area.name}, with a few friends."
+    both = both_wants(plan)
+    if both:  # T325: name the tastes, never 'where you live or work'
+        return f"You are both free for {kind_word(plan)} near {plan.area.name}, and the place fits {', '.join(both)}."
     return f"You are both free for {kind_word(plan)} near {plan.area.name}."
 
 
@@ -232,6 +247,9 @@ def reason_facts(plan, friend, place):
              f"{people}: all free then and want to meet near {plan.area.name}."]
     if likes:
         lines.append("Shared tastes: " + ", ".join(likes) + ".")
+    both = both_wants(plan)
+    if both:
+        lines.append("What they want from the place: " + ", ".join(both) + ".")
     if place:
         tags = ", ".join(place.tags or [])
         lines.append(f"Suggested place: {place.name} in {place.area.name}" + (f" ({tags})." if tags else "."))
