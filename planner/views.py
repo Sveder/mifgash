@@ -224,6 +224,12 @@ def said_words(p):
     return f' Their words: "{words}"' if words else ""
 
 
+def accept_row(p):
+    """T369: a friend agent's yes as a sentence: 'Yes, picks Zuni Cafe. Their words: "..."' or 'Yes.'"""
+    pick = f", picks {p['choice']['name']}" if (p.get("choice") or {}).get("name") else ""
+    return f"Yes{pick}.{said_words(p)}"
+
+
 def log_row(m):
     """One log row in plain words. The order seed stays in the payload (operator view), not in the
     words. A click on the dashboard (payload via='dashboard') is credited to the person (T96)."""
@@ -234,8 +240,8 @@ def log_row(m):
     summary = {
         "find": f"looking for friends open {p.get('intent', {}).get('part')} near {p.get('intent', {}).get('area', {}).get('name')}: {p.get('candidates')} found, random order",
         "offer": p.get("text", ""),
-        "accept": "yes" + (f", picks {p['choice']['name']}" if p.get("choice") else "") + said_words(p),
-        "decline": "not this time (reason stays private)",
+        "accept": accept_row(p),
+        "decline": "Not this time (the reason stays private).",
         "expired": "no answer in time; moving on quietly",
         "confirm": p.get("text", ""),
         "close": p.get("text", ""),

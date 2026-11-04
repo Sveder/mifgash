@@ -293,7 +293,7 @@ class V2:
             self.shot("04-ask", [(0.5, self.page("ask", chat), PHONE, "dark", 0, None),
                                  (0.5, base + "/d/", PHONE, "dark", 0, None)])
             self.shot("05-friends", [(1, self.page("friends", friends), PHONE, "dark", 0, None)])
-            match = [r for r in rows if r[3].startswith(("yes, picks", "Maria said yes", "looking for friends open evening"))]
+            match = [r for r in rows if r[3].startswith(("Yes, picks", "yes, picks", "Maria said yes", "looking for friends open evening"))]
             match_page = self.page("match", cut_v2.panel_html(match, title="The match",
                                                               sub="Chris and Maria, Thu Nov 5, evening, near North Beach"))
             self.shot("07-match", [(0.4, base + "/d/", PHONE, "dark", 0, None),

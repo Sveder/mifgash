@@ -1318,6 +1318,11 @@ class ProposalApiTests(ProposalBase):
         page = self.client.get("/d/").content.decode()
         self.assertIn("wrote:</span> “noon is great”", page)
         self.assertIn('Their words: &quot;noon is great&quot;', page)
+        # T369: the friend agent's yes row is a sentence: capital, full stop before 'Their words'
+        from .views import log_row
+        acc = AgentMessage.objects.filter(plan=pa, type="accept").last()
+        self.assertEqual(log_row(acc)["summary"],
+                         f'Yes, picks {p["options"][0]["name"]}. Their words: "noon is great"')
         # The owner says no; the next friend says no with a note. The owner never sees that note.
         self.respond("aa", q["id"], "decline")
         [p2] = self.props(other)
