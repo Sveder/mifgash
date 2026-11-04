@@ -1,10 +1,25 @@
-# Mifgash: proof of concept
+# Mifgash
+
+**Tell your own AI agent when you are free. Mifgash finds a friend who is free too, near you, and sets the time and the place.**
+
+You never chat with a site. Your agent (for example OpenClaw on Telegram) talks to the Mifgash API for you.
+Mifgash asks friends who fit one at a time, in a random order. Nobody sees a "no", and nobody sees who was asked first.
+When a friend says yes, both sides get the time, the place, a map link and a calendar invite.
+
+**Try it in 60 s:** open https://mifgash.sveder.com and press **Demo**. You see the whole agent-to-agent
+flow on a real dashboard: the ask, the yes, the place, the time and the calendar links.
+
+**Demo video:** link added on submit day.
+
+![A set lunch on the Mifgash dashboard, with the agent log on the right](docs/dashboard.png)
+
+**Models:** Muse Spark Open (Meta) on Baseten reads the free text and picks the place on the live site.
+Claude is the fallback adapter (one setting). Matching, order, expiry and every sentence a person sees are Python, with tests.
 
 Built for the Meta Global AI Developer Hackathon (Cerebral Valley, Oct 26 - Nov 4, 2026).
-Spec: [SPEC.md](SPEC.md). Live site: https://mifgash.sveder.com. Source: https://github.com/Sveder/mifgash (MIT).
-
-You tell your agent when you are free. Your agent asks friends who are free too, near you,
-one at a time, in a random order. Nobody sees a "no".
+Live site: https://mifgash.sveder.com. Source: https://github.com/Sveder/mifgash (MIT). Spec: [SPEC.md](SPEC.md).
+For agents: [/agents.md](https://mifgash.sveder.com/agents.md) (the whole API in plain words) and the
+OpenClaw skill in [integrations/openclaw/](integrations/openclaw/).
 
 ## Built during the hackathon
 
@@ -21,7 +36,7 @@ All code in this repository is new work, written during the event (Oct 26 - Nov 
 | Activity catalog (`planner/seed.py`) | **New**, real public places typed in by hand during the hackathon (`source='hackathon'`) |
 | Older data (school-holiday kids activities, 128 rows) | **Not used yet**. If imported, the rows get `source='reused'` and the demo marks them |
 
-## Run
+## Run it yourself
 
 Needs PostgreSQL 16 on localhost and a `.env` file next to `manage.py` (chmod 600, never committed):
 
@@ -36,11 +51,11 @@ MIFGASH_HASH_KEY=<random>
 MIFGASH_ALLOWED_HOSTS=<your host names, comma separated>
 ```
 
-Safe defaults (T158): DEBUG is off unless `MIFGASH_DEBUG=1`. With DEBUG off the server refuses to
+Safe defaults: DEBUG is off unless `MIFGASH_DEBUG=1`. With DEBUG off the server refuses to
 start when `MIFGASH_SECRET_KEY` is missing, shorter than 32 characters or the dev value.
 `MIFGASH_HTTPS=1` behind an https proxy turns on secure cookies, HSTS and the proxy scheme header.
 
-Demo mode (T157): the demo endpoints (`/api/v1/demo/*`, `/dev/links/`, `/friends/`, `/open/`,
+Demo mode: the demo endpoints (`/api/v1/demo/*`, `/dev/links/`, `/friends/`, `/open/`,
 the Facebook stub import) need `MIFGASH_DEMO=1` AND the demo admin token `MIFGASH_DEMO_TOKEN`
 on each request (header `X-Mifgash-Demo-Token`; a browser opens one page with
 `?demo_token=<token>` once). **Never set `MIFGASH_DEMO` on a host that the internet can reach.**

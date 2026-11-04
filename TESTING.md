@@ -6,8 +6,8 @@ Mifgash API through `integrations/openclaw/mif.py`. You watch the result on the 
 Before you start:
 
 - The one live site answers 200: `curl -s -o /dev/null -w "%{http_code}" https://mifgash.sveder.com/`. There is no home copy any more.
-- Your phone is on the home Wi-Fi. The links in the replies use the server's public address
-  (`MIFGASH_PUBLIC_URL` in the unit file). Off the home network they do not open yet (task T16).
+- The links in the replies use the site's public address (`MIFGASH_PUBLIC_URL` in the env file),
+  so they open on any network.
 - Kurt has no Mifgash skill installed. Step 1 tells Kurt to read the SKILL.md from the repo. No install.
 - "Tomorrow" in this file is the day after the test. The demo friend Maria has a weekly free time on
   Friday morning, so a test on a Thursday gives a match with Maria. On another day, see step 4.
@@ -39,13 +39,13 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 - Kurt answers: `Added @maria (Maria) as a friend.` (Maria is a demo friend and adds you back at once.)
 - Kurt can also add `jordan` (a demo friend with no agent).
 - The search returns @maria only.
-- When it fails: search shows more than one Maria. Take `@maria` exactly, and tell the factory.
+- When it fails: search shows more than one Maria. Take `@maria` exactly, and write it down.
 
 ## 4. Say you are free
 
 - You say: `Kurt, I'm open tomorrow`
 - Kurt runs: `open "I'm open tomorrow"`
-- Kurt answers (Thursday test): `Posted: you are free Fri Oct 30 morning (id N). A friend is
+- Kurt answers (Thursday test): `Posted: you are free Fri Nov 6 morning (id N). A friend is
   free for morning that day, so I took morning. ... Near your home area, SoMa. ...
   Finding friends now.`
 - Dashboard: the agent log has your post, a "Read as" row (tagged Claude) and a "find" row.
@@ -56,7 +56,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Kurt, any plans?` (or wait: Kurt runs `inbox` when he has a polling job)
 - Kurt runs: `proposals`
-- Kurt answers: `Maria is free for a weekend outing on Fri Oct 30 morning and wants to meet at Embarcadero
+- Kurt answers: `Maria is free for a weekend outing on Fri Nov 6 morning and wants to meet at Embarcadero
   waterfront walk. Does it work for you? ... Places: [24] Embarcadero waterfront walk; [21] ... Ask your human.
   Yes: 'respond <proposal id> accept --choice 24' (or another place id). No: 'respond <proposal id>
   decline'.` The `inbox` line for the same proposal ends with the same places and commands.
@@ -67,7 +67,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Yes, the Embarcadero walk`
 - Kurt runs: `respond <proposal id> accept --choice 24`
-- Kurt answers: `You said yes. You are both in: Fri Oct 30 morning, Embarcadero waterfront walk, with Maria.
+- Kurt answers: `You said yes. You are both in: Fri Nov 6 morning, Embarcadero waterfront walk, with Maria.
   Mifgash set 10:00. Add to calendar: https://mifgash.sveder.com/c/<code> .ics: ... To move it: 'finalize N --time HH:MM'.`
 - Dashboard: under Matches, a card that says "It is set" with 10:00, the calendar buttons and
   "Change time" chips (09:30, 10:30, 11:00) plus an Other select. Nobody runs `finalize`.
@@ -78,7 +78,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Kurt, what is set on Mifgash?`
 - Kurt runs: `outings`
-- Kurt answers: `1 outing: [N] Final: Weekend (morning), Fri Oct 30, 10:00 AM, Embarcadero
+- Kurt answers: `1 outing: [N] Final: Weekend (morning), Fri Nov 6, 10:00 AM, Embarcadero
   waterfront walk, Embarcadero at Market St, San Francisco. With Maria.`
 
 ## 8. Move the time (optional)
@@ -89,13 +89,13 @@ Mifgash already set the time in step 6. Only move it when you want another time.
 - Kurt runs: `finalize N --time 10:30`
 - Kurt answers: `Moved to 10:30 at Embarcadero waterfront walk, Embarcadero at Market St, San Francisco. The
   others hear the new time. Add to calendar: https://mifgash.sveder.com/c/<code> .ics: ...`
-- Dashboard: the card says "It is set", "Fri Oct 30, 10:30 AM". The log has "Michael moved a weekend outing to 10:30."
+- Dashboard: the card says "It is set", "Fri Nov 6, 10:30 AM". The log has "<your name> moved a weekend outing to 10:30."
 - You can also press a "Change time" chip on the dashboard card instead of the chat.
 
 ## 9. Add it to the calendar
 
 - You do: tap the Google Calendar link from Kurt's reply.
-- Result: Google Calendar opens a new event "Weekend outing with Maria", Fri Oct 30 10:00, with the
+- Result: Google Calendar opens a new event "Weekend outing with Maria", Fri Nov 6 10:00, with the
   address in the location and the map link and parking in the details.
 - The .ics link downloads an invite for any other calendar app.
 
@@ -106,7 +106,7 @@ Mifgash already set the time in step 6. Only move it when you want another time.
 
 ## After the test
 
-- Tell the factory what broke: one line per step, with the step number.
+- Write down what broke: one line per step, with the step number.
 - Your signup stays. Test people (handles that start with `zz_` or `crit_`) are removed by
   `manage.py purge_test_people`.
 

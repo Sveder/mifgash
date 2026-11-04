@@ -68,11 +68,11 @@ The shots, with the exact words you type:
    work for you? Yes, or not this time." You type: `Yes. 19:30 works for me.`
 4. **P4, Telegram, the final line (after shot 10):** Kurt says
    "Final: evening out with Maria, Thu Nov 5 19:30, The Stinking Rose, 325 Columbus Ave, San Francisco."
-   with the calendar link. You type nothing. (The date form follows T208; before T208 it reads "Thu 5/11".)
+   with the calendar link. You type nothing. (Older builds read the date as "Thu 5/11".)
 5. **P5, the calendar (after shot 12, optional):** tap the calendar link in Kurt's message and show
    the event with the address and the parking line.
 
-No WhatsApp shot in v2. The Instinct test (v1) is not in the v2 cut. If M12 (T172) keeps a
+No WhatsApp shot in v2. The Instinct test (v1) is not in the v2 cut. If a later cut keeps a
 second outside agent, the owner picks the variant there.
 
 ---
@@ -156,7 +156,7 @@ Total: 170 seconds, 10 shots.
 
 ---
 
-## How to remake the v2 cut (T184, 3/11)
+## How to remake the v2 cut (3/11)
 
 1. `python3 demo/video_run.py --out demo/video-run.json` (with `.baseten.env` loaded: the friend agents run on Muse). Four zz_ personas on the live site; ends final at The Stinking Rose, 19:30.
 2. On the server, write one-time dashboard tokens for zz_chris and zz_sam (`MagicLink.issue`) and the /h/ tokens of Maria's and Lena's offers into a JSON file (chmod 600, never in the repo): keys `zz_chris`, `zz_sam`, `maria_h`, `lena_h`.

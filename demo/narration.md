@@ -2,13 +2,13 @@
 
 The narration for video v2, one block per shot. `demo/make_narration.py` reads this file,
 makes one wav per shot and writes `demo/narration.json` with the seconds per shot.
-The cut (`manage.py public_cut`, T184) holds each shot for those seconds.
+The cut (`manage.py public_cut`) holds each shot for those seconds.
 
 Format: a line `## <id> | <on screen>` starts a shot. The text under it is the narration.
 Edit the text here, then run the script again. Target: 150-180 s in total.
 
 Names: "my agent" is the owner's own agent on Telegram. The friends are Maria and Sam.
-Tagline: the h1 of the main page (T181). Muse Spark Open is named once (shot 07).
+Tagline: the h1 of the main page. Muse Spark Open is named once (shot 07).
 
 ## 01-title | Title card with the tagline, then the main page (dark)
 Meet friends on your terms, without messaging ten people for a yes. This is Mifgash.

@@ -1,4 +1,4 @@
-# /agents.md fresh-model test (T99, 29/10/2026)
+# /agents.md fresh-model test (29/10/2026)
 
 Goal: an agent that knows nothing about Mifgash, and has no SKILL.md and no mif.py, reads only
 the text of `/agents.md` and does the job with curl.
@@ -33,5 +33,5 @@ Result: pass. 2 calls, no wrong call, no retry. The key and the link token are c
 > I also haven't set up a scheduled check of the inbox, so I won't see new proposals until I'm asked to look.
 
 It kept the key out of the reply and promised to ask before an answer. It made no polling job:
-the test prompt allowed curl only. T98 part 2 makes the guide ask for that job more firmly.
+the test prompt allowed curl only. A later change makes the guide ask for that job more firmly.
 The test user zz_t99 was deleted after the run.
