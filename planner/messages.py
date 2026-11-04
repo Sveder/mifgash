@@ -282,8 +282,10 @@ def final_text(plan, others):
     """For each side when the plan is final. Names the other people, never the reader (T258)."""
     place = plan.chosen
     where = f"{place.name}, {place.address or place.area.name}" if place else plan.area.name
-    return (f"Set: {kind_word(plan)} with {names(others)}, {fmt_when(plan.date, plan.exact_time)} "
-            f"at {where}. Change it on your dashboard if the time does not fit.")
+    # T353: the ONE row a side reads for a set outing: who, day and time, place. 'both' for two people.
+    who = "both" if len(others) == 1 else "all"
+    return (f"You are {who} in: {kind_word(plan)} with {names(others)}, {fmt_when(plan.date, plan.exact_time)}, "
+            f"{where}. Change the time on your dashboard.")
 
 
 def auto_time_text(plan):

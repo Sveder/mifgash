@@ -12,6 +12,7 @@ from django.test import TestCase, override_settings
 
 from .models import AgentMessage, Area, Offer, Person, Plan
 from .ops import mask_email
+from .testclock import FROZEN, frozen_clock, rate_limits_on
 
 
 class OpsTests(TestCase):
@@ -101,7 +102,7 @@ class AdminLoginLimitTests(TestCase):
     def tearDown(self):
         cache.clear()
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_admin_login_eleventh_post_is_429(self):
         self.assertEqual(self.client.get("/ops/admin/login/").status_code, 200)
         for i in range(10):
@@ -111,12 +112,27 @@ class AdminLoginLimitTests(TestCase):
         self.assertEqual(r.status_code, 429)
         self.assertEqual(self.client.get("/ops/admin/login/").status_code, 200)  # GET is not counted
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_both_doors_share_one_cap(self):
         for _ in range(10):
             self.client.post("/ops/login/", {"username": "x", "password": "wrong"})
         r = self.client.post("/ops/admin/login/", {"username": "x", "password": "wrong"})
         self.assertEqual(r.status_code, 429)
+
+    @override_settings(RATE_LIMITS=True)
+    def test_frozen_clock_one_second_before_a_window_edge(self):
+        """T352: 11 slow posts at 1 s before a 10-minute edge stay in one window; the 11th is 429.
+        With the clock moved past the edge the count starts again (the old random red test)."""
+        with frozen_clock(FROZEN + 600 - 1) as clock:
+            for i in range(10):
+                r = self.client.post("/ops/admin/login/", {"username": "x", "password": "wrong"})
+                self.assertEqual(r.status_code, 200, i)
+            r = self.client.post("/ops/admin/login/", {"username": "x", "password": "wrong"})
+            self.assertEqual(r.status_code, 429)
+            self.assertLessEqual(int(r["Retry-After"]), 2)
+            clock.now = FROZEN + 600
+            r = self.client.post("/ops/admin/login/", {"username": "x", "password": "wrong"})
+            self.assertEqual(r.status_code, 200)
 
     def test_admin_login_still_logs_in(self):
         get_user_model().objects.create_superuser("boss2", password="z" * 20)

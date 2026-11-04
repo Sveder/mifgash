@@ -531,8 +531,14 @@ def dash_rows(msgs, viewer=None):
     that worked is a small 'sent to your agent' tag on the row before it for the same plan (T75).
     With a viewer, each row gets 'who' in words for that person (T111)."""
     rows = []
-    for m in reversed(list(msgs.select_related("plan__area").order_by("-created", "-pk")[:80])):
+    batch = list(msgs.select_related("plan__area").order_by("-created", "-pk")[:80])
+    # T353: once an outing is final, its 'final' row says it all (who, day, time, place). The
+    # 'confirm' and 'auto_time' rows of the same plan stay in the database, not on the dashboard.
+    final_plans = {m.plan_id for m in batch if m.type == "final"}
+    for m in reversed(batch):
         if m.type == "push_skip":
+            continue
+        if m.type in ("confirm", "auto_time") and m.plan_id in final_plans:
             continue
         if m.type == "push" and m.payload.get("ok"):
             prev = next((r for r in reversed(rows) if r["plan_id"] == m.plan_id), None)

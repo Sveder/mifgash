@@ -19,6 +19,7 @@ from . import agent, api, calendar, engine, llm, matching, messages
 from .models import Activity, Slot
 from .models import AgentEvent, AgentKey, AgentMessage, Area, ChatTurn, Friendship, Offer, Person, Plan
 from .seed import seed
+from .testclock import FROZEN, frozen_clock, rate_limits_on
 
 DEMO_TOKEN = "test-demo-token"
 
@@ -1786,7 +1787,7 @@ class PushTests(Base):
         self.assertEqual(body["payload"]["status"], "final")
         self.assertEqual(body["payload"]["time"], "12:30")
         self.assertTrue(body["payload"]["address"])
-        self.assertTrue(body["payload"]["text"].startswith("Set: lunch with "))
+        self.assertTrue(body["payload"]["text"].startswith("You are both in: lunch with "))
         # T7: the final push carries the calendar links for the receiving side
         self.assertIn("/invite-", body["payload"]["ics_url"])
         self.assertIn("calendar.google.com/calendar/render?action=TEMPLATE", body["payload"]["google_calendar_url"])
@@ -2700,7 +2701,7 @@ class FinalizeTests(ProposalBase):
         pa.refresh_from_db()
         self.assertEqual((pa.status, pa.exact_time, pa.chosen_id), ("final", dt.time(13, 0), place))
         finals = {m.receiver: m.payload["text"] for m in AgentMessage.objects.filter(plan=pa, type="final")}
-        self.assertIn(f"Set: lunch with {first.upper()}, {messages.us_day(SUNDAY)}, 1:00 PM at ", finals["agent:aa"])
+        self.assertIn(f"You are both in: lunch with {first.upper()}, {messages.us_day(SUNDAY)}, 1:00 PM, ", finals["agent:aa"])
         self.assertIn("with AA,", finals[f"agent:{first}"])
         sets = AgentMessage.objects.filter(plan=pa, type="finalize_set").first()
         self.assertEqual(sets.payload["text"], f"Set: 1:00 PM at {pa.chosen.name}. Waiting for {first.upper()}.")
@@ -5017,14 +5018,15 @@ class RateLimitTests(Base):
         from django.core.cache import cache
         cache.clear()
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_signup_per_ip(self):
         codes = [self.client.post("/api/v1/signup/", data=json.dumps({"name": f"Rl{i}", "handle": f"rl_{i}"}),
                                   content_type="application/json").status_code for i in range(11)]
         self.assertEqual(codes[:10], [201] * 10)
         self.assertEqual(codes[10], 429)
 
-    @override_settings(RATE_LIMITS=True, FRIEND_SEARCH=True)
+    @override_settings(FRIEND_SEARCH=True)
+    @rate_limits_on
     def test_search_per_key(self):
         key = self.client.post("/api/v1/signup/", data=json.dumps({"name": "Rs", "handle": "rs_1"}),
                                content_type="application/json").json()["api_key"]
@@ -5124,7 +5126,7 @@ class VisitorDashboardTests(TestCase):
         self.assertNotIn("erin@example.com", str(stub.payload).lower())
         self.assertNotIn("/d/", str(stub.payload))
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_email_form_rate_limit(self):
         from django.core.cache import cache
         cache.clear()
@@ -5162,7 +5164,7 @@ class LoginByEmailTests(TestCase):
         self.assertNotIn("lena@example.com", str(rows[0].payload).lower())
         self.assertNotContains(known, 'id="debug-link"')  # DEBUG is off in tests
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_sixth_try_per_email_is_429(self):
         from django.core.cache import cache
         cache.clear()
@@ -5276,7 +5278,7 @@ class JoinTests(TestCase):
         self.assertEqual(Person.objects.filter(handle="okname").count(), 0)
         self.assertIsNone(self.client.session.get("person_id"))
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_join_rate_limit(self):
         from django.core.cache import cache
         cache.clear()
@@ -5676,7 +5678,7 @@ class SandboxTests(Base):
         call_command("tick", stdout=open(os.devnull, "w"))
         self.assertFalse(Person.objects.filter(pk=old.pk).exists())
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_cap_per_ip_is_a_friendly_html_page(self):
         from django.test import Client
         from . import sandbox
@@ -5692,7 +5694,7 @@ class SandboxTests(Base):
         self.assertContains(r, 'href="/setup/"', status_code=429)
         self.assertContains(r, "Start the demo", status_code=429)
 
-    @override_settings(RATE_LIMITS=True)
+    @rate_limits_on
     def test_second_click_same_browser_reuses_the_session(self):
         self.assertRedirects(self.client.post("/try/"), "/d/", fetch_redirect_response=False)
         for _ in range(3):
@@ -5700,8 +5702,7 @@ class SandboxTests(Base):
         self.assertEqual(Person.objects.filter(is_sandbox=True, name="You").count(), 1)
         from django.core.cache import cache
         from . import ratelimit
-        import time
-        key = f"rl:try:ip:127.0.0.1:{int(time.time() // 3600)}"
+        key = f"rl:try:ip:127.0.0.1:{int(ratelimit.time.time() // 3600)}"
         self.assertEqual(cache.get(key), 1)  # the repeat clicks did not count
         # An expired session makes a new one.
         Person.objects.filter(is_sandbox=True).update(expires_at=timezone.now() - dt.timedelta(minutes=1))
@@ -5970,7 +5971,12 @@ class SandboxFriendTests(Base):
         plan.refresh_from_db()
         self.assertEqual(plan.status, "final")
         self.assertIn("group", plan.chosen.tags)
-        self.assertContains(self.client.get("/d/"), "Add to calendar")
+        d = self.client.get("/d/").content.decode()
+        self.assertIn("Add to calendar", d)
+        # T353: one set row for the group too, and it holds the time
+        log = d.split("Agent log")[1]
+        self.assertEqual(log.count("You are all in:"), 1, log)
+        self.assertIn(f"{messages.us_day(plan.date)}, 7:00 PM, {plan.chosen.name}", log)
 
     def test_a_second_send_of_the_same_offer_does_nothing(self):
         """T229: the tick and a dashboard click stepped one plan at once on the live site; the late
@@ -7107,6 +7113,28 @@ class AutoTimeTests(ProposalBase):
         pa.refresh_from_db()
         return pa, first, r
 
+    def test_a_set_outing_is_one_log_row_for_each_side(self):
+        """T353: the confirm, auto_time and final rows said one fact three times, in three date
+        forms. The dashboard shows ONE row for a set outing: who, day, 12-hour time, place."""
+        from .models import MagicLink
+        from .views import viewer_rows
+        pa, first, _ = self.both_in()
+        for h, other in (("aa", first.upper()), (first, "AA")):
+            rows = [r["summary"] for r in viewer_rows(self.people[h], pa)]
+            sets = [s for s in rows if " in: " in s or s.startswith("Set")]
+            self.assertEqual(len(sets), 1, rows)
+            self.assertTrue(sets[0].startswith(f"You are both in: lunch with {other}, "
+                                               f"{messages.us_day(pa.date)}, 12:30 PM, {pa.chosen.name}"), sets[0])
+            self.assertTrue(sets[0].endswith("Change the time on your dashboard."), sets[0])
+        _, token = MagicLink.issue(self.people["aa"])
+        self.client.post(f"/d/{token}/")
+        log = self.client.get("/d/").content.decode().split("Agent log")[1]
+        self.assertEqual(log.count("You are both in:"), 1)
+        self.assertNotIn("Change it on your dashboard", log)
+        # the rows stay in the database for the operator view
+        self.assertTrue(AgentMessage.objects.filter(plan=pa, type="auto_time").exists())
+        self.assertTrue(AgentMessage.objects.filter(plan=pa, type="confirm").exists())
+
     def test_lunch_with_no_time_names_one_clock_time_everywhere(self):
         """T319: a lunch posted with no time says the same 12-hour clock time in the proposal, the
         inbox line, the dashboard card and the .ics; the API keeps HH:MM."""
@@ -7155,8 +7183,8 @@ class AutoTimeTests(ProposalBase):
             self.assertIn(f"for={self.people[h].pk}", pl["ics_url"])
             self.assertIn("calendar.google.com", pl["google_calendar_url"])
             self.assertIn("/c/", pl["google_calendar_short"])
-            self.assertTrue(pl["text"].startswith(f"Set: lunch with "), pl["text"])
-            self.assertIn(f"{messages.us_day(SUNDAY)}, 12:30 PM at {pa.chosen.name}", pl["text"])
+            self.assertTrue(pl["text"].startswith(f"You are both in: lunch with "), pl["text"])
+            self.assertIn(f"{messages.us_day(SUNDAY)}, 12:30 PM, {pa.chosen.name}", pl["text"])
             links[h] = pl["ics_url"]
         self.assertNotEqual(links["aa"], links[first])
         # the inbox line the agent reads carries the short calendar link
@@ -7204,7 +7232,7 @@ class AutoTimeTests(ProposalBase):
         self.assertEqual(row.payload["old_time"], "12:30")
         from .models import AgentEvent
         ev = AgentEvent.objects.filter(person=self.people[first], plan=pa, event="outing.final").last()
-        self.assertTrue(ev.payload["text"].startswith("AA moved lunch to 1:30 PM. Set: lunch with AA, "))
+        self.assertTrue(ev.payload["text"].startswith("AA moved lunch to 1:30 PM. You are both in: lunch with AA, "))
         self.assertEqual(ev.payload["changed_by"], "AA")
         self.assertIn("ics_url", ev.payload)
         # the side that moved it gets no push about its own change; the same time again is a retry
