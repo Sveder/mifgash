@@ -250,6 +250,7 @@ def log_row(m):
         # G3 (T229): the group dinner rows in plain words, counts only
         "owner_confirm": f"go with the {p.get('guests')} who said yes" if m.type == "owner_confirm" else "",
         "fill_by": f"deadline: the group goes with the {p.get('guests')} who said yes" if m.type == "fill_by" else "",
+        "group_vote": f"most of the group picked {p.get('place') or 'a place'}" if m.type == "group_vote" else "",
         "group_place": f"picked {p.get('options', ['a place'])[0]} for the group, nearest the middle of everybody" if m.type == "group_place" else "",
     }.get(m.type) or p.get("text") or m.type
     return {"t": m.created.astimezone().strftime("%H:%M:%S"), "from": sender, "to": m.receiver,

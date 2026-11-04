@@ -6251,7 +6251,9 @@ class GroupDinnerPlaceTimeTests(Base):
     def words(text):
         return set(re.split(r", | and ", text))
 
-    def run_group(self):
+    def run_group(self, picks=None):
+        """picks: the option index each asked guest picks, in ask order (None = no pick)."""
+        picks = list(picks or [None, None, None])
         for h in ("ann", "ben"):
             r = self.api(h, "post", "/api/v1/availability/",
                          {"kind": "evening", "date": SUNDAY.isoformat(), "part": "evening", "area": "North Beach"})
@@ -6261,21 +6263,27 @@ class GroupDinnerPlaceTimeTests(Base):
         self.assertEqual(r.status_code, 201, r.content)
         plan = Plan.objects.get(pk=r.json()["availability_id"])
         self.assertEqual((plan.kind, plan.group_size), ("group_dinner", 3))
-        for _ in range(3):  # whoever is asked says yes; the owner's agent approves each yes
+        self.asked_options = []
+        for i in range(3):  # whoever is asked says yes; the owner's agent approves each yes
             o = plan.offers.filter(status="pending").select_related("person").first()
             self.assertIsNotNone(o, list(plan.offers.values_list("person__handle", "status")))
+            opts = plan.option_list()
+            self.asked_options.append(opts)
+            pick = opts[picks[i]] if picks[i] is not None else None
             if o.person.has_agent:
                 [p] = [x for x in self.api(o.person.handle, "get", "/api/v1/proposals/").json()["proposals"]
                        if x["role"] == "candidate"]
+                body = {"answer": "accept", **({"choice_id": pick.pk} if pick else {})}
                 self.assertEqual(self.api(o.person.handle, "post", f"/api/v1/proposals/{p['id']}/respond/",
-                                          {"answer": "accept"}).status_code, 200)
+                                          body).status_code, 200)
             else:
-                self.assertEqual(self.client.post(f"/h/{o.token}/", {"answer": "yes"}).status_code, 302)
+                self.assertEqual(self.client.post(f"/h/{o.token}/", {"answer": "yes", **(
+                    {"choice": str(pick.pk)} if pick else {})}).status_code, 302)
             [w] = [x for x in self.api("oz", "get", "/api/v1/proposals/").json()["proposals"] if x["role"] == "owner"]
             self.assertEqual(self.api("oz", "post", f"/api/v1/proposals/{w['id']}/respond/",
                                       {"answer": "accept"}).status_code, 200)
             plan.refresh_from_db()
-        self.assertEqual(plan.status, "confirmed")
+        self.assertEqual(plan.status, "final" if settings.AUTO_TIME else "confirmed")
         return plan
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
@@ -6290,6 +6298,37 @@ class GroupDinnerPlaceTimeTests(Base):
         self.assertEqual(plan.chosen.name, "The Stinking Rose")  # FiDi + North Beach x2 + FiDi
         self.assertTrue(plan.log.filter(type="group_place").exists())
         self.assertIn(plan.chosen, plan.option_list())
+
+    def test_t350_every_guest_picks_the_same_place_and_it_stays(self):
+        plan = self.run_group(picks=[1, 1, 1])
+        want = self.asked_options[0][1]
+        self.assertEqual(plan.chosen, want)
+        self.assertFalse(plan.log.filter(type="group_place").exists())
+        row = plan.log.get(type="group_vote")
+        self.assertEqual((row.payload["place"], row.payload["votes"]), (want.name, {want.name: 3}))
+        # Every ask the owner approved named that place, and the final line names it too.
+        for m in plan.log.filter(type="ask_owner"):
+            self.assertIn(want.name, m.payload["text"])
+        for m in plan.log.filter(type="confirm"):
+            self.assertEqual(m.payload["where"]["name"], want.name)
+
+    def test_t350_two_against_one_the_majority_wins(self):
+        plan = self.run_group(picks=[2, 2, 0])
+        self.assertEqual(plan.chosen, self.asked_options[0][2])
+        self.assertEqual(plan.log.get(type="group_vote").payload["votes"],
+                         {self.asked_options[0][2].name: 2, self.asked_options[0][0].name: 1})
+
+    def test_t350_a_tie_goes_to_mifgash_first_pick(self):
+        plan = self.run_group(picks=[2, 1, None])  # one vote each; the guest with no pick is no vote
+        opts = self.asked_options[0]
+        self.assertEqual(plan.chosen, opts[1])  # option 1 is higher in Mifgash's order than option 2
+
+    def test_t350_a_yes_with_no_pick_is_no_vote(self):
+        from . import engine
+        plan = self.run_group()  # nobody picks: the G2 centre place, as before
+        self.assertTrue(all(engine.picked_place(o) is None for o in plan.offers.filter(status="accepted")))
+        self.assertFalse(plan.log.filter(type="group_vote").exists())
+        self.assertTrue(plan.log.filter(type="group_place").exists())
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
     def test_end_to_end_three_friends_one_without_agent(self):

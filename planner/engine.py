@@ -464,7 +464,7 @@ def candidate_answer(offer, yes, choice=None, note="", backend="", via=""):
     plan = offer.plan
     if yes:
         record_answer(offer, True, choice=choice or (plan.option_list() or [None])[0], backend=backend, via=via,
-                      note=note)
+                      note=note, picked=choice is not None)
     else:
         record_answer(offer, False, private_reason=note or "declined", backend=backend, via=via)
     r = advance(plan)
@@ -479,7 +479,7 @@ def simulate_friend_agent(offer, now):
     plan = offer.plan
     decision, detail = matching.friend_decision(offer.person, plan, plan.option_list())
     if decision == "accept":
-        record_answer(offer, True, choice=detail, now=now)
+        record_answer(offer, True, choice=detail, now=now, picked=detail is not None)
     else:
         record_answer(offer, False, private_reason=detail, now=now)
 
@@ -496,7 +496,7 @@ def answer_note(offer):
     return (row.payload.get("friend_text") or "") if row else ""
 
 
-def record_answer(offer, yes, choice=None, private_reason="", now=None, backend="", via="", note=""):
+def record_answer(offer, yes, choice=None, private_reason="", now=None, backend="", via="", note="", picked=False):
     """The candidate's answer. When the owner has a real agent, a yes waits for the owner's word
     (status owner_wait, see owner_answer); a person with no agent approves on the dashboard (T177);
     else it counts at once. via='dashboard' marks a click
@@ -513,6 +513,7 @@ def record_answer(offer, yes, choice=None, private_reason="", now=None, backend=
     if yes:
         log(plan, offer.person.address, plan.owner.address, "accept",
             offer_id=offer.pk, choice=option_payload(choice) if choice else None, **said,
+            **({"picked": True} if picked and choice else {}),
             **({"backend": backend} if backend else {}), **({"via": via} if via else {}))
         join_own_plan(offer)
         if two_step:
@@ -559,7 +560,7 @@ def owner_answer(offer, yes, choice=None, note="", now=None, via=""):
         log(plan, plan.owner.address, "mifgash:directory", "owner_approve", offer_id=offer.pk,
             friend={"handle": offer.person.handle, "name": offer.person.name},
             choice=option_payload(offer.choice) if offer.choice else None, note=note[:200],
-            **({"via": via} if via else {}))
+            **({"picked": True} if choice else {}), **({"via": via} if via else {}))
         return
     offer.status = "closed"
     offer.save()
@@ -576,14 +577,46 @@ def owner_answer(offer, yes, choice=None, note="", now=None, via=""):
         log(own, "mifgash:directory", offer.person.address, "reopened", text=messages.reopened_text(own))
 
 
+def picked_place(offer):
+    """The place this guest (or the owner, on approval) named on purpose, or None. A yes with no
+    choice gets Mifgash's first option as offer.choice, but that is not a vote (T350)."""
+    if not offer.choice_id:
+        return None
+    rows = AgentMessage.objects.filter(plan_id=offer.plan_id, type__in=["accept", "owner_approve"],
+                                       payload__offer_id=offer.pk, payload__picked=True)
+    return offer.choice if rows.exists() else None
+
+
+def group_vote(plan, guests):
+    """T350: the place most guests picked. Tie: the place higher in Mifgash's option order.
+    Returns (place, {place name: votes}) or (None, {}) when nobody picked a place."""
+    picks = [a for a in (picked_place(o) for o in guests) if a]
+    if not picks:
+        return None, {}
+    order = {a.pk: i for i, a in enumerate(plan.option_list())}
+    counts = {}
+    for a in picks:
+        counts[a.pk] = counts.get(a.pk, 0) + 1
+    by_pk = {a.pk: a for a in picks}
+    best = min(counts, key=lambda pk: (-counts[pk], order.get(pk, len(order)), by_pk[pk].name))
+    return by_pk[best], {by_pk[pk].name: n for pk, n in counts.items()}
+
+
 @transaction.atomic
 def confirm(plan):
     guests = accepted(plan)
     first = guests[0] if guests else None
     plan.chosen = (first.choice if first and first.choice else None) or (plan.option_list() or [None])[0]
-    if plan.kind == "group_dinner" and guests:
-        # G2 (T228): one place for all. A dinner place with big tables, nearest the centre of
-        # every member's area, not the owner's area alone. The finalize step may pick another.
+    voted, votes = group_vote(plan, guests) if plan.kind == "group_dinner" else (None, {})
+    if voted:
+        # T350: the guests picked, and the owner approved each ask that named the pick. Keep it.
+        plan.chosen = voted
+        plan.options.add(voted)
+        log(plan, "mifgash:directory", plan.owner.address, "group_vote", place_id=voted.pk, place=voted.name,
+            votes=votes, note="the place most of the group picked")
+    elif plan.kind == "group_dinner" and guests:
+        # G2 (T228): nobody picked a place. One place for all: a dinner place with big tables,
+        # nearest the centre of every member's area, not the owner's area alone.
         centre, rows = matching.group_places(plan, [plan.owner] + [o.person for o in guests])
         if rows:
             plan.options.set(rows)
