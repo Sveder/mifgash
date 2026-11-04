@@ -8,7 +8,23 @@ Rules (SPEC.md, "Gentle matching"):
 """
 from .models import WEEKDAYS
 
-PART_WORDS = {"morning": "morning", "lunch": "at noon", "afternoon": "afternoon", "evening": "evening"}
+# T258 (F6c) + T319: the time Mifgash sets by itself when both sides are in. ONE source: the
+# finalize step, the card's time field and the lunch words below all read it. API times stay HH:MM.
+DEFAULT_TIMES = {"morning": "10:00", "lunch": "12:30", "afternoon": "15:30", "evening": "19:30"}
+
+
+def clock(t):
+    """'12:30 PM', '9:00 AM' (T319: 12-hour times for US readers, the SF world). Takes a time or 'HH:MM'."""
+    if isinstance(t, str):
+        h, m = map(int, t.split(":")[:2])
+    else:
+        h, m = t.hour, t.minute
+    return f"{(h % 12) or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
+
+
+# T319: lunch names the exact clock time Mifgash will set ('at 12:30 PM'), never 'at noon'.
+PART_WORDS = {"morning": "morning", "lunch": f"at {clock(DEFAULT_TIMES['lunch'])}", "afternoon": "afternoon",
+              "evening": "evening"}
 KIND_WORDS = {"lunch": "lunch", "kids": "an outing with the kids", "evening": "an evening out",
               "weekend": "a weekend outing", "group_dinner": "a group dinner"}
 # The kind word for a plan whose person named no kind (T112): it comes from the part of the day.
@@ -29,10 +45,24 @@ def when(date, part):
     return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month} {PART_WORDS[part]}"
 
 
+def plan_time(plan):
+    """The clock time the plan will get: the set time, else the time in its own text, else the part
+    default (T319). A 'HH:MM' string."""
+    if getattr(plan, "exact_time", None):
+        return plan.exact_time.strftime("%H:%M")
+    wanted = str((plan.wants or {}).get("time") or "")
+    if len(wanted) == 5 and wanted[2] == ":" and wanted.replace(":", "").isdigit():
+        return wanted
+    return DEFAULT_TIMES.get(plan.part, DEFAULT_TIMES["lunch"])
+
+
 def plan_when(plan):
-    """'Sun 1/11 at noon', or 'Sun 1/11' when the kind word already says the part (an evening out)."""
+    """'Sun 1/11 at 12:30 PM' for a lunch (its own time), or 'Sun 1/11' when the kind word already
+    says the part (an evening out)."""
     if PART_WORDS[plan.part] in kind_word(plan):
         return day(plan.date)
+    if plan.part == "lunch":
+        return f"{day(plan.date)} at {clock(plan_time(plan))}"
     return when(plan.date, plan.part)
 
 
@@ -182,8 +212,8 @@ def card_when(plan, title=None):
 
 
 def when_exact(date, time):
-    """'Fri 30/10 13:00'."""
-    return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month} {time.strftime('%H:%M')}"
+    """'Fri 30/10 1:00 PM'."""
+    return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month} {clock(time)}"
 
 
 def names(people):
@@ -194,19 +224,19 @@ def names(people):
 
 def finalize_set_text(time, place, waiting_for):
     """For the side that proposed the exact time and place."""
-    return f"Set: {time.strftime('%H:%M')} at {place.name}. Waiting for {names(waiting_for)}."
+    return f"Set: {clock(time)} at {place.name}. Waiting for {names(waiting_for)}."
 
 
 def finalize_ask_text(proposer, time, place):
     """For the other side: the proposer's exact time and place, to confirm or change."""
-    return (f"{first_name(proposer)} suggests {time.strftime('%H:%M')} at {place.name}, {place.address or place.area.name}. "
+    return (f"{first_name(proposer)} suggests {clock(time)} at {place.name}, {place.address or place.area.name}. "
             "Send the same time and place to make it final, or send another one.")
 
 
 def finalize_counter_text(proposer, time, old_time, place):
     """For the other side when a side answers a proposed time with another one (T70)."""
     who = f"{first_name(proposer)}'s agent" if proposer.has_agent else first_name(proposer)
-    return (f"{who} suggests {time.strftime('%H:%M')} instead of {old_time.strftime('%H:%M')}, at {place.name}. "
+    return (f"{who} suggests {clock(time)} instead of {clock(old_time)}, at {place.name}. "
             "Send the same time and place to make it final, or send another one.")
 
 
@@ -219,7 +249,7 @@ def agree_time_text(proposer, plan, time, place):
     """For a side that has not agreed yet: the other side's time and place, with the command (T80)."""
     cmd = f"finalize {plan.pk} --time {time.strftime('%H:%M')}" + (f" --place {place.pk}" if place else "")
     at = f" at {place.name}" if place else ""
-    return (f"{first_name(proposer)} proposes {time.strftime('%H:%M')}{at} for {kind_word(plan)} "
+    return (f"{first_name(proposer)} proposes {clock(time)}{at} for {kind_word(plan)} "
             f"on {day(plan.date)}. Agree: {cmd}. Or send another time.")
 
 
@@ -239,16 +269,16 @@ def final_text(plan, others):
     place = plan.chosen
     where = f"{place.name}, {place.address or place.area.name}" if place else plan.area.name
     return (f"Set: {kind_word(plan)} with {names(others)}, {us_day(plan.date)} "
-            f"{plan.exact_time.strftime('%H:%M')} at {where}. Change it on your dashboard if the time does not fit.")
+            f"{clock(plan.exact_time)} at {where}. Change it on your dashboard if the time does not fit.")
 
 
 def auto_time_text(plan):
     """The one log row when Mifgash sets the time by itself (T258)."""
     place = plan.chosen.name if plan.chosen else plan.area.name
-    return f"Set {plan.exact_time.strftime('%H:%M')} at {place}. Change it on your dashboard."
+    return f"Set {clock(plan.exact_time)} at {place}. Change it on your dashboard."
 
 
 def moved_text(person, plan, old_place=None):
-    """'Alex moved lunch to 13:00.' (T258) The place too when it changed."""
+    """'Alex moved lunch to 1:00 PM.' (T258) The place too when it changed."""
     where = f" at {plan.chosen.name}" if plan.chosen and old_place and plan.chosen.pk != old_place.pk else ""
-    return f"{first_name(person)} moved {kind_word(plan)} to {plan.exact_time.strftime('%H:%M')}{where}."
+    return f"{first_name(person)} moved {kind_word(plan)} to {clock(plan.exact_time)}{where}."

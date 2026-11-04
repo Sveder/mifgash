@@ -146,7 +146,7 @@ Every message has `protocol`, `type`, `plan_id`.
  "options": [{"activity_id": 1, "name": "Ferry Building Marketplace", "area": "SoMa", "price": 2, "tags": ["food hall"]}],
  "expires_at": "2026-10-28T13:00:00+02:00",
  "visibility": {"others_asked": false, "order_shown": false},
- "text": "Michael is free for lunch on Sun 1/11 at noon ..."}
+ "text": "Michael is free for lunch on Sun 1/11 at 12:30 PM ..."}
 ```
 
 | type | from -> to | key fields |

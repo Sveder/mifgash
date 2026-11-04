@@ -84,7 +84,8 @@ def details(plan, person):
     address = (place.address or place.area.name) if place else plan.area.name
     title = f"{(TITLES[plan.kind] if plan.kind_named else plan.title)} with {messages.names(others)}"
     location = f"{place.name}, {address}" if place else address
-    lines = [f"Map: https://maps.google.com/?q={quote(address)}",
+    lines = [f"When: {messages.us_day(plan.date)}, {messages.clock(plan.exact_time)}"] if plan.exact_time else []
+    lines += [f"Map: https://maps.google.com/?q={quote(address)}",
              f"Parking: {(place.parking if place else '') or 'Street parking'}",
              "Planned by Mifgash."]
     if plan.kind == "group_dinner":  # G2 (T228): the invite names every person at the table

@@ -19,13 +19,13 @@
 <div class="mute">{% if m.agree %}Or pick another time{% elif m.proposed %}Change the time{% else %}Set the exact time{% endif %}</div>
 {% if m.places|length > 1 %}<select class="fin-place" name="activity_id" aria-label="Place">{% for a in m.places %}<option value="{{ a.pk }}"{% if a.pk == m.pick %} selected{% endif %}>{{ a.name }}</option>{% endfor %}</select>
 {% else %}<input type="hidden" name="activity_id" value="{{ m.places.0.pk }}">{% endif %}
-<div class="fin-row"><select class="fin-time num" name="time" required aria-label="Time">{% for t in m.times %}<option value="{{ t }}"{% if t == m.default_time %} selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+<div class="fin-row"><select class="fin-time num" name="time" required aria-label="Time">{% for v, l in m.times %}<option value="{{ v }}"{% if v == m.default_time %} selected{% endif %}>{{ l }}</option>{% endfor %}</select>
 <button class="chip{% if not m.agree %} primary{% endif %}">{% if m.agree %}Propose{% else %}Set time{% endif %}</button></div></form>{% endif %}
 {% if m.change %}<form method="post" action="{% if m.action %}{{ m.action }}{% else %}{% url 'dashboard_finalize' m.plan.pk %}{% endif %}" class="fin change">{% csrf_token %}
 <input type="hidden" name="activity_id" value="{{ m.pick }}">
 <div class="mute">{% if human_page %}Suggest another time{% else %}Change time{% endif %}</div>
-<div class="chips">{% for t in m.change %}<button class="chip num" name="time" value="{{ t }}">{{ t }}</button>{% endfor %}</div>
-<div class="fin-row"><select class="fin-time num" name="other" aria-label="Other time"><option value="" selected>Other</option>{% for t in m.times %}{% if t != m.default_time %}<option value="{{ t }}">{{ t }}</option>{% endif %}{% endfor %}</select>
+<div class="chips">{% for v, l in m.change %}<button class="chip num" name="time" value="{{ v }}">{{ l }}</button>{% endfor %}</div>
+<div class="fin-row"><select class="fin-time num" name="other" aria-label="Other time"><option value="" selected>Other</option>{% for v, l in m.times %}{% if v != m.default_time %}<option value="{{ v }}">{{ l }}</option>{% endif %}{% endfor %}</select>
 <button class="chip" name="go" value="other">Change</button></div></form>{% endif %}
 <div class="chips">{% if m.calendar %}<a class="chip primary" href="{{ m.calendar.ics_url }}">Add to calendar</a><a class="chip" href="{{ m.calendar.google_calendar_url }}" target="_blank" rel="noopener">Google Calendar</a>{% endif %}<a class="chip" href="https://www.google.com/maps/search/?api=1&query={{ m.place.address|default:m.plan.area.name|urlencode }}" target="_blank" rel="noopener">Map</a>{% if human_page %}{% elif outing_page %}<a class="chip quiet" href="{% url 'plan_log' m.plan.uid %}">How the agents set it up</a>{% else %}<a class="chip quiet" href="{% url 'outing' m.plan.uid %}">Outing page</a>{% endif %}</div>
 </div></article>

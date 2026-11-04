@@ -1012,13 +1012,13 @@ def match_row(pl, viewer, base=None, forms=True):
     if pl.kind == "group_dinner":  # G2 (T228): the card says how many sit at the table
         row["group"] = len([pl.owner] + pl.guests())
     if pl.status == "final":
-        row["when"] = f"{messages.ui_day(pl.date)}, {pl.exact_time.strftime('%H:%M')}"
-        row["date"]["t"] = pl.exact_time.strftime("%H:%M")
+        row["when"] = f"{messages.ui_day(pl.date)}, {messages.clock(pl.exact_time)}"
+        row["date"]["t"] = messages.clock(pl.exact_time)
         row["status_word"], row["status_cls"] = "It is set", "set"
         row["calendar"] = calendar.links(pl, viewer, base)
     elif pl.proposed_time:
         by = "you" if pl.proposed_by_id == viewer.pk else messages.first_name(pl.proposed_by) if pl.proposed_by else "a friend"
-        row["proposed"] = f"{pl.proposed_time.strftime('%H:%M')} at {pl.proposed_activity.name if pl.proposed_activity else pl.area.name}"
+        row["proposed"] = f"{messages.clock(pl.proposed_time)} at {pl.proposed_activity.name if pl.proposed_activity else pl.area.name}"
         row["proposed_by"] = by
         # G2 (T228): who still has to agree. In a plan of two that is the other side.
         agreed = set(pl.agreed or [pl.proposed_by_id])
@@ -1029,7 +1029,7 @@ def match_row(pl, viewer, base=None, forms=True):
         # T258 (F6c): Mifgash set the time itself; three half-hour chips around it and an Other
         # select change it (the same finalize call, so the other side hears it).
         row["change"] = change_chips(pl.exact_time.strftime("%H:%M"))
-        row["times"] = time_choices(pl.exact_time.strftime("%H:%M"))
+        row["times"] = time_choices(pl.exact_time.strftime("%H:%M"), pl.part)
         row["default_time"] = pl.exact_time.strftime("%H:%M")
         row["pick"] = pl.chosen_id
     if pl.status == "confirmed" and forms:
@@ -1038,30 +1038,41 @@ def match_row(pl, viewer, base=None, forms=True):
         row["pick"] = pl.proposed_activity_id or pl.chosen_id
         row["default_time"] = (pl.proposed_time.strftime("%H:%M") if pl.proposed_time
                                else PART_TIMES.get(pl.part, "13:00"))
-        row["times"] = time_choices(row["default_time"])
+        row["times"] = time_choices(row["default_time"], pl.part)
         if pl.proposed_time and viewer.pk not in set(pl.agreed or [pl.proposed_by_id]):
             row["agree"] = {"time": pl.proposed_time.strftime("%H:%M"), "place": pl.proposed_activity_id or pl.chosen_id}
     return row
 
 
-# The usual start time of each part; the time field on a Confirmed card starts here.
-PART_TIMES = {"morning": "10:00", "lunch": "13:00", "afternoon": "16:00", "evening": "19:00"}
+# The usual start time of each part; the time field on a Confirmed card starts here. T319: the same
+# source as the time Mifgash sets by itself, so the card and the proposal agree.
+PART_TIMES = messages.DEFAULT_TIMES
 
-# T202: the time select lists every half hour, 00:00 to 23:30, in 24-hour form. A browser
-# <input type=time> follows the locale and shows AM/PM, so the ticket does not use one.
+# T202: the time select lists half hours. A browser <input type=time> follows the locale, so the
+# ticket does not use one. T319: the value stays HH:MM, the label is 12-hour ('12:30 PM'), and the
+# list holds only the part's window, so a lunch never offers a night time.
 HALF_HOURS = [f"{h:02d}:{m:02d}" for h in range(24) for m in (0, 30)]
+PART_WINDOWS = {"morning": ("07:00", "12:00"), "lunch": ("11:00", "15:00"), "afternoon": ("12:00", "18:00"),
+                "evening": ("17:00", "23:30")}
 
 
 def change_chips(set_time):
-    """T258: the 3 half-hour chips around the set time: 30 min before, 30 and 60 min after."""
+    """T258: the 3 half-hour chips around the set time: 30 min before, 30 and 60 min after.
+    T319: (value 'HH:MM', label '1:00 PM') pairs."""
     h, m = map(int, set_time.split(":"))
     base = h * 60 + m
-    return [f"{(t // 60) % 24:02d}:{t % 60:02d}" for t in (base - 30, base + 30, base + 60) if 0 <= t < 24 * 60]
+    vals = [f"{(t // 60) % 24:02d}:{t % 60:02d}" for t in (base - 30, base + 30, base + 60) if 0 <= t < 24 * 60]
+    return [(v, messages.clock(v)) for v in vals]
 
 
-def time_choices(default):
-    """The half-hour list; a proposed time off the grid (13:15) is added in its place."""
-    return HALF_HOURS if default in HALF_HOURS else sorted(HALF_HOURS + [default])
+def time_choices(default, part=None):
+    """(value, label) pairs: the half hours of the part's window, plus the default when it falls
+    outside it or off the grid (13:15). No part = the whole day."""
+    lo, hi = PART_WINDOWS.get(part, ("00:00", "23:30"))
+    vals = [t for t in HALF_HOURS if lo <= t <= hi]
+    if default and default not in vals:
+        vals = sorted(vals + [default])
+    return [(v, messages.clock(v)) for v in vals]
 
 
 @require_POST

@@ -60,18 +60,18 @@ class DemoClient(Client):
 @override_settings(DEMO_TOKEN=DEMO_TOKEN, RATE_LIMITS=False)
 class TestCase(DjangoTestCase):
     def assert_24h_time_select(self, page, default):
-        """T202: the ticket time is a select of half hours 00:00-23:30, never a native time input
-        (it shows AM/PM in an en-US browser); the place select sits on its own row."""
+        """T202: the ticket time is a select of half hours, never a native time input (its form
+        follows the browser locale). T319: the values stay HH:MM, the labels are 12-hour, and a
+        lunch lists only its window, 11:00 AM to 3:00 PM."""
         import re as _re
         self.assertNotIn('type="time"', page)
-        self.assertIsNone(_re.search(r"\b(AM|PM)\b", page))
         sel = _re.search(r'<select class="fin-time[^"]*" name="time"[^>]*>(.*?)</select>', page, _re.S)
         self.assertIsNotNone(sel)
-        opts = _re.findall(r'<option value="(\d\d:\d\d)"( selected)?>', sel.group(1))
-        self.assertEqual(opts[0][0], "00:00")
-        self.assertEqual(opts[-1][0], "23:30")
-        self.assertEqual(len(opts), 48)
-        self.assertEqual([t for t, s in opts if s], [default])
+        opts = _re.findall(r'<option value="(\d\d:\d\d)"( selected)?>([^<]*)<', sel.group(1))
+        self.assertEqual((opts[0][0], opts[0][2]), ("11:00", "11:00 AM"))
+        self.assertEqual((opts[-1][0], opts[-1][2]), ("15:00", "3:00 PM"))
+        self.assertEqual(len(opts), 9)
+        self.assertEqual([t for t, s, _ in opts if s], [default])
 
     client_class = DemoClient
 
@@ -251,7 +251,7 @@ class MessageTests(Base):
         for t in (messages.offer_text(self.me, p, p.option_list()), messages.owner_ask_text(alex, p, None),
                   messages.friend_confirmed_text(p, viewer=self.me, guests=[alex])):
             self.assertEqual(t.lower().count("evening"), 1, t)
-        self.assertIn(f"lunch on Sun {SUN_DM} at noon", messages.offer_text(self.me, self.plan(), []))
+        self.assertIn(f"lunch on Sun {SUN_DM} at 12:30 PM", messages.offer_text(self.me, self.plan(), []))
 
     def test_outing_json_with_and_when_text(self):
         """T65: 'with' leaves the viewer out; 'when_text' uses the messages form."""
@@ -263,7 +263,7 @@ class MessageTests(Base):
         self.assertEqual(outing_json(p, viewer=self.me)["with"], ["Alex", "Maria"])
         self.assertEqual(outing_json(p, viewer=alex)["with"], [self.me.name.split()[0], "Maria"])
         self.assertEqual(outing_json(p)["when_text"], f"Sun {SUN_DM}")
-        self.assertEqual(outing_json(self.plan())["when_text"], f"Sun {SUN_DM} at noon")
+        self.assertEqual(outing_json(self.plan())["when_text"], f"Sun {SUN_DM} at 12:30 PM")
 
     def test_offer_text_hides_the_queue(self):
         p = self.plan()
@@ -2608,10 +2608,23 @@ class TimeChoiceTests(TestCase):
     def test_half_hours_and_an_off_grid_proposal(self):
         from .views import time_choices, PART_TIMES
         self.assertEqual(len(time_choices("13:00")), 48)
-        t = time_choices("13:15")
+        t = [v for v, _ in time_choices("13:15")]
         self.assertEqual(len(t), 49)
         self.assertEqual(t[t.index("13:15") - 1:t.index("13:15") + 2], ["13:00", "13:15", "13:30"])
-        self.assertEqual((PART_TIMES["lunch"], PART_TIMES["evening"], PART_TIMES["morning"]), ("13:00", "19:00", "10:00"))
+        self.assertEqual((PART_TIMES["lunch"], PART_TIMES["evening"], PART_TIMES["morning"]), ("12:30", "19:30", "10:00"))
+
+    def test_lunch_window_and_12_hour_labels(self):
+        """T319: a lunch lists 11:00 AM to 3:00 PM only, labels are 12-hour, values stay HH:MM."""
+        from .views import time_choices, change_chips
+        lunch = time_choices("12:30", "lunch")
+        self.assertEqual(lunch[0], ("11:00", "11:00 AM"))
+        self.assertEqual(lunch[-1], ("15:00", "3:00 PM"))
+        self.assertIn(("12:30", "12:30 PM"), lunch)
+        self.assertFalse([v for v, _ in lunch if v < "11:00" or v > "15:00"])
+        self.assertIn(("16:15", "4:15 PM"), time_choices("16:15", "lunch"))  # a set time outside stays
+        self.assertEqual(change_chips("12:30"), [("12:00", "12:00 PM"), ("13:00", "1:00 PM"), ("13:30", "1:30 PM")])
+        self.assertEqual([messages.clock(x) for x in ("00:30", "09:05", "12:00", "23:30")],
+                         ["12:30 AM", "9:05 AM", "12:00 PM", "11:30 PM"])
 
 
 class FinalizeTests(ProposalBase):
@@ -2651,10 +2664,10 @@ class FinalizeTests(ProposalBase):
         pa.refresh_from_db()
         self.assertEqual((pa.status, pa.exact_time, pa.chosen_id), ("final", dt.time(13, 0), place))
         finals = {m.receiver: m.payload["text"] for m in AgentMessage.objects.filter(plan=pa, type="final")}
-        self.assertIn(f"Set: lunch with {first.upper()}, {messages.us_day(SUNDAY)} 13:00 at ", finals["agent:aa"])
+        self.assertIn(f"Set: lunch with {first.upper()}, {messages.us_day(SUNDAY)} 1:00 PM at ", finals["agent:aa"])
         self.assertIn("with AA,", finals[f"agent:{first}"])
         sets = AgentMessage.objects.filter(plan=pa, type="finalize_set").first()
-        self.assertEqual(sets.payload["text"], f"Set: 13:00 at {pa.chosen.name}. Waiting for {first.upper()}.")
+        self.assertEqual(sets.payload["text"], f"Set: 1:00 PM at {pa.chosen.name}. Waiting for {first.upper()}.")
         # T258: another time on a final outing moves it (200, still final), it is not a new round
         self.assertEqual(self.fin("aa", pa, time="14:00").json()["status"], "final")
 
@@ -2669,7 +2682,7 @@ class FinalizeTests(ProposalBase):
         self.assertEqual(d["status"], "proposed")
         [c] = AgentMessage.objects.filter(plan=pa, type="finalize_counter")
         self.assertEqual(c.receiver, "agent:aa")
-        self.assertTrue(c.payload["text"].startswith(f"{first.upper()}'s agent suggests 13:30 instead of 13:00, at "))
+        self.assertTrue(c.payload["text"].startswith(f"{first.upper()}'s agent suggests 1:30 PM instead of 1:00 PM, at "))
         self.assertEqual(c.payload["backend"], "meta")
         self.assertFalse(AgentMessage.objects.filter(plan=pa, type="finalize_ask", receiver="agent:aa").exists())
         o = next(x for x in self.client.get("/api/v1/outings/", **self.auth["aa"]).json()["outings"]
@@ -2712,7 +2725,7 @@ class FinalizeTests(ProposalBase):
         self.assertEqual((p.status, p.exact_time), ("final", dt.time(10, 0)))
         [agree] = AgentMessage.objects.filter(plan=p, type="finalize_agree")
         self.assertEqual((agree.sender, agree.receiver), (alex.address, "agent:aa"))
-        self.assertEqual(agree.payload["text"], f"agrees 10:00 at {p.chosen.name}")
+        self.assertEqual(agree.payload["text"], f"agrees 10:00 AM at {p.chosen.name}")
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
     def test_demo_friend_does_not_agree_outside_the_demo(self):
@@ -2735,8 +2748,8 @@ class FinalizeTests(ProposalBase):
         self.dash_login("aa")
         page = self.client.get("/d/").content.decode()
         self.assertIn("Set the exact time", page)
-        self.assertIn('value="13:00"', page)  # lunch starts at 13:00
-        self.assert_24h_time_select(page, "13:00")
+        self.assertIn('value="12:30" selected>12:30 PM', page)  # T319: lunch starts at 12:30, one default
+        self.assert_24h_time_select(page, "12:30")
         r = self.client.post(f"/d/finalize/{pa.pk}/", {"time": "13:00", "activity_id": pa.chosen_id})
         self.assertRedirects(r, "/d/", fetch_redirect_response=False)
         pa.refresh_from_db()
@@ -2745,7 +2758,7 @@ class FinalizeTests(ProposalBase):
         self.client.cookies.clear()
         self.dash_login(first)
         page = self.client.get("/d/").content.decode()
-        self.assertIn("AA</b> proposes <b>13:00 at", page)
+        self.assertIn("AA</b> proposes <b>1:00 PM at", page)
         self.assertIn(">Agree</button>", page)
         r = self.client.post(f"/d/finalize/{pa.pk}/", {"time": "13:00", "activity_id": pa.chosen_id})
         self.assertRedirects(r, "/d/", fetch_redirect_response=False)
@@ -2799,11 +2812,11 @@ class FinalizeTests(ProposalBase):
         _, token = MagicLink.issue(self.people[first])
         self.client.post(f"/d/{token}/")
         page = self.client.get("/d/").content.decode()
-        self.assertIn("<b>AA</b> proposes <b>13:00 at", page)
+        self.assertIn("<b>AA</b> proposes <b>1:00 PM at", page)
         self.fin(first, pa, time="13:00")
         page = self.client.get("/d/").content.decode()
         self.assertIn("It is set", page)
-        self.assertIn(f"Sun {SUNDAY.day} {SUNDAY:%b}, 13:00", page)
+        self.assertIn(f"Sun {SUNDAY.day} {SUNDAY:%b}, 1:00 PM", page)
         self.assertNotIn("proposes", page)
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
@@ -2848,7 +2861,7 @@ class FinalizeTests(ProposalBase):
         out = ticket(page)
         for t in (dash, out):
             self.assertIn("It is set", t)
-            self.assertIn("13:00", t)
+            self.assertIn("1:00 PM", t)
             self.assertIn("Sun", t)
             self.assertIn(pa.chosen.address.replace("'", "&#x27;"), t)
             self.assertIn("Parking:", t)
@@ -2886,7 +2899,7 @@ class FinalizeProposalsTests(ProposalBase):
         self.assertEqual((row["type"], row["plan_id"], row["time"], row["proposed_by"], row["place"]["id"]),
                          ("agree", pa.pk, "12:30", "AA", place.pk))
         self.assertEqual(row["command"], f"finalize {pa.pk} --time 12:30 --place {place.pk}")
-        self.assertEqual(row["text"], f"AA proposes 12:30 at {place.name} for lunch on Sun {SUN_DM}. "
+        self.assertEqual(row["text"], f"AA proposes 12:30 PM at {place.name} for lunch on Sun {SUN_DM}. "
                                       f"Agree: finalize {pa.pk} --time 12:30 --place {place.pk}. Or send another time.")
         for word in messages.FORBIDDEN:
             self.assertNotIn(word, row["text"].lower())
@@ -3267,7 +3280,7 @@ class MifClientTest(Base):
         plan = offer.plan_id
         self.assertIn("Waiting for", self.run_mif("b", "finalize", str(plan), "--time", "13:00", "--place", str(place))[1])
         code, line = self.run_mif("a", "proposals")  # T80: the time Ben proposed waits for Chris
-        self.assertIn(f"[outing {plan}] Ben proposes 13:00 at ", line)
+        self.assertIn(f"[outing {plan}] Ben proposes 1:00 PM at ", line)
         self.assertIn(f"Agree: 'finalize {plan} --time 13:00 --place {place}'.", line)
         code, line = self.run_mif("a", "finalize", str(plan), "--time", "13:00", "--place", str(place))
         self.assertIn("Final: 13:00", line)
@@ -3622,7 +3635,7 @@ class HumanPageTests(ProposalBase):
         self.assertNotIn("It is set", page)
         self.assertIn("Now you and AA pick the exact time", page)
         self.assertIn(f'action="/h/{offer.token}/"', page)  # the time form posts to the link, no session
-        self.assert_24h_time_select(page, "13:00")
+        self.assert_24h_time_select(page, "12:30")
         p.refresh_from_db()
         finalize.finalize(p, p.owner, "13:30", None)
         page = self.client.get(f"/h/{offer.token}/").content.decode()
@@ -3839,7 +3852,7 @@ class ScenarioTests(TestCase):
         self.assertRegex(out, r"\[scn_sam\] outing \d+ proposed 13:00 by Leo -> counter 13:30 \[stub\] -> proposed")
         plan = Plan.objects.get(owner__handle="scn_leo", status="final")
         [c] = AgentMessage.objects.filter(plan=plan, type="finalize_counter")
-        self.assertIn("Sam's agent suggests 13:30 instead of 13:00", c.payload["text"])
+        self.assertIn("Sam's agent suggests 1:30 PM instead of 1:00 PM", c.payload["text"])
         self.assertEqual(AgentMessage.objects.filter(plan=plan, type="finalize_set").count(), 2)
         self.assertTrue(AgentMessage.objects.filter(plan=plan, type="final", payload__time="13:30").exists())
 
@@ -4441,7 +4454,7 @@ class ScreensTests(TestCase):
         from .models import MagicLink
         _, token = MagicLink.issue(me)
         html = self.client.post(f"/d/{token}/", follow=True).content.decode()
-        for text in ("Maria asks you", "A friend said yes", "Pick the time", "20:30", "Read as"):
+        for text in ("Maria asks you", "A friend said yes", "Pick the time", "8:30 PM", "Read as"):
             self.assertIn(text, html)
         self.assertEqual(self.client.get(f"/outing/{ids['final']}/").status_code, 200)
         for key in ("h_pending", "h_wait", "h_set", "h_agreed", "h_closed"):
@@ -5654,10 +5667,10 @@ class SandboxFriendTests(Base):
         after = self.poll(plan)
         self.assertNotEqual(after["stamp"], before["stamp"])  # the poller sees the move and re-renders
         self.assertEqual((after["status"], after["proposed_time"]), ("confirmed", "13:00"))
-        self.assertTrue(any("13:00" in r["summary"] for r in after["rows"]))
+        self.assertTrue(any("1:00 PM" in r["summary"] for r in after["rows"]))
         d = self.client.get("/d/")
         self.assertContains(d, f'id="outing-{plan.pk}"')  # the outing card
-        self.assertContains(d, "<b>Maria</b> proposes <b>13:00")
+        self.assertContains(d, "<b>Maria</b> proposes <b>1:00 PM")
         self.assertContains(d, ">Agree</button>")
         self.assertNotIn("decline", [r["type"] for r in after["rows"]])
 
@@ -6856,13 +6869,40 @@ class AutoTimeTests(ProposalBase):
         pa.refresh_from_db()
         return pa, first, r
 
+    def test_lunch_with_no_time_names_one_clock_time_everywhere(self):
+        """T319: a lunch posted with no time says the same 12-hour clock time in the proposal, the
+        inbox line, the dashboard card and the .ics; the API keeps HH:MM."""
+        pa, own, first = self.matched()
+        [p] = self.props(first)
+        self.assertIn("12:30 PM", p["text"])
+        self.assertNotIn("noon", p["text"])
+        self.respond(first, p["id"], "accept")
+        [o] = self.props("aa")
+        self.respond("aa", o["id"], "accept")
+        pa.refresh_from_db()
+        self.assertEqual((pa.status, pa.exact_time), ("final", dt.time(12, 30)))
+        inbox = self.client.get("/api/v1/events/", **self.auth[first]).json()
+        [final] = [e for e in inbox["events"] if e["event"] == "outing.final"]
+        self.assertEqual(final["payload"]["time"], "12:30")
+        self.assertIn("12:30 PM", final["payload"]["text"])
+        self.dash_login(first)
+        page = self.client.get("/d/").content.decode()
+        self.assertIn("12:30 PM", page)
+        self.assertNotIn(">13:00<", page)
+        self.assertIn('value="13:00">1:00 PM<', page)  # a chip: the value stays HH:MM
+        other = re.search(r'name="other".*?</select>', page, re.S).group(0)
+        self.assertNotIn(">11:30 PM<", other)  # the Other list is the lunch window only
+        self.assertNotIn(">9:00 AM<", other)
+        ics = self.client.get(final["payload"]["ics_url"].split("testserver", 1)[-1]).content.decode()
+        self.assertIn("12:30 PM", ics)
+
     def test_confirm_is_final_at_once_with_the_part_default_and_links_for_both(self):
         pa, first, _ = self.both_in()
         self.assertEqual((pa.status, pa.exact_time), ("final", dt.time(12, 30)))
         self.assertIsNotNone(pa.chosen)
         self.assertIsNone(pa.proposed_time)
         [row] = AgentMessage.objects.filter(plan=pa, type="auto_time")
-        self.assertEqual(row.payload["text"], f"Set 12:30 at {pa.chosen.name}. Change it on your dashboard.")
+        self.assertEqual(row.payload["text"], f"Set 12:30 PM at {pa.chosen.name}. Change it on your dashboard.")
         self.assertEqual(row.payload["source"], "part default")
         self.assertFalse(AgentMessage.objects.filter(plan=pa, type__in=["finalize_set", "finalize_ask"]).exists())
         # both sides: one outing.final event with their OWN calendar links, no outing.confirmed
@@ -6878,7 +6918,7 @@ class AutoTimeTests(ProposalBase):
             self.assertIn("calendar.google.com", pl["google_calendar_url"])
             self.assertIn("/c/", pl["google_calendar_short"])
             self.assertTrue(pl["text"].startswith(f"Set: lunch with "), pl["text"])
-            self.assertIn(f"{messages.us_day(SUNDAY)} 12:30 at {pa.chosen.name}", pl["text"])
+            self.assertIn(f"{messages.us_day(SUNDAY)} 12:30 PM at {pa.chosen.name}", pl["text"])
             links[h] = pl["ics_url"]
         self.assertNotEqual(links["aa"], links[first])
         # the inbox line the agent reads carries the short calendar link
@@ -6922,11 +6962,11 @@ class AutoTimeTests(ProposalBase):
         pa.refresh_from_db()
         self.assertEqual((pa.status, pa.exact_time), ("final", dt.time(13, 30)))
         [row] = AgentMessage.objects.filter(plan=pa, type="time_change")
-        self.assertEqual(row.payload["text"], "AA moved lunch to 13:30.")
+        self.assertEqual(row.payload["text"], "AA moved lunch to 1:30 PM.")
         self.assertEqual(row.payload["old_time"], "12:30")
         from .models import AgentEvent
         ev = AgentEvent.objects.filter(person=self.people[first], plan=pa, event="outing.final").last()
-        self.assertTrue(ev.payload["text"].startswith("AA moved lunch to 13:30. Set: lunch with AA, "))
+        self.assertTrue(ev.payload["text"].startswith("AA moved lunch to 1:30 PM. Set: lunch with AA, "))
         self.assertEqual(ev.payload["changed_by"], "AA")
         self.assertIn("ics_url", ev.payload)
         # the side that moved it gets no push about its own change; the same time again is a retry
@@ -7001,7 +7041,7 @@ class AutoTimeTests(ProposalBase):
         self.assertIn("Change time", page)
         self.assertNotIn("Set the exact time", page)
         for t in ("12:00", "13:00", "13:30"):
-            self.assertIn(f'name="time" value="{t}">{t}</button>', page)
+            self.assertIn(f'name="time" value="{t}">{messages.clock(t)}</button>', page)
         self.assertIn('name="other"', page)
         self.assertNotIn('type="time"', page)
         r = self.client.post(f"/d/finalize/{pa.pk}/", {"time": "13:00", "activity_id": pa.chosen_id})
@@ -7046,7 +7086,7 @@ class AutoTimeHumanPageTests(ProposalBase):
         p.refresh_from_db()
         self.assertEqual((p.status, p.exact_time), ("final", dt.time(13, 0)))
         row = AgentMessage.objects.get(plan=p, type="time_change")
-        self.assertTrue(row.payload["text"].endswith("moved lunch to 13:00."))
+        self.assertTrue(row.payload["text"].endswith("moved lunch to 1:00 PM."))
 
 
 class SkillZipTests(TestCase):

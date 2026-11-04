@@ -15,7 +15,8 @@ from . import calendar, messages
 TIME_RE = re.compile(r"^([01]?\d|2[0-3]):([0-5]\d)$")
 
 # T258 (F6c): the time Mifgash sets by itself when both sides are in. A time in the free text wins.
-DEFAULT_TIMES = {"morning": "10:00", "lunch": "12:30", "afternoon": "15:30", "evening": "19:30"}
+# T319: one source, in messages.py, so the proposal words and the set time agree.
+DEFAULT_TIMES = messages.DEFAULT_TIMES
 HOUR_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
               "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "noon": 12}
 # '13:00', '1pm', '1:30 pm', 'at 1', 'at one', 'at noon'
@@ -163,12 +164,12 @@ def finalize(plan, person, raw_time, activity_id=None, backend=""):
         # migration 0028 has no list yet: the proposer counts.
         plan.agreed = list(plan.agreed or [plan.proposed_by_id]) + [person.pk]
         log(plan, person.address, "mifgash:directory", "finalize_agree", time=time.strftime("%H:%M"),
-            place_id=place.pk, text=f"agrees {time.strftime('%H:%M')} at {place.name}", **tag)
+            place_id=place.pk, text=f"agrees {messages.clock(time)} at {place.name}", **tag)
     # The demo friends' agents agree at once, so the plan can be final in this call (T101).
     for sim in [p for p in others if demo_agent(p) and p.pk not in plan.agreed]:
         plan.agreed = list(plan.agreed) + [sim.pk]
         log(plan, sim.address, person.address, "finalize_agree", time=time.strftime("%H:%M"),
-            place_id=place.pk, text=f"agrees {time.strftime('%H:%M')} at {place.name}")
+            place_id=place.pk, text=f"agrees {messages.clock(time)} at {place.name}")
     plan.agreed = list(plan.agreed or [plan.proposed_by_id])
     plan.save(update_fields=["agreed"])
     waiting = [p for p in people if p.pk not in plan.agreed]
