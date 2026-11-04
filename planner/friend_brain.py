@@ -99,14 +99,26 @@ def llm_decide(backend, prefs, proposal):
     return {"answer": answer, "choice_id": choice, "note": str(d.get("note") or "")[:200]}
 
 
+def keep_idea(prefs, proposal, d):
+    """T405: a yes keeps the place in the offer 'Idea:' line (the first option, the model's pick).
+    The friend names another place only when the persona dislikes the Idea place. choice_id None
+    means 'yes to the Idea', so the engine records no place vote."""
+    options = proposal.get("options") or []
+    if d.get("answer") != "accept" or not options:
+        return d
+    if not disliked(prefs, proposal, options[0]):
+        return {**d, "choice_id": None}
+    return d
+
+
 def decide(backend, prefs, proposal):
     """Returns (decision, backend used)."""
     if backend != "stub":
         try:
-            return llm_decide(backend, prefs, proposal), backend
+            return keep_idea(prefs, proposal, llm_decide(backend, prefs, proposal)), backend
         except Exception as e:  # the demo must never stop on a model error
             print(f"[{prefs.get('handle', '?')}] {backend} failed ({e.__class__.__name__}), stub decides", flush=True)
-    return stub_decide(prefs, proposal), "stub"
+    return keep_idea(prefs, proposal, stub_decide(prefs, proposal)), "stub"
 
 
 COUNTER_MIN = 30  # minutes away from the preferred time before the agent counters

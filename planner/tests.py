@@ -6283,6 +6283,35 @@ class SandboxFriendTests(Base):
         self.assertIn("Muse Spark Open (Baseten)", [r["model"] for r in rows if r["type"] == "accept"])
         self.assertContains(self.client.get("/d/"), "Muse Spark Open (Baseten)")
 
+    @override_settings(LLM_BACKEND="meta")
+    def test_yes_keeps_the_idea_place(self):
+        """T405: the model names another option, but a yes keeps the place in the offer 'Idea:' line."""
+        from planner import friend_brain, sandbox_agent
+        with mock.patch.object(sandbox_agent, "answer_offers", return_value=0):
+            plan = self.post()
+        idea, other = plan.option_list()[0], plan.option_list()[-1]
+        self.assertNotEqual(idea.pk, other.pk)
+        offer = plan.offers.get(person=self.maria)
+        self.assertIn(f"Idea: {idea.name}", messages.offer_text(plan.owner, plan, plan.option_list()))
+        reply = '{"answer": "accept", "choice_id": %d, "note": "near work"}' % other.pk
+        with mock.patch.object(friend_brain, "call_model", return_value=reply):
+            sandbox_agent.answer_offers()
+        offer.refresh_from_db()
+        self.assertEqual((offer.status, offer.choice_id), ("owner_wait", idea.pk))
+        self.assertIsNone(engine.picked_place(offer))  # a yes to the Idea is no place vote
+        self.assertIn(idea.name, messages.owner_ask_text(offer.person, plan, offer.choice, offer))
+        self.assertNotIn(other.name, messages.owner_ask_text(offer.person, plan, offer.choice, offer))
+
+    def test_disliked_idea_still_picks_another_place(self):
+        """T405: the friend names another place only when the persona dislikes the Idea place."""
+        from planner import friend_brain
+        proposal = {"kind": "lunch", "options": [{"id": 1, "name": "Loud Bar", "tags": ["loud"]},
+                                                 {"id": 2, "name": "Calm Cafe", "tags": ["quiet"]}]}
+        prefs = {"likes": ["lunch"], "dislikes": ["loud"], "areas": []}
+        self.assertEqual(friend_brain.decide("stub", prefs, proposal)[0]["choice_id"], 2)
+        proposal["options"].reverse()
+        self.assertIsNone(friend_brain.decide("stub", prefs, proposal)[0]["choice_id"])
+
     def test_model_error_falls_back_to_the_stub(self):
         with override_settings(LLM_BACKEND="meta"):  # call_model raises in every test
             plan = self.post()
