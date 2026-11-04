@@ -202,7 +202,7 @@ def signup(request):
     if bad:
         return bad
     inv = None
-    if data.get("invite"):  # F4a (T253): the circle link; the inviter is a friend at once
+    if data.get("invite"):  # F4a (T253): the friend link; the inviter is a friend at once
         inv = Invite.find(invite_token(data["invite"]))
         if not inv or inv.used_up():
             return error(400, "unknown invite")
@@ -240,7 +240,7 @@ def invite_token(value):
 @api_view(["GET"])
 @limit("invite", ip=(60, 3600))
 def invite_info(request, token):
-    """F4a (T253): who sent this circle link. No key needed. Only the handle and the name."""
+    """F4a (T253): who sent this friend link. No key needed. Only the handle and the name."""
     inv = Invite.find(invite_token(token))
     if not inv or inv.used_up():
         return error(404, "unknown invite")

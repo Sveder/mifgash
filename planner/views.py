@@ -711,13 +711,13 @@ def invite_landing(request, token):
             return redirect("dashboard")
         return render(request, "planner/invite.html", {**ctx, "state": state})
     request.session[INVITE_KEY] = token
-    # F4a (T253): the circle link. 'I have an agent' shows one line to paste into the agent.
+    # F4a (T253), T288: the friend link. 'I have an agent' shows one line to paste into the agent.
     link = api.invite_url(inv)
     prompt = INVITE_PROMPT.format(link=link, name=settings.PRODUCT_NAME, handle=inv.person.handle)
     return render(request, "planner/invite.html", {**ctx, "state": "join", "prompt": prompt})
 
 
-INVITE_PROMPT = "Using {link} (remember it as {name}), sign me up and join @{handle}'s circle."
+INVITE_PROMPT = "Using {link} (remember it as {name}), sign me up and join @{handle} as a friend."
 
 
 def try_demo(request):

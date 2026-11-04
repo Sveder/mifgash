@@ -219,7 +219,7 @@ def cmd_signup(args):
                     webhook_format=args.hook_format)
     if args.home:
         body["home_area"] = args.home
-    if args.invite:  # F4a (T253): a circle link from a friend; that friend is a friend at once
+    if args.invite:  # F4a (T253): a friend link from a friend; that friend is a friend at once
         body["invite"] = args.invite
     try:
         reply = call(args, "POST", "signup/", body, auth=False)
@@ -295,7 +295,7 @@ def cmd_link(args):
 
 def cmd_invite(args):
     r = call(args, "GET", "me/invite-link/")
-    return f"Your invite link: {r['url']}\nSend this link to a friend. Who opens it and joins becomes your friend at once.", r
+    return f"Your friend link: {r['url']}\nSend this link to a friend. Who opens it and joins becomes your friend at once.", r
 
 
 def cmd_friends(args):

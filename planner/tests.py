@@ -3103,14 +3103,14 @@ class MifClientTest(Base):
         code, out = self.run_mif("a", "invite")
         self.assertEqual(code, 0)
         first, second = out.splitlines()
-        self.assertRegex(first, r"^Your invite link: \S+/i/[\w-]+/$")
+        self.assertRegex(first, r"^Your friend link: \S+/i/[\w-]+/$")
         self.assertEqual(second, "Send this link to a friend. Who opens it and joins becomes your friend at once.")
         self.assertEqual(self.run_mif("a", "invite")[1], out)  # the same link every time
 
-    def test_signup_with_invite_link_joins_the_circle(self):
+    def test_signup_with_invite_link_joins_as_a_friend(self):
         """F4a (T253): 'mif.py signup --invite <link>' makes the inviter a friend and says so."""
         self.run_mif("a", "signup", "Chris", "chris_host")
-        url = self.run_mif("a", "invite")[1].splitlines()[0].removeprefix("Your invite link: ")
+        url = self.run_mif("a", "invite")[1].splitlines()[0].removeprefix("Your friend link: ")
         code, out = self.run_mif("b", "signup", "Dana", "dana_join", "--invite", url)
         self.assertEqual(code, 0, out)
         self.assertIn("You and @chris_host (Chris) are friends now.", out)
@@ -6218,6 +6218,21 @@ class InviteLinkTests(TestCase):
         self.host = Person.objects.get(handle="iris_h")
         self.auth = {"HTTP_AUTHORIZATION": f"Bearer {d['api_key']}"}
 
+    def test_no_circle_wording_for_people(self):
+        """T288 (Michael 3/11 23:47): friends join as friends; no 'circle' text on the invite page,
+        the dashboard, /agents.md, /setup/ or SKILL.md. SVG <circle> tags do not count."""
+        import pathlib
+        import re
+        path = self.link()
+        page = self.client.get(path)
+        self.assertContains(page, "Join @iris_h on Mifgash as a friend")
+        texts = [page.content.decode(), self.client.get("/agents.md").content.decode(),
+                 self.client.get("/setup/").content.decode(),
+                 (pathlib.Path(__file__).resolve().parent.parent / "integrations" / "openclaw" / "SKILL.md").read_text()]
+        for t in texts:
+            words = re.sub(r"<circle[^>]*>|circle[ -]?cx|class=\"[^\"]*\"", "", t)
+            self.assertNotRegex(words.lower(), r"\bcircles?\b")
+
     def link(self):
         r = self.client.get("/api/v1/me/invite-link/", **self.auth)
         self.assertEqual(r.status_code, 200)
@@ -6244,7 +6259,7 @@ class InviteLinkTests(TestCase):
         self.assertContains(page, "Your agents find a time and a place you both like. You only say yes.")
         self.assertContains(page, "Nobody messages ten people. One calendar invite at the end.")
         self.assertContains(page, "I have an agent")
-        self.assertContains(page, f"Using https://mifgash.example{path} (remember it as Mifgash), sign me up and join @iris_h&#x27;s circle.")
+        self.assertContains(page, f"Using https://mifgash.example{path} (remember it as Mifgash), sign me up and join @iris_h as a friend.")
         self.assertContains(page, 'id="invite-web" href="/join/"')
         self.assertFalse(Friendship.objects.filter(friend=self.host).exists())  # a GET with no session makes nothing
         r = self.client.post("/join/", {"name": "Nora New", "handle": "nora_new"})
@@ -6278,7 +6293,7 @@ class InviteLinkTests(TestCase):
         _, token = MagicLink.issue(self.host)
         self.client.post(f"/d/{token}/")
         r = self.client.get(path)
-        self.assertContains(r, "your own invite link")
+        self.assertContains(r, "your own friend link")
         self.assertFalse(Friendship.objects.filter(person=self.host, friend=self.host).exists())
 
     def test_bad_or_used_up_token_is_404(self):
@@ -6312,7 +6327,7 @@ class InviteLinkTests(TestCase):
         return self.client.post("/api/v1/signup/", data=json.dumps(body), content_type="application/json")
 
     def test_api_signup_with_invite_makes_friends(self):
-        """F4a (T253): an agent joins the circle through the API; the token or the full link works."""
+        """F4a (T253): an agent joins as a friend through the API; the token or the full link works."""
         path = self.link()
         r = self.signup(invite="https://mifgash.example" + path)
         self.assertEqual(r.status_code, 201, r.content)

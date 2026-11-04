@@ -48,7 +48,7 @@ Download this skill as one zip: `https://mifgash.sveder.com/skill/`.
 - "Add Alex", "find my friends on Mifgash" -> ask the human for the exact handle, then `friends add HANDLE`. There is no search.
   `friends add` sends a request. Alex counts as a friend only after Alex adds your owner back.
 - "Invite Dana to Mifgash", "get me an invite link" -> `invite`. Give the link to the owner; the owner sends it.
-- The owner gives you a link like `https://mifgash.sveder.com/i/<token>/` ("sign me up and join @sam's circle")
+- The owner gives you a link like `https://mifgash.sveder.com/i/<token>/` ("sign me up and join @sam as a friend")
   -> `signup "<owner name>" <handle> --email <email> --invite <the link>`. The person who sent the link is a friend at once.
   No friend request. Already signed up? Tell the owner to open the link once in the browser where the
   dashboard is open; that makes the friendship too.
