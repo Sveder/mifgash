@@ -112,6 +112,9 @@ DATABASES = {"default": {
     "PASSWORD": os.environ.get("MIFGASH_DB_PASSWORD", ""),
     "HOST": os.environ.get("MIFGASH_DB_HOST", "127.0.0.1"),
     "PORT": os.environ.get("MIFGASH_DB_PORT", "5432"),
+    # One test database per checkout, so parallel worktrees do not drop each other's test DB.
+    "TEST": {"NAME": os.environ.get("MIFGASH_TEST_DB_NAME")
+             or "test_mifgash_" + __import__("hashlib").sha1(str(BASE_DIR).encode()).hexdigest()[:8]},
 }}
 
 # Encryption at rest (planner/crypto.py). FIELD_KEYS: Fernet keys, newest first. HASH_KEY: HMAC key.
