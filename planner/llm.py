@@ -159,39 +159,55 @@ def meta_budget(where):
     return done
 
 
-def _call_meta(text, system=None, raw=False, where="parse"):
+def _meta_chat(messages, where="parse", tools=None, tool_choice=None, log_text=""):
+    """One Baseten chat/completions call. Returns the answer message dict. Each call is one step
+    for meta_budget (T403: a tool loop counts every step)."""
     if not settings.META_API_KEY:
         raise RuntimeError("BASETEN_API_KEY is not set")
     done = meta_budget(where)
-    body = json.dumps({
+    payload = {
         "model": settings.META_MODEL,
-        "messages": [{"role": "system", "content": system or SYSTEM + "\n" + areas_prompt()},
-                     {"role": "user", "content": text}],
+        "messages": messages,
         # Muse Spark Open reasons first, about 300-900 tokens; 800 cut the JSON answer (T59).
         "max_tokens": settings.META_MAX_TOKENS,
-    }).encode()
-    req = urllib.request.Request(settings.META_BASE_URL.rstrip("/") + "/chat/completions", data=body,
+    }
+    if tools:
+        payload["tools"] = tools
+        payload["tool_choice"] = tool_choice or "auto"
+    req = urllib.request.Request(settings.META_BASE_URL.rstrip("/") + "/chat/completions",
+                                 data=json.dumps(payload).encode(),
                                  headers={"Authorization": f"Api-Key {settings.META_API_KEY}",
                                           "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=settings.LLM_TIMEOUT_S) as r:
             data = json.load(r)
     except Exception as e:
-        done(text=text, error=f"{e.__class__.__name__}: {e}"[:200])
+        done(text=log_text, error=f"{e.__class__.__name__}: {e}"[:200])
         raise
     choice = data["choices"][0]
     msg = choice["message"]
-    done(text=text, content=(msg.get("content") or "")[:400], finish=choice.get("finish_reason"),
+    done(text=log_text, content=(msg.get("content") or "")[:400], finish=choice.get("finish_reason"),
          tokens=(data.get("usage") or {}).get("completion_tokens"),
-         reasoning_chars=len(msg.get("reasoning_content") or msg.get("reasoning") or ""))
-    if raw:
-        return msg.get("content") or ""
+         reasoning_chars=len(msg.get("reasoning_content") or msg.get("reasoning") or ""),
+         **({"tool_calls": len(msg.get("tool_calls") or [])} if tools else {}))
+    return msg
+
+
+def _meta_json(msg):
     # Muse Spark Open always reasons. The answer is normally in content, but content can be
     # empty or wrapped in prose; then the JSON is taken from the reasoning field.
     try:
         return _json_from(msg.get("content") or "")
     except ValueError:
         return _json_from(msg.get("reasoning_content") or msg.get("reasoning") or "")
+
+
+def _call_meta(text, system=None, raw=False, where="parse"):
+    msg = _meta_chat([{"role": "system", "content": system or SYSTEM + "\n" + areas_prompt()},
+                      {"role": "user", "content": text}], where=where, log_text=text)
+    if raw:
+        return msg.get("content") or ""
+    return _meta_json(msg)
 
 
 REASON_SYSTEM = """You write ONE short sentence for friends who are invited to meet. The sentence says
@@ -366,10 +382,139 @@ def pick_facts(plan, candidates):
     return "\n".join(lines)
 
 
-def _pick_call(backend, facts):
+TOOL_STEPS = 3  # T403: at most 3 model calls in the Muse tool loop
+
+
+def _pick_call(backend, facts, plan=None, rows=None, calls=None):
+    """The model's place pick as {"id", "why"}. T403: for backend 'meta' with a plan and rows, Muse
+    Spark Open first gets the tools find_places and check_hours (settings.META_TOOLS: 'native' =
+    OpenAI tool_calls, 'json' = a JSON tool-request loop, 'off' = no tools). Every tool call it makes
+    is appended to `calls` as {"name", "label", "result"}. On any error or after TOOL_STEPS steps with
+    no pick, the direct pick runs (the call before T403). The Claude backend is unchanged."""
     if backend == "claude":
         return _call_claude(facts, PICK_SYSTEM)
+    mode = getattr(settings, "META_TOOLS", "native")
+    if plan is not None and rows and mode in ("native", "json"):
+        calls = calls if calls is not None else []
+        try:
+            d = (_pick_tools_native if mode == "native" else _pick_tools_json)(plan, rows, facts, calls)
+        except Exception as e:
+            d = None
+            log.warning("Muse tool loop failed, plan %s: %s: %s", plan.pk, type(e).__name__, str(e)[:200])
+        if d is not None:
+            return d
     return _call_meta(facts, PICK_SYSTEM, where="pick")
+
+
+def _tool_args(raw):
+    if isinstance(raw, dict):
+        return raw
+    try:
+        d = json.loads(raw or "{}")
+    except (TypeError, ValueError):
+        return {}
+    return d if isinstance(d, dict) else {}
+
+
+def run_tool(plan, rows, name, args):
+    """T403: run one Muse tool call in Python, on Mifgash's own candidate rows only (so a pick can
+    only name a place on the list). Returns (result for the model, label for the plan log)."""
+    from . import hours as hours_mod
+    from . import wants as wants_mod
+    from .messages import clock, plan_time
+    if name == "find_places":
+        food = str(args.get("food") or "").strip()[:40]
+        hits = [a for a in rows if not food or wants_mod.food_match(a, food)] or list(rows)
+        out = [{"id": a.pk, "name": a.name, "tags": list(a.tags or []), "hours": a.hours or "unknown"}
+               for a in hits[:PICK_MAX]]
+        bits = [str(args.get(k) or "").strip()[:40] for k in ("area", "kind", "food")]
+        label = f"find_places({', '.join(b for b in bits if b)}) -> {len(out)} places"
+        return {"places": out}, label
+    if name == "check_hours":
+        try:
+            pid = int(args.get("place_id"))
+        except (TypeError, ValueError):
+            pid = None
+        place = next((a for a in rows if a.pk == pid), None)
+        if place is None:
+            return {"error": "place_id is not on the candidate list"}, f"check_hours({str(args.get('place_id'))[:20]}) -> not on the list"
+        try:
+            date = dt.date.fromisoformat(str(args.get("date") or ""))
+        except ValueError:
+            date = plan.date
+        part = args.get("part") if args.get("part") in PART_KEYS else plan.part
+        state = {True: "open", False: "closed", None: "unknown"}[hours_mod.open_at(place.hours, date, part)]
+        when = (f"{date:%a} {clock(plan_time(plan))}" if (date, part) == (plan.date, plan.part)
+                else f"{date:%a} {part}")
+        return {"place_id": place.pk, "state": state}, f"check_hours({place.name}, {when}) -> {state}"
+    return {"error": f"no tool {str(name)[:30]}"}, f"{str(name)[:30]}() -> no such tool"
+
+
+def _pick_from(d, rows):
+    """The answer is a pick when it names an id on the list."""
+    try:
+        pid = int((d or {}).get("id"))
+    except (TypeError, ValueError):
+        return None
+    return d if any(a.pk == pid for a in rows) else None
+
+
+def _pick_tools_native(plan, rows, facts, calls):
+    from .pick_tools import TOOLS
+    messages = [{"role": "system", "content": PICK_SYSTEM + "\nYou may call check_hours to make sure a "
+                 "place is open then, and find_places for the list with hours. Then answer with the JSON pick."},
+                {"role": "user", "content": facts}]
+    for step in range(TOOL_STEPS):
+        last = step == TOOL_STEPS - 1
+        msg = _meta_chat(messages, where="pick", tools=TOOLS, tool_choice="none" if last else "auto",
+                         log_text=facts if step == 0 else f"tool step {step + 1}")
+        tool_calls = msg.get("tool_calls") or []
+        if tool_calls and not last:
+            messages.append({"role": "assistant", "content": msg.get("content") or "", "tool_calls": tool_calls})
+            for c in tool_calls[:4]:
+                fn = c.get("function") or {}
+                result, label = run_tool(plan, rows, fn.get("name"), _tool_args(fn.get("arguments")))
+                calls.append({"name": fn.get("name"), "label": label, "result": result})
+                messages.append({"role": "tool", "tool_call_id": c.get("id") or "", "content": json.dumps(result)})
+            for c in tool_calls[4:]:  # every tool_call id needs an answer
+                messages.append({"role": "tool", "tool_call_id": c.get("id") or "", "content": '{"error": "too many calls"}'})
+            continue
+        try:
+            return _pick_from(_meta_json(msg), rows)
+        except ValueError:
+            return None
+    return None
+
+
+def _pick_tools_json(plan, rows, facts, calls):
+    from .pick_tools import JSON_TOOLS_PROMPT
+    messages = [{"role": "system", "content": PICK_SYSTEM + "\n" + JSON_TOOLS_PROMPT},
+                {"role": "user", "content": facts}]
+    for step in range(TOOL_STEPS):
+        msg = _meta_chat(messages, where="pick", log_text=facts if step == 0 else f"tool step {step + 1}")
+        try:
+            d = _meta_json(msg)
+        except ValueError:
+            return None
+        if isinstance(d, dict) and d.get("tool") and step < TOOL_STEPS - 1:
+            result, label = run_tool(plan, rows, str(d["tool"]), _tool_args(d.get("args")))
+            calls.append({"name": str(d["tool"])[:30], "label": label, "result": result})
+            messages.append({"role": "assistant", "content": msg.get("content") or json.dumps(d)})
+            messages.append({"role": "user", "content": "Tool result (data): " + json.dumps(result)})
+            continue
+        return _pick_from(d, rows)
+    return None
+
+
+def log_tools(plan, calls, backend):
+    """T403: one plan log row per Muse tool call: 'Muse asked: check_hours(Zuni Cafe, Thu 7:30 PM) -> open',
+    with the model tag (the same backend field as the place_pick row)."""
+    if not calls or not getattr(plan, "pk", None):
+        return
+    from .engine import log as plan_log
+    for c in calls:
+        plan_log(plan, "mifgash:directory", plan.owner.address, "place_tool", tool=c["name"],
+                 text=f"Muse asked: {c['label']}", backend=backend)
 
 
 def pick_place(plan, candidates):
@@ -384,9 +529,11 @@ def pick_place(plan, candidates):
         return out
     facts = pick_facts(plan, rows)
     start = time.monotonic()
+    calls = []
     try:
-        d = _pick_call(backend, facts)
+        d = _pick_call(backend, facts, plan=plan, rows=rows, calls=calls)
     except Exception as e:
+        log_tools(plan, calls, backend)
         out["cause"] = f"model error: {type(e).__name__}: {str(e)[:200]}"
         log.warning("place pick fallback, plan %s, backend %s, %.1f s, %s", plan.pk, backend,
                     time.monotonic() - start, out["cause"])
@@ -396,6 +543,8 @@ def pick_place(plan, candidates):
     except (TypeError, ValueError):
         pick_id = None
     place = next((a for a in rows if a.pk == pick_id), None)
+    log_tools(plan, calls, backend)
+    out["tools"] = [c["label"] for c in calls]
     if place is None:
         out["cause"] = f"id not on the list: {str((d or {}).get('id'))[:40]}"
         log.warning("place pick fallback, plan %s, backend %s, %s", plan.pk, backend, out["cause"])

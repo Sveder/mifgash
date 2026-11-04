@@ -149,6 +149,9 @@ META_MODEL = os.environ.get("MIFGASH_META_MODEL",
 META_API_KEY = os.environ.get("BASETEN_API_KEY", "")
 META_MAX_TOKENS = int(os.environ.get("MIFGASH_META_MAX_TOKENS", "4000"))
 LLM_TIMEOUT_S = int(os.environ.get("MIFGASH_LLM_TIMEOUT", "60"))
+# T403: tools for the Muse place pick: native (OpenAI tool_calls; the Baseten probe said yes 4/11),
+# json (a JSON tool-request loop) or off (one direct pick call, as before).
+META_TOOLS = os.environ.get("MIFGASH_META_TOOLS", "native")
 
 # --- Matching rules (planner/engine.py) ---
 OFFER_TTL_MINUTES = int(os.environ.get("MIFGASH_OFFER_TTL_MINUTES", "180"))

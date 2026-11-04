@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import urllib.error
 from pathlib import Path
 from unittest import mock
 from collections import Counter
@@ -84,7 +85,8 @@ class TestCase(DjangoTestCase):
 # so every test gets the fixed fallback sentence unless it patches _reason_call itself.
 mock.patch("planner.llm._reason_call", side_effect=RuntimeError("no model in tests")).start()
 # T265: the same for the venue pick (llm.pick_place falls back to the first candidate).
-mock.patch("planner.llm._pick_call", side_effect=RuntimeError("no model in tests")).start()
+_pick_patch = mock.patch("planner.llm._pick_call", side_effect=RuntimeError("no model in tests"))
+_pick_patch.start()  # T403: MuseToolTests run the real _pick_call (_pick_patch.temp_original) with urlopen mocked
 # T179: the same for the friend-agent brain (the quick-demo friend on the server, demo/friend_agent.py).
 mock.patch("planner.friend_brain.call_model", side_effect=RuntimeError("no model in tests")).start()
 
@@ -8105,7 +8107,7 @@ class ImportVenuesTest(Base):
         auth = {"HTTP_AUTHORIZATION": f"Bearer {d['api_key']}"}
         captured = {}
 
-        def fake(backend, facts):
+        def fake(backend, facts, **kw):
             ids = [int(x) for x in re.findall(r"  id (\d+):", facts)]
             captured["id"] = ids[-1]
             return {"id": ids[-1], "why": "Sushi close to SoMa, a short walk for you."}
@@ -8435,3 +8437,104 @@ class OpeningHoursTests(Base):
         self.assertEqual(hours_from_note("Hours: Mo-Fr 11:00-15:00"), "Mo-Fr 11:00-15:00")
         self.assertEqual(hours_from_note("From OpenStreetMap"), "")
         self.assertEqual(hours_from_note("Hours: " + "x" * 153), "")  # cut at 160: unknown, not a wrong 'closed'
+
+
+@override_settings(LLM_BACKEND="meta", META_API_KEY="test-key-not-real", META_TOOLS="native",
+                   META_BASE_URL="https://example.invalid/v1", META_MODEL="meta-models/test")
+class MuseToolTests(Base):
+    """T403: Muse Spark Open gets the tools find_places and check_hours in the place pick.
+    urlopen is mocked: no test touches the network."""
+
+    def setUp(self):
+        super().setUp()
+        soma = area("SoMa")
+        self.places = [Activity.objects.create(name=f"Tool Sample Diner {i}", kind="lunch", area=soma, tags=["food"],
+                                               price=0, hours="Mo-Su 10:00-23:00", source="osm") for i in range(3)]
+        self.plan = Plan.objects.create(owner=self.me, kind="lunch", date=TUESDAY, part="lunch", area=soma, radius_km=3.0,
+                                        wants={"food": None, "tastes": [], "likes": [], "dislikes": [], "text": "lunch"})
+        p = mock.patch("planner.llm._pick_call", new=_pick_patch.temp_original)
+        p.start()
+        self.addCleanup(p.stop)
+
+    def answer(self, message, finish="stop"):
+        return FakeResponse({"choices": [{"message": message, "finish_reason": finish}]})
+
+    def tool_answer(self, name, args):
+        return self.answer({"content": "", "tool_calls": [{"id": "call_1", "type": "function", "function": {
+            "name": name, "arguments": json.dumps(args)}}]}, "tool_calls")
+
+    def pick_answer(self, place):
+        return self.answer({"content": json.dumps({"id": place.pk, "why": "It is open at lunch and close to you."})})
+
+    def tool_rows(self):
+        return list(AgentMessage.objects.filter(plan=self.plan, type="place_tool").order_by("pk"))
+
+    def test_two_steps_check_hours_then_pick(self):
+        target = self.places[2]
+        replies = [self.tool_answer("check_hours", {"place_id": target.pk, "date": TUESDAY.isoformat(), "part": "lunch"}),
+                   self.pick_answer(target)]
+        with mock.patch("urllib.request.urlopen", side_effect=replies) as m:
+            res = llm.pick_place(self.plan, self.places)
+        self.assertEqual(res["place"], target)
+        self.assertEqual(res["backend"], "meta")
+        self.assertEqual(m.call_count, 2)
+        first, second = (json.loads(c[0][0].data) for c in m.call_args_list)
+        self.assertEqual([t["function"]["name"] for t in first["tools"]], ["find_places", "check_hours"])
+        self.assertEqual(first["tool_choice"], "auto")
+        self.assertEqual(second["messages"][-1]["role"], "tool")
+        self.assertEqual(json.loads(second["messages"][-1]["content"])["state"], "open")
+        rows = self.tool_rows()
+        self.assertEqual(len(rows), 1)
+        text = rows[0].payload["text"]
+        self.assertEqual(text, f"Muse asked: check_hours({target.name}, {TUESDAY:%a} 12:30 PM) -> open")
+        self.assertEqual(llm.model_label(rows[0].payload["backend"]), "Muse Spark Open (Baseten)")
+        self.assertEqual(res["tools"], [text[len("Muse asked: "):]])
+
+    def test_closed_place_reads_closed(self):
+        shut = self.places[0]
+        shut.hours = "Mo-Fr 18:00-22:00"
+        shut.save()
+        result, label = llm.run_tool(self.plan, self.places, "check_hours", {"place_id": shut.pk})
+        self.assertEqual(result["state"], "closed")
+        self.assertTrue(label.endswith("-> closed"))
+        result, label = llm.run_tool(self.plan, self.places, "check_hours", {"place_id": 999999})
+        self.assertIn("error", result)  # a place off the list is never looked up
+        result, label = llm.run_tool(self.plan, self.places, "find_places", {"area": "SoMa", "kind": "lunch"})
+        self.assertEqual([r["id"] for r in result["places"]], [a.pk for a in self.places])
+        self.assertEqual(label, "find_places(SoMa, lunch) -> 3 places")
+
+    def test_model_error_on_step_one_runs_the_old_pick(self):
+        target = self.places[1]
+        replies = [urllib.error.URLError("down"), self.pick_answer(target)]
+        with mock.patch("urllib.request.urlopen", side_effect=replies) as m:
+            res = llm.pick_place(self.plan, self.places)
+        self.assertEqual(res["place"], target)
+        self.assertEqual(m.call_count, 2)
+        self.assertNotIn("tools", json.loads(m.call_args_list[1][0][0].data))  # the direct pick, as before T403
+        self.assertEqual(self.tool_rows(), [])
+
+    def test_json_variant_stops_after_three_steps(self):
+        target = self.places[1]
+        ask = self.answer({"content": json.dumps({"tool": "check_hours", "args": {"place_id": self.places[0].pk}})})
+        replies = [ask, ask, ask, self.pick_answer(target)]
+        with override_settings(META_TOOLS="json"), mock.patch("urllib.request.urlopen", side_effect=replies) as m:
+            res = llm.pick_place(self.plan, self.places)
+        self.assertEqual(m.call_count, 4)  # 3 tool-loop steps, then the direct pick
+        self.assertEqual(res["place"], target)
+        self.assertEqual(len(self.tool_rows()), 2)  # the third tool request is not run
+        bodies = [json.loads(c[0][0].data) for c in m.call_args_list]
+        self.assertTrue(all("tools" not in b for b in bodies))
+        self.assertIn("check_hours(place_id, date, part)", bodies[0]["messages"][0]["content"])
+        self.assertTrue(bodies[1]["messages"][-1]["content"].startswith("Tool result (data): "))
+
+    def test_off_and_claude_make_one_call(self):
+        target = self.places[2]
+        with override_settings(META_TOOLS="off"), mock.patch("urllib.request.urlopen", return_value=self.pick_answer(target)) as m:
+            self.assertEqual(llm.pick_place(self.plan, self.places)["place"], target)
+        self.assertEqual(m.call_count, 1)
+        self.assertNotIn("tools", json.loads(m.call_args[0][0].data))
+        with override_settings(LLM_BACKEND="claude"), \
+                mock.patch("planner.llm._call_claude", return_value={"id": target.pk, "why": ""}) as c:
+            self.assertEqual(llm.pick_place(self.plan, self.places)["place"], target)
+        self.assertEqual(c.call_count, 1)
+        self.assertEqual(self.tool_rows(), [])
