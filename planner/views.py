@@ -695,7 +695,10 @@ def join(request):
                 request.session[DASH_KEY] = p.pk
                 accept_invite(request, invite_token, p)
                 return redirect("dashboard")
-    return render(request, "planner/join.html", {"form": form, "errors": errors})
+    # T330: /join/ reached from an invite link says who invited (the token waits in the session)
+    inv = Invite.find(request.session.get(INVITE_KEY) or "") if request.session.get(INVITE_KEY) else None
+    inviter = inv.person.name if inv and not inv.used_up() else None
+    return render(request, "planner/join.html", {"form": form, "errors": errors, "inviter": inviter})
 
 
 INVITE_KEY = "invite_token"
@@ -720,7 +723,7 @@ def invite_landing(request, token):
     if not inv or inv.used_up():
         return render(request, "planner/invite.html", {"bad": True}, status=404)
     first = inv.person.name.split()[0]
-    ctx = {"first": first, "handle": inv.person.handle}
+    ctx = {"first": first, "handle": inv.person.handle, "name": inv.person.name}  # T330: the name, not the handle alone
     viewer = dash_person(request)
     if viewer:
         state = inv.accept(viewer)

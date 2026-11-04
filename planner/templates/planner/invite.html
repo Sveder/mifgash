@@ -1,5 +1,5 @@
 {% extends "planner/base.html" %}{% load static %}
-{% block title %}{% if bad %}Invite link{% else %}Join @{{ handle }} on {{ PRODUCT_NAME }} as a friend{% endif %} · {{ PRODUCT_NAME }}{% endblock %}
+{% block title %}{% if bad %}Invite link{% else %}Join {{ name }} (@{{ handle }}) on {{ PRODUCT_NAME }} as a friend{% endif %} · {{ PRODUCT_NAME }}{% endblock %}
 {% block head %}<meta name="robots" content="noindex,nofollow"><script src="{% static 'planner/landing.js' %}" defer></script>{% endblock %}
 {# M11b (T224), F4a (T253): /i/<token>/, the friend link. A person with no session sees only the handle and the name. #}
 {% block nav %}{% endblock %}
@@ -10,7 +10,7 @@
 <p>Ask your friend for a new link.</p></div>
 {% else %}
 <div class="card stack">
-<div class="hi"><span class="av you" aria-hidden="true">{{ first|slice:":1"|upper }}</span><h1 class="ask" id="invite-h">Join @{{ handle }} on {{ PRODUCT_NAME }} as a friend</h1></div>
+<div class="hi"><span class="av you" aria-hidden="true">{{ first|slice:":1"|upper }}</span><h1 class="ask" id="invite-h">Join {{ name }} (@{{ handle }}) on {{ PRODUCT_NAME }} as a friend</h1></div>
 {% if state == "self" %}
 <p>This is your own friend link. Send it to a friend.</p>
 {% elif state == "already" %}

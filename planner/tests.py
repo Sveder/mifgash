@@ -6662,7 +6662,7 @@ class InviteLinkTests(TestCase):
         import re
         path = self.link()
         page = self.client.get(path)
-        self.assertContains(page, "Join @iris_h on Mifgash as a friend")
+        self.assertContains(page, "Join Iris Host (@iris_h) on Mifgash as a friend")
         texts = [page.content.decode(), self.client.get("/agents.md").content.decode(),
                  self.client.get("/setup/").content.decode(),
                  (pathlib.Path(__file__).resolve().parent.parent / "integrations" / "openclaw" / "SKILL.md").read_text()]
@@ -6692,7 +6692,9 @@ class InviteLinkTests(TestCase):
         path = self.link()
         page = self.client.get(path)
         self.assertEqual(page.status_code, 200)
-        self.assertContains(page, "Join @iris_h on Mifgash")
+        self.assertContains(page, "Join Iris Host (@iris_h) on Mifgash as a friend")  # T330: the name too
+        # T330: /join/ reached from the invite names the inviter
+        self.assertContains(self.client.get("/join/"), "Iris Host invited you. You become friends when you join.")
         self.assertContains(page, "Your agents find a time and a place you both like. You only say yes.")
         self.assertContains(page, "Nobody messages ten people. One calendar invite at the end.")
         self.assertContains(page, "I have an agent")
@@ -6712,6 +6714,7 @@ class InviteLinkTests(TestCase):
         self.client.post("/d/logout/")
         self.client.post("/join/", {"name": "Otto", "handle": "otto_x"})
         self.assertFalse(Friendship.exists(Person.objects.get(handle="otto_x"), self.host))
+        self.assertNotContains(self.client.get("/join/"), "invited you")  # T330: plain /join/ unchanged
 
     def test_logged_in_visitor_is_friended_at_once(self):
         path = self.link()

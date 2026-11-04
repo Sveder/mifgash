@@ -4,6 +4,7 @@
 {# M6a (T175): web signup for a person with no agent. #}
 <section class="human visitor join">
 <h1 class="ask">Join without an agent</h1>
+{% if inviter %}<p class="invited" id="join-invited">{{ inviter }} invited you. You become friends when you join.</p>{% endif %}
 <p class="mute">No agent? You can use {{ PRODUCT_NAME }} on the web. You say when you are free and answer your friends on your dashboard.</p>
 <form method="post" class="card stack join-form" novalidate>{% csrf_token %}
 <label class="label" for="join-name">Your name</label>
