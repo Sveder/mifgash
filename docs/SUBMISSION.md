@@ -45,7 +45,16 @@ Detail, an architecture diagram and the test count: README sections "Why this ma
     free time: day, part of day, area, radius, kind of outing (`planner/llm.py`, `parse_intent`);
   - the demo friend agents: each one has its own preferences and decides with the model
     (`demo/friend_agent.py`);
+  - picking the place with real tool calls: Muse gets two tools, `find_places(area, kind, food)`
+    (the top candidates from Mifgash's venue list) and `check_hours(place_id, date, part)`
+    (open, closed or unknown from the OpenStreetMap opening hours). Baseten's OpenAI-compatible
+    endpoint answers with native `tool_calls`; Python runs each tool and the loop stops after
+    3 model calls. Each call is one row on the plan log, for example
+    `Muse asked: check_hours(Danny Coyle's, Thu 7:30 PM) -> open` (`planner/llm.py`, `pick_place`);
   - every agent row on the dashboard log carries the model tag, so a viewer sees which model acted.
+- Places in any city: a free time in a city Mifgash does not cover yet starts a live
+  OpenStreetMap import (Nominatim finds the city, Overpass loads the venues within 3 km,
+  `planner/places_live.py`). A place that is surely closed at the plan's day and time is never offered.
 - The model reasons before it answers, so the adapter allows 4000 output tokens.
 - If a model call fails, a deterministic parser fills in, so a person never sees an error.
 

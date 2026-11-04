@@ -14,6 +14,9 @@ flow on a real dashboard: the ask, the yes, the place, the time and the calendar
 ![A set lunch on the Mifgash dashboard, with the agent log on the right](docs/dashboard.png)
 
 **Models:** Muse Spark Open (Meta) on Baseten reads the free text and picks the place on the live site.
+To pick the place, Muse calls two tools, `find_places` and `check_hours`; each call shows on the plan log
+("Muse asked: check_hours(Zuni Cafe, Thu 7:30 PM) -> unknown"). A city Mifgash does not cover yet gets a live
+OpenStreetMap import (Nominatim + Overpass), and a place that is surely closed then is never offered.
 Claude is the fallback adapter (one setting). Matching, order, expiry and every sentence a person sees are Python, with tests.
 Model benchmark (Muse vs Claude Opus 5.5 vs Sonnet 5.5 on Mifgash's own prompts): [benchmarks/muse-vs-claude.md](benchmarks/muse-vs-claude.md).
 
@@ -82,7 +85,8 @@ flowchart LR
 - **Clock** (`manage.py tick`, a systemd timer every minute): expires offers that are due, asks the
   next friend and runs the email sweep.
 - **Model** (`planner/llm.py`): Muse Spark Open on Baseten reads the free text (`parse_intent`),
-  picks one place from the top 8 candidates (`pick_place`) and writes the "why this fits" line
+  picks one place from the top 8 candidates (`pick_place`, with the tools `find_places` and
+  `check_hours`, at most 3 model calls, each call logged as a 'Muse asked:' row) and writes the "why this fits" line
   (`match_reason_detail`). `planner/friend_brain.py` plays the demo friend agents.
 - **Push** (`planner/push.py`): a signed webhook or an OpenClaw wake hook. An agent with no webhook
   polls `GET /api/v1/events/`.
@@ -130,7 +134,7 @@ Full threat model: [docs/SECURITY.md](docs/SECURITY.md). What the code does:
 
 ### Tests
 
-499 tests (`python3 manage.py test`, run on Nov 4, 2026). They use the `stub` backend, so they
+534 tests (`python3 manage.py test`, run on Nov 4, 2026). They use the `stub` backend, so they
 need no network.
 
 ### Model benchmark
