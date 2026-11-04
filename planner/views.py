@@ -251,11 +251,25 @@ def log_row(m):
         # G3 (T229): the group dinner rows in plain words, counts only
         "owner_confirm": f"go with the {p.get('guests')} who said yes" if m.type == "owner_confirm" else "",
         "fill_by": f"deadline: the group goes with the {p.get('guests')} who said yes" if m.type == "fill_by" else "",
-        "group_vote": f"most of the group picked {p.get('place') or 'a place'}" if m.type == "group_vote" else "",
+        "group_vote": group_vote_row(p) if m.type == "group_vote" else "",
         "group_place": f"picked {p.get('options', ['a place'])[0]} for the group, nearest the middle of everybody" if m.type == "group_place" else "",
     }.get(m.type) or p.get("text") or m.type
     return {"t": m.created.astimezone().strftime("%H:%M:%S"), "from": sender, "to": m.receiver,
             "type": m.type, "summary": summary, "json": p, "model": llm.model_label(p.get("backend"))}
+
+
+def group_vote_row(p):
+    """T368: 'Everyone picked Zuni Cafe.' when every vote names the place, else
+    'Most of the group picked Zuni Cafe (2 of 3).' Counts only, no names."""
+    place = p.get("place") or "a place"
+    votes = p.get("votes") or {}
+    total = sum(votes.values())
+    n = votes.get(p.get("place"), 0)
+    if total and n == total:
+        return f"Everyone picked {place}."
+    if total:
+        return f"Most of the group picked {place} ({n} of {total})."
+    return f"Most of the group picked {place}."
 
 
 def local_today():

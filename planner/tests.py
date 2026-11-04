@@ -6432,6 +6432,9 @@ class GroupDinnerPlaceTimeTests(Base):
         self.assertFalse(plan.log.filter(type="group_place").exists())
         row = plan.log.get(type="group_vote")
         self.assertEqual((row.payload["place"], row.payload["votes"]), (want.name, {want.name: 3}))
+        # T368: the log row reads 'Everyone picked X.', capital first, no lowercase 'most of the group'
+        from .views import log_row
+        self.assertEqual(log_row(row)["summary"], f"Everyone picked {want.name}.")
         # Every ask the owner approved named that place, and the final line names it too.
         for m in plan.log.filter(type="ask_owner"):
             self.assertIn(want.name, m.payload["text"])
@@ -6443,6 +6446,9 @@ class GroupDinnerPlaceTimeTests(Base):
         self.assertEqual(plan.chosen, self.asked_options[0][2])
         self.assertEqual(plan.log.get(type="group_vote").payload["votes"],
                          {self.asked_options[0][2].name: 2, self.asked_options[0][0].name: 1})
+        from .views import log_row  # T368
+        self.assertEqual(log_row(plan.log.get(type="group_vote"))["summary"],
+                         f"Most of the group picked {self.asked_options[0][2].name} (2 of 3).")
 
     def test_t329_owner_ask_shows_the_vote_and_the_loser_is_told(self):
         """T329: a guest's pick reads as a vote next to the group's votes so far; the guest whose pick
