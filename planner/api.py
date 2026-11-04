@@ -910,6 +910,7 @@ def my_outing_json(request, plan, person, offer):
         "role": "owner" if plan.owner_id == person.pk else "friend",
         "status": status,
         "kind": plan.kind,
+        "title": plan.title,  # T377: GET /api/v1/outings/ carries the card title ('Dinner') for mif.py outings
         "date": plan.date.isoformat(),
         "part": plan.part,
         "area": plan.area.name,

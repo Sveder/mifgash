@@ -5467,6 +5467,33 @@ class HumanFormsTests(TestCase):
         self.assertTrue(mif.day_label({"kind": "kids", "title": "Playdate", "part": "morning",
                                        "date": self.day}, "10:00").startswith("Playdate, "))
 
+    def test_typed_dinner_title_through_the_outings_endpoint(self):
+        """T377 (QA 16:23): mif.py outings reads GET /api/v1/outings/, whose rows had no 'title', so it
+        printed 'Final: Evening, ...'. The endpoint row carries the card title now."""
+        import datetime as dt
+        import importlib.util
+        r = self.client.post("/api/v1/availability/", data=json.dumps(
+            {"date": self.day, "part": "evening", "kind": "evening", "area": "Mission"}),
+            content_type="application/json", **self.maria_auth)
+        self.assertEqual(r.status_code, 201)
+        plan = Plan.objects.get(owner=self.maria, date=self.day)
+        plan.raw_text = "Dinner near Mission"
+        plan.status = "final"
+        plan.exact_time = dt.time(19, 30)
+        plan.chosen = Activity.objects.filter(area=plan.area).first()
+        plan.save()
+        rows = self.client.get("/api/v1/outings/", **self.maria_auth).json()["outings"]
+        row = next(x for x in rows if x["plan_id"] == plan.pk)
+        self.assertEqual(row["title"], "Dinner")
+        spec = importlib.util.spec_from_file_location("mif377b", "integrations/openclaw/mif.py")
+        mif = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mif)
+        label = mif.day_label(row, row["time"])
+        self.assertTrue(label.startswith("Dinner, "), label)
+        self.assertNotIn("Evening", label)
+        one = self.client.get(f"/api/v1/outings/{plan.pk}/", **self.maria_auth).json()
+        self.assertEqual(one["title"], "Dinner")
+
     def test_human_posts_a_free_time_and_a_friend_is_asked(self):
         self.Friendship.link(self.erin, self.maria)
         r = self.client.post("/api/v1/availability/", data=json.dumps(
