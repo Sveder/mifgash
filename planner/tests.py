@@ -7856,6 +7856,52 @@ class PromptInjectionTests(Base):
             self.assertIn(part, doc)
 
 
+class PlaydateNightTest1Tests(Base):
+    """T289 (NIGHT TEST 1): the 3-parent playdate, parse + match. Ages and needs are kept, the disliked
+    park is never offered, and other parks still are (the old bug banned every 'park')."""
+
+    def setUp(self):
+        super().setUp()
+        self.auth = {}
+        for h, name in (("grace_p", "Grace Kim"), ("ben_p", "Ben Carter")):
+            d = self.client.post("/api/v1/signup/", data=json.dumps({"name": name, "handle": h, "home_area": "Mission"}),
+                                 content_type="application/json").json()
+            self.auth[h] = {"HTTP_AUTHORIZATION": f"Bearer {d['api_key']}"}
+        Friendship.link(Person.objects.get(handle="grace_p"), Person.objects.get(handle="ben_p"))
+
+    def post(self, h, body):
+        r = self.client.post("/api/v1/availability/", data=json.dumps(body), content_type="application/json", **self.auth[h])
+        self.assertEqual(r.status_code, 201, r.content)
+        return Plan.objects.get(pk=r.json()["availability_id"])
+
+    def test_playdate_parse_and_match(self):
+        self.post("ben_p", {"text": "free for a playdate near Mission", "date": SUNDAY.isoformat(), "part": "morning",
+                            "preferences": "kids 3 and 6; we love Precita Park"})
+        plan = self.post("grace_p", {"text": "playdate near Mission, kids 5 and 7", "date": SUNDAY.isoformat(),
+                                     "part": "morning", "preferences": "shade and a toilet; we do not like Dolores Park"})
+        self.assertEqual((plan.kind, plan.part), ("kids", "morning"))
+        self.assertTrue({"age 5", "age 7", "shade", "toilet"} <= set(plan.wants["tastes"]), plan.wants)
+        self.assertIn("dolores park", plan.wants["dislikes"])
+        names = [a.name for a in plan.option_list()]
+        self.assertTrue(names, "no places")
+        self.assertFalse([n for n in names if "dolores" in n.lower()], names)
+        # the dislike is the one park, not every park: a park or playground can still be picked
+        rows = [a for a in Activity.objects.filter(kind="kids")
+                if re.search(r"park|playground", a.name, re.I) and "dolores" not in a.name.lower()]
+        self.assertTrue(rows)
+        from . import wants as w
+        self.assertTrue([a for a in rows if not w.is_disliked(a, plan.wants["dislikes"])])
+        self.assertTrue(all(w.is_disliked(a, plan.wants["dislikes"]) for a in Activity.objects.filter(name__icontains="dolores")))
+        # the friend is asked with a kid place, no group line for two families
+        o = Offer.objects.filter(status="pending", plan__date=SUNDAY).select_related("person", "plan__owner").first()
+        self.assertIsNotNone(o)
+        self.assertEqual({o.person.handle, o.plan.owner.handle}, {"grace_p", "ben_p"})
+        self.assertFalse([a.name for a in o.plan.option_list() if "dolores" in a.name.lower()])
+        text = messages.offer_text(o.plan.owner, o.plan, o.plan.option_list())
+        self.assertNotIn("A few friends", text)
+        self.assertEqual(messages.check(text), [])
+
+
 class KidsWordingT321Tests(Base):
     """T321: a playdate keeps the ages and needs, a 2-family ask has no group line, one title per kind."""
 
