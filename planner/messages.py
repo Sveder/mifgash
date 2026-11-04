@@ -40,7 +40,10 @@ def kind_label(kind):
 
 
 def kind_word(plan):
-    """'a weekend outing' when the person said so, else the part's word: 'a morning meetup'."""
+    """'a weekend outing' when the person said so, else the part's word: 'a morning meetup'.
+    T377: a typed 'dinner' is 'dinner', the same word as the card title."""
+    if getattr(plan, "is_dinner", False):
+        return "dinner"
     return KIND_WORDS[plan.kind] if plan.kind_named else PART_KIND_WORDS[plan.part]
 
 # Words that must never appear in a text to a human. Tested.
@@ -80,7 +83,7 @@ def plan_time(plan):
 def plan_when(plan):
     """'Sun Nov 1 at 12:30 PM' for a lunch (its own time), or 'Sun Nov 1' when the kind word already
     says the part (an evening out)."""
-    if PART_WORDS[plan.part] in kind_word(plan):
+    if PART_WORDS[plan.part] in kind_word(plan) or getattr(plan, "is_dinner", False):  # T377: no 'dinner ... evening'
         return day(plan.date)
     if plan.part == "lunch":
         return f"{day(plan.date)} at {clock(plan_time(plan))}"

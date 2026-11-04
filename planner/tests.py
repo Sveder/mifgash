@@ -5441,6 +5441,32 @@ class HumanFormsTests(TestCase):
         self.assertNotIn("likes tacos", m.group(1))
         self.assertIn('<div class="big">Dinner</div>', d)
 
+    def test_typed_dinner_is_dinner_in_the_agent_lines(self):
+        """T377: a typed 'dinner' said 'free for an evening out' in the proposal text and 'Final: Evening,
+        Fri Nov 6' in mif.py outings. Both use the card word now: dinner / Dinner."""
+        import importlib.util
+        self.client.post("/d/free/", {"date": self.day, "text": "Dinner near Mission"})
+        plan = Plan.objects.get(owner=self.erin, date=self.day)
+        self.assertEqual((plan.kind, plan.title), ("evening", "Dinner"))
+        self.assertEqual(messages.kind_word(plan), "dinner")
+        self.assertEqual(messages.kind_on(plan), f"dinner on {messages.day(plan.date)}")
+        text = messages.offer_text(self.erin, plan, [])
+        self.assertIn("is free for dinner on ", text)
+        self.assertNotIn("evening out", text)
+        row = api.outing_json(plan)
+        self.assertEqual(row["title"], "Dinner")
+        spec = importlib.util.spec_from_file_location("mif377", "integrations/openclaw/mif.py")
+        mif = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mif)
+        self.assertTrue(mif.day_label(row, "19:30").startswith("Dinner, "))
+        self.assertTrue(mif.day_label(row).startswith("Dinner, "))  # no '(evening)' after Dinner
+        # a plain evening keeps its words
+        plan.raw_text = "free tonight near Mission"
+        self.assertEqual(plan.title, "Evening out")
+        self.assertNotEqual(messages.kind_word(plan), "dinner")
+        self.assertTrue(mif.day_label({"kind": "kids", "title": "Playdate", "part": "morning",
+                                       "date": self.day}, "10:00").startswith("Playdate, "))
+
     def test_human_posts_a_free_time_and_a_friend_is_asked(self):
         self.Friendship.link(self.erin, self.maria)
         r = self.client.post("/api/v1/availability/", data=json.dumps(

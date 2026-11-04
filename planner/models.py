@@ -453,9 +453,14 @@ class Plan(models.Model):
                    "group_dinner": "Group dinner"}
 
     @property
+    def is_dinner(self):
+        """T326/T377: an evening plan whose own text says 'dinner'."""
+        return self.kind == "evening" and bool(re.search(r"\bdinner\b", (self.raw_text or "").lower()))
+
+    @property
     def title(self):
         """'Playdate' when the person named the kind, else from the part: 'Morning meetup' (T112)."""
-        if self.kind == "evening" and re.search(r"\bdinner\b", (self.raw_text or "").lower()):
+        if self.is_dinner:
             return "Dinner"  # T326: a typed 'dinner' is a dinner, not 'Evening out'
         return self.KIND_TITLES[self.kind] if self.kind_named else self.PART_TITLES[self.part]
 

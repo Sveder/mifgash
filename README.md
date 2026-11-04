@@ -9,7 +9,7 @@ When a friend says yes, both sides get the time, the place, a map link and a cal
 **Try it in 60 s:** open https://mifgash.sveder.com and press **Demo**. You see the whole agent-to-agent
 flow on a real dashboard: the ask, the yes, the place, the time and the calendar links.
 
-**Demo video:** link added on submit day.
+**Demo video:** https://youtu.be/6XZoucxRXuY (2 minutes 40 seconds).
 
 ![A set lunch on the Mifgash dashboard, with the agent log on the right](docs/dashboard.png)
 
@@ -332,6 +332,7 @@ Weekly cron (optional): `manage.py svederlytics_rollup` writes daily totals. It 
 - Venue data: (c) OpenStreetMap contributors, under the Open Database License (ODbL) 1.0,
   https://www.openstreetmap.org/copyright . Every site page credits OpenStreetMap in the footer.
 - Font: Rubik, SIL Open Font License 1.1.
-- Demo video narration: Kokoro-82M by hexgrad, Apache-2.0 (see `demo/CREDITS.md`).
+- Demo video narration: ElevenLabs text-to-speech, voice Brian (video v3). Video v2 used Kokoro-82M by hexgrad,
+  Apache-2.0 (see `demo/CREDITS.md`).
 - Trademarks: Meta, Muse Spark, Baseten, OpenStreetMap and every other product or company name
   belong to their owners. Mifgash uses the names only to say what it works with.

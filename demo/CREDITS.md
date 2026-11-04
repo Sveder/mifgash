@@ -1,6 +1,9 @@
-# Credits: demo video v2 sound
+# Credits: demo video sound
 
-## Narration voice
+## Narration voice (video v3, the submitted video)
+- **ElevenLabs** text-to-speech, voice Brian, at natural speed. The audio of each line is used uncut.
+
+## Narration voice (video v2)
 - **Kokoro-82M** text-to-speech model by hexgrad, licence Apache-2.0
   (https://huggingface.co/hexgrad/Kokoro-82M). Voice `am_michael`, from `voices-v1.0.bin`.
 - Run through **kokoro-onnx** 0.6.1 (MIT, https://github.com/thewh1teagle/kokoro-onnx) on

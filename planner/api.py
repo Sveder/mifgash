@@ -554,6 +554,7 @@ def plan_json(request, plan):
         "date": plan.date.isoformat(),
         "part": plan.part,
         "kind": plan.kind,
+        "title": plan.title,  # T377: 'Dinner' when the person typed dinner, the same as the card
         "kind_named": plan.kind_named,
         "area": plan.area.name,
         "radius_km": plan.radius_km,
@@ -774,6 +775,7 @@ def proposal_json(offer, role):
         "id": offer.pk,
         "role": role,
         "kind": plan.kind,
+        "title": plan.title,  # T377
         "date": plan.date.isoformat(),
         "part": plan.part,
         "area": plan.area.name,
@@ -815,7 +817,7 @@ def finalize_rows(person):
         if plan.status != "confirmed":
             continue
         others = [p for p in [plan.owner] + plan.guests() if p.pk != person.pk]
-        row = {"type": "set_time", "plan_id": plan.pk, "kind": plan.kind, "date": plan.date.isoformat(),
+        row = {"type": "set_time", "plan_id": plan.pk, "kind": plan.kind, "title": plan.title, "date": plan.date.isoformat(),
                "part": plan.part, "time": None, "place": place_json(plan.chosen) if plan.chosen else None,
                "proposed_by": None, "who": [first_name(p) for p in others]}
         if plan.proposed_time:
@@ -849,7 +851,8 @@ def outing_json(plan, viewer=None):
     left out); 'when_text' is 'Sun 1/11 evening' (T65)."""
     from .messages import first_name, plan_when
     people = [plan.owner] + plan.guests()
-    return {"plan_id": plan.pk, "kind": plan.kind, "date": plan.date.isoformat(), "part": plan.part,
+    return {"plan_id": plan.pk, "kind": plan.kind, "title": plan.title,  # T377: the card title
+            "date": plan.date.isoformat(), "part": plan.part,
             "when_text": plan_when(plan),
             "status": plan.status, "time": plan.exact_time.strftime("%H:%M") if plan.exact_time else None,
             "place": place_json(plan.chosen) if plan.chosen else None,

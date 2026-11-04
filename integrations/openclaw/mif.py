@@ -168,7 +168,13 @@ def day_label(row, time=None):
     kind, part = row.get("kind") or "", row.get("part") or ""
     if kind == "group_dinner":  # G2 (T228): an evening by definition, no '(evening)'
         kind = part = "group dinner"
-    head = (kind or part or "Outing").capitalize() + (f" ({part})" if part and kind and part != kind else "")
+    title = row.get("title")
+    if title:  # T377/T388: the same title as the card and the .ics ('Dinner', 'Playdate')
+        low = title.lower()
+        extra = part and not time and part not in low and low not in ("dinner", "group dinner")
+        head = title + (f" ({part})" if extra else "")
+    else:
+        head = (kind or part or "Outing").capitalize() + (f" ({part})" if part and kind and part != kind else "")
     day = short_day(row.get("date"))
     return ", ".join(x for x in (head, day, clock(time) if time else None) if x)
 

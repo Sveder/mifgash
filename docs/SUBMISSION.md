@@ -66,5 +66,5 @@ Not entered: Best Creative (no Muse Image or Muse Wonder in the product).
 ## Links
 
 - Repository (public, MIT, one squashed commit): https://github.com/Sveder/mifgash
-- Demo video: `mifgash-demo-v3.mp4`, 2 minutes 38 seconds (under the 3-minute limit), 1920x1080. The public link is added on the submit form and in the README (shot list in `demo/VIDEO.md`).
+- Demo video: https://youtu.be/6XZoucxRXuY (YouTube), 2 minutes 40 seconds (under the 3-minute limit), 1920x1080. Shot list in `demo/VIDEO.md`.
 - Live site: https://mifgash.sveder.com
