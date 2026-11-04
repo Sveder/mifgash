@@ -6852,6 +6852,7 @@ class AutoTimeTests(ProposalBase):
         row = lambda h: next(x for x in self.client.get("/api/v1/outings/", **self.auth[h]).json()["outings"]  # noqa: E731
                              if x["plan_id"] == pa.pk)
         self.assertEqual((row("aa")["time_moved"], row("aa")["moved_by"]), (False, None))
+        self.assertTrue(row("aa")["url"].endswith(f"/outing/{pa.uid}/"))
         self.fin("aa", pa, time="13:30")
         self.assertEqual((row("aa")["time_moved"], row("aa")["moved_by"]), (True, "you"))
         self.assertEqual((row(first)["time_moved"], row(first)["moved_by"]), (True, "AA"))

@@ -889,6 +889,8 @@ def my_outing_json(request, plan, person, offer):
         "group_size": 1 + len(plan.guests()) if plan.kind == "group_dinner" else None,  # people in, owner too
         "time": plan.exact_time.strftime("%H:%M") if plan.exact_time else None,
         "proposed_time": None, "proposed_place": None, "proposed_by": None,
+        # T268: the human page of the outing (uuid URL, F8a); demo/video_run.py prints it
+        "url": calendar.base_url().rstrip("/") + reverse("outing", args=[plan.uid]),
     }
     if plan.status == "confirmed" and plan.proposed_time:
         row["proposed_time"] = plan.proposed_time.strftime("%H:%M")

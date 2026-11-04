@@ -468,7 +468,7 @@ def cmd_outings(args):
             line += " " + calendar_links(o)
         if o.get("url"):  # F8a (T260): the outing page, for the human
             line += f" Details: {o['url']}"
-        elif o.get("status") == "proposed" and not o.get("you_agreed", o.get("proposed_by") == "you"):
+        if o.get("status") == "proposed" and not o.get("you_agreed", o.get("proposed_by") == "you"):
             line += " " + agree_step(o["plan_id"], o["proposed_time"], (o.get("proposed_place") or {}).get("id"))
         elif o.get("status") == "confirmed":
             line += f" Next: agree on the time with 'finalize {o['plan_id']} --time HH:MM'."
