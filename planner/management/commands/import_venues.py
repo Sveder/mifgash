@@ -24,6 +24,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from planner.models import Activity, Area
+from planner import hours as hours_mod
 
 OVERPASS = "https://overpass-api.de/api/interpreter"
 FIXTURE = Path(__file__).resolve().parents[2] / "fixtures" / "osm_venues.json"
@@ -144,6 +145,7 @@ def entries_from(data, area, areas=None, source="osm"):
         rank = (not t.get("cuisine"), not street, round(_dist(lat, lon, area.lat, area.lon), 2))
         bucket = BUCKET[kind_key]
         base = {"name": name, "area": area.name, "address": address, "tags": tags[:8], "note": note,
+                "hours": hours if len(hours) <= 120 else "",
                 "url": url, "price": PRICE[kind_key], "source": source, "osm": f"{el['type']}/{el['id']}"}
         picked[bucket].append((rank, base, kind_key))
     out = []
@@ -175,7 +177,9 @@ def load(entries):
             skipped += 1
             continue
         row = Activity.objects.filter(name=e["name"], area=area, kind=e["kind"]).first()
+        hours = e.get("hours") or hours_mod.hours_from_note(e.get("note", ""))  # T402: an old fixture has the note only
         fields = {"address": e.get("address", ""), "tags": e.get("tags", []), "note": e.get("note", "")[:160],
+                  "hours": hours,
                   "url": e.get("url", ""), "price": e.get("price", 1), "source": e.get("source", "osm")}
         if row is None:
             Activity.objects.create(name=e["name"], area=area, kind=e["kind"], **fields)

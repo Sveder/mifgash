@@ -370,6 +370,8 @@ class Activity(models.Model):
     price = models.IntegerField(default=1, help_text="0 free, 1 cheap, 2 mid, 3 high")
     tags = models.JSONField(default=list)
     note = models.CharField(max_length=160, blank=True)
+    # T402: the raw OpenStreetMap opening_hours text ('Mo-Fr 11:00-15:00'); empty = unknown (kept)
+    hours = models.CharField(max_length=120, blank=True)
     url = models.URLField(blank=True)
     source = models.CharField(max_length=20, default="hackathon",
                               help_text="hackathon = written during the event; reused = older data")

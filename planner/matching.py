@@ -8,6 +8,7 @@ import random
 
 from django.db.models import Q
 
+from . import hours as hours_mod
 from . import wants as wants_mod
 from .models import BASE_KIND, Activity, Friendship, Plan, Slot
 
@@ -99,7 +100,9 @@ def group_places(plan, people, limit=3):
     """Dinner places that take a group (tag 'group'), nearest to the centre of the members'
     areas first, then cheapest. With no such place, any evening place that serves food."""
     centre = group_centre(plan, people)
-    every = list(Activity.objects.filter(kind=base_kind(plan.kind)).select_related("area"))
+    when = plan_when(plan)
+    every = [a for a in Activity.objects.filter(kind=base_kind(plan.kind)).select_related("area")
+             if not is_closed(a, when)]  # T402
     rows = [a for a in every if "group" in (a.tags or [])]
     if not rows:
         rows = [a for a in every if {"dinner", "food"} & set(a.tags or [])]
@@ -152,11 +155,24 @@ def random_order(people, seed):
     return ordered
 
 
-def _near(kind, area, radius_km, exclude_tags, dislikes):
+def plan_when(plan):
+    """T402: (date, part) for the opening-hours check, or None. A plan with no part named
+    ('I'm open tomorrow', any_part) fits any part, so no place is dropped for its hours."""
+    if getattr(plan, "any_part", False) or not getattr(plan, "date", None):
+        return None
+    return plan.date, plan.part
+
+
+def is_closed(a, when):
+    """T402: True only when the hours say the place is surely closed then. Unknown = open."""
+    return bool(when) and hours_mod.open_at(a.hours, *when) is False
+
+
+def _near(kind, area, radius_km, exclude_tags, dislikes, when=None):
     rows = []
     group = kind != base_kind(kind)  # a group dinner wants a place that serves dinner (T227)
     for a in Activity.objects.filter(kind=base_kind(kind)).select_related("area"):
-        if set(a.tags) & set(exclude_tags) or wants_mod.is_disliked(a, dislikes):
+        if set(a.tags) & set(exclude_tags) or wants_mod.is_disliked(a, dislikes) or is_closed(a, when):
             continue
         d = km(a.area, area)
         if d <= radius_km + 1.0:
@@ -177,7 +193,7 @@ def place_options(plan, exclude_tags=(), note=None, limit=3):
     Saves plan.wants; the caller sets plan.options."""
     from . import llm
     rows = suggest_activities(plan.kind, plan.area, plan.radius_km, limit=llm.PICK_MAX,
-                              exclude_tags=exclude_tags, wants=plan.wants, note=note)
+                              exclude_tags=exclude_tags, wants=plan.wants, note=note, when=plan_when(plan))
     liked = next((a for a in rows if wants_mod.is_liked(a, plan.wants)), None)
     if liked is not None:
         # T376: a place one side named as liked goes first. A place the other side avoids is
@@ -196,15 +212,15 @@ def place_options(plan, exclude_tags=(), note=None, limit=3):
     return rows[:limit], res
 
 
-def suggest_activities(kind, area, radius_km=3.0, limit=3, exclude_tags=(), wants=None, note=None):
+def suggest_activities(kind, area, radius_km=3.0, limit=3, exclude_tags=(), wants=None, note=None, when=None):
     """Activities of that kind near the area. A place that fits the wants (liked place, food, taste
     words) comes first, then nearest, then cheapest. A disliked place never comes back (T255).
     note: a list; when the food asked for has no place even at WIDE_KM, one line is appended."""
     wants = wants or {}
-    rows = _near(kind, area, radius_km, exclude_tags, wants.get("dislikes"))
+    rows = _near(kind, area, radius_km, exclude_tags, wants.get("dislikes"), when)
     food = wants.get("food")
     if food and not any(wants_mod.food_match(a, food) for a in rows):
-        wide = _near(kind, area, max(radius_km, WIDE_KM), exclude_tags, wants.get("dislikes"))
+        wide = _near(kind, area, max(radius_km, WIDE_KM), exclude_tags, wants.get("dislikes"), when)
         hits = [a for a in wide if wants_mod.food_match(a, food)]
         if hits:
             rows = hits + [a for a in rows if a not in hits]

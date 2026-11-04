@@ -8358,3 +8358,80 @@ class MapQueryTests(DjangoTestCase):
         self.assertIn("location=" + quote_plus(want), g)
         html = render_to_string("planner/_ticket.html", {"m": SimpleNamespace(plan=plan, place=park, calendar=None)})
         self.assertIn("query=" + quote(want, safe=""), html.replace("&amp;", "&"))
+
+
+class OpeningHoursTests(Base):
+    """T402: OSM opening_hours on every venue, and a place that is surely closed is not offered."""
+
+    def test_parser_subset(self):
+        from planner import hours
+        tue, sat, sun = TUESDAY, SUNDAY - dt.timedelta(days=1), SUNDAY
+        self.assertEqual(hours.open_at("Mo-Fr 11:00-15:00", tue, "lunch"), True)
+        self.assertEqual(hours.open_at("Mo-Fr 11:00-15:00", sat, "lunch"), False)
+        self.assertEqual(hours.open_at("24/7", sat, "evening"), True)
+        self.assertEqual(hours.open_at("Mo-Fr 09:00-17:00; Sa 10:00-14:00", sat, "lunch"), True)
+        self.assertEqual(hours.open_at("Mo-Fr 09:00-17:00; Sa 10:00-14:00", sat, "evening"), False)
+        self.assertEqual(hours.open_at("Mo,We,Fr 11:00-22:00", tue, "lunch"), False)
+        self.assertEqual(hours.open_at("Mo-Su 11:00-22:00; Su off", sun, "lunch"), False)
+        self.assertEqual(hours.open_at("Th-Tu 10:30-21:30", tue, "evening"), True)  # a day range that wraps
+        self.assertEqual(hours.open_at("Mo-Su 17:00-02:00", tue, "evening"), True)  # ends after midnight
+        self.assertEqual(hours.open_at("Mo-Th 16:00-02:00, Fr,Sa 15:00-02:00", sat, "evening"), True)
+        self.assertEqual(hours.open_at("Tu-Sa 11:30-14:30,17:30-22:30", tue, "evening"), True)
+        # kept (None): no hours, 'PH off' only, an unreadable text, and a day only an 'off' rule names
+        for text in ("", "PH off", "sunrise-sunset", "11:00-22:00 \"to go 11:00-02:00\"", "Su off"):
+            self.assertIsNone(hours.open_at(text, tue, "lunch"), text)
+        self.assertEqual(hours.open_at("Mo-Fr 11:00-15:00; PH off", sat, "lunch"), False)
+
+    def test_closed_place_is_not_offered(self):
+        soma = area("SoMa")
+        Activity.objects.create(name="Weekday Sample Diner", kind="lunch", area=soma, tags=["food"], price=0,
+                                hours="Mo-Fr 11:00-15:00", source="osm")
+        Activity.objects.create(name="No Hours Sample Diner", kind="lunch", area=soma, tags=["food"], price=0,
+                                source="osm")
+        Activity.objects.create(name="Odd Hours Sample Diner", kind="lunch", area=soma, tags=["food"], price=0,
+                                hours="sunrise-sunset", source="osm")
+        Activity.objects.create(name="Holiday Sample Diner", kind="lunch", area=soma, tags=["food"], price=0,
+                                hours="PH off", source="osm")
+        saturday = SUNDAY - dt.timedelta(days=1)
+
+        def offered(date):
+            p = Plan.objects.create(owner=self.me, kind="lunch", date=date, part="lunch", area=soma, radius_km=3.0)
+            with mock.patch.object(llm, "pick_place", side_effect=lambda plan, rows: {
+                    "place": None, "why": "", "backend": "", "cause": "test"}):
+                rows, _ = matching.place_options(p, limit=50)
+            return {a.name for a in rows}
+        sat, tue = offered(saturday), offered(TUESDAY)
+        self.assertNotIn("Weekday Sample Diner", sat)
+        self.assertIn("Weekday Sample Diner", tue)
+        for kept in ("No Hours Sample Diner", "Odd Hours Sample Diner", "Holiday Sample Diner"):
+            self.assertIn(kept, sat)
+        # 'I'm open Saturday' with no part named: no place is dropped for its hours
+        p = Plan.objects.create(owner=self.me, kind="lunch", date=saturday, part="lunch", any_part=True,
+                                area=soma, radius_km=3.0)
+        self.assertIsNone(matching.plan_when(p))
+
+    def test_import_writes_hours(self):
+        from io import StringIO
+        from django.core.management import call_command
+        call_command("import_venues", overpass_json=str(SAMPLE), area="SoMa", stdout=StringIO())
+        sakana = Activity.objects.get(name="Sakana", kind="lunch", source="osm")
+        self.assertTrue(sakana.hours)
+        self.assertEqual(sakana.note, f"Hours: {sakana.hours}")
+
+    def test_fixture_rows_get_hours_from_the_note(self):
+        """The saved SF fixture has the hours in the note only; load() fills the field, no network."""
+        from planner.management.commands.import_venues import FIXTURE
+        if not FIXTURE.exists():
+            self.skipTest("no fixture")
+        from io import StringIO
+        from django.core.management import call_command
+        call_command("import_venues", file=str(FIXTURE), stdout=StringIO())
+        osm = Activity.objects.filter(source="osm")
+        self.assertGreater(osm.exclude(hours="").count(), 300)
+        self.assertFalse(osm.filter(hours="", note__startswith="Hours: ").exclude(note__regex=r"^.{160}$").exists())
+
+    def test_hours_from_note(self):
+        from planner.hours import hours_from_note
+        self.assertEqual(hours_from_note("Hours: Mo-Fr 11:00-15:00"), "Mo-Fr 11:00-15:00")
+        self.assertEqual(hours_from_note("From OpenStreetMap"), "")
+        self.assertEqual(hours_from_note("Hours: " + "x" * 153), "")  # cut at 160: unknown, not a wrong 'closed'
