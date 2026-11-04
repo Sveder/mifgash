@@ -15,6 +15,7 @@ flow on a real dashboard: the ask, the yes, the place, the time and the calendar
 
 **Models:** Muse Spark Open (Meta) on Baseten reads the free text and picks the place on the live site.
 Claude is the fallback adapter (one setting). Matching, order, expiry and every sentence a person sees are Python, with tests.
+Model benchmark (Muse vs Claude Opus 5.5 vs Sonnet 5.5 on Mifgash's own prompts): [benchmarks/muse-vs-claude.md](benchmarks/muse-vs-claude.md).
 
 Built for the Meta Global AI Developer Hackathon (Cerebral Valley, Oct 26 - Nov 4, 2026).
 Live site: https://mifgash.sveder.com. Source: https://github.com/Sveder/mifgash (MIT). Spec: [SPEC.md](SPEC.md).
