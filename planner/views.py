@@ -808,7 +808,8 @@ def dashboard(request):
     plans = Plan.objects.filter(owner=p).select_related("area", "chosen__area")
     open_rows = []
     # A plan where a friend said yes waits for the owner under Matches, so it leaves this block (T83).
-    for pl in plans.filter(status__in=["open", "asking"]).exclude(offers__status="owner_wait").order_by("date", "pk"):
+    for pl in plans.filter(status__in=["open", "asking", "finding_places"]).exclude(
+            offers__status="owner_wait").order_by("date", "pk"):
         state, ask = ("asking a friend" if pl.status == "asking" else "waiting for a match"), None
         if pl.status == "open":
             # The same state as mif.py open-list (T95): a friend's ask for this time waits below.

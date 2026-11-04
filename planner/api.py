@@ -591,7 +591,7 @@ def plan_json(request, plan):
         "kind": plan.kind,
         "title": plan.title,  # T377: 'Dinner' when the person typed dinner, the same as the card
         "kind_named": plan.kind_named,
-        "area": plan.area.name,
+        "area": plan.place_text if plan.status == "finding_places" and plan.place_text else plan.area.name,
         "radius_km": plan.radius_km,
         "group_size": plan.group_size,
         **({"fill_by": plan.fill_by.isoformat()} if plan.fill_by else {}),
@@ -614,6 +614,8 @@ def waiting_for_me(plan):
 def plan_state(plan):
     """Where an open or asking plan stands, for the owner's agent (T64). Never names a friend who is
     asked: the owner learns a name only when that friend said yes."""
+    if plan.status == "finding_places":  # T400
+        return {"state": "finding_places", "state_text": f"finding places in {plan.place_text}"}
     if plan.status == "open":
         offer = waiting_for_me(plan)
         if offer:  # a friend's plan asks this owner for the same meal (T68)
@@ -735,7 +737,10 @@ def read_as_text(plan, fields):
     want = wants_mod.summary(plan.wants)
     want = f". Wants: {want}" if want else ""
     note = f". {plan.wants['note']}" if (plan.wants or {}).get("note") else ""
-    return f"Read as: {kind}{messages.when(plan.date, plan.part)}, near {plan.area.name}{tail}{want}{note}"
+    near = plan.place_text if plan.status == "finding_places" and plan.place_text else plan.area.name  # T400
+    if plan.status == "finding_places":
+        tail = ""
+    return f"Read as: {kind}{messages.when(plan.date, plan.part)}, near {near}{tail}{want}{note}"
 
 
 def log_post(plan, said, fields):
@@ -759,7 +764,7 @@ def availability(request):
     """POST 'I am open ...' as text or fields. GET the caller's open availabilities."""
     me_ = request.person
     if request.method == "GET":
-        rows = (Plan.objects.filter(owner=me_, status__in=("open", "asking"))
+        rows = (Plan.objects.filter(owner=me_, status__in=("open", "asking", "finding_places"))
                 .select_related("area").order_by("date", "pk"))
         return JsonResponse({"availability": [{**plan_json(request, p), **plan_state(p)} for p in rows]})
     from .availability import post

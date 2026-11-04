@@ -58,7 +58,7 @@ class DemoClient(Client):
         super().__init__(*args, **kwargs)
 
 
-@override_settings(DEMO_TOKEN=DEMO_TOKEN, RATE_LIMITS=False)
+@override_settings(DEMO_TOKEN=DEMO_TOKEN, RATE_LIMITS=False, LIVE_PLACES=False)  # T400: live lookup tests opt in
 class TestCase(DjangoTestCase):
     def assert_24h_time_select(self, page, default):
         """T202: the ticket time is a select of half hours, never a native time input (its form
@@ -1650,8 +1650,8 @@ class StaysOpenTests(ProposalBase):
         self.assertEqual(engine.step(pa), "no_match")
 
 
-class FarPlaceTests(Base):
-    """T31: areas outside San Francisco; an unknown place is named in the ask-back."""
+class TwoAgentsBase(Base):
+    """Two signed-up agents aa and dd (home Noe Valley), friends."""
 
     def setUp(self):
         super().setUp()
@@ -1666,6 +1666,10 @@ class FarPlaceTests(Base):
     def post(self, handle, text):
         return self.client.post("/api/v1/availability/", data=json.dumps({"text": text}),
                                 content_type="application/json", **self.auth[handle])
+
+
+class FarPlaceTests(TwoAgentsBase):
+    """T31: areas outside San Francisco; an unknown place is named in the ask-back."""
 
     def test_new_areas_each_have_an_activity(self):
         for name in ("Sausalito", "Oakland - Downtown", "Berkeley - Downtown",
@@ -1739,6 +1743,77 @@ class FarPlaceTests(Base):
         d = self.post("dd", "open tomorrow for lunch near the office").json()
         self.assertEqual(d["needs"], ["where"])
         self.assertNotIn("unknown_place", d)
+
+
+@override_settings(LIVE_PLACES=True)
+class LivePlacesTests(TwoAgentsBase):
+    """T400: a city Mifgash does not cover queues a live place lookup instead of the ask-back."""
+
+    def test_unknown_city_makes_a_finding_places_plan_and_one_lookup(self):
+        from .models import PlaceLookup
+        r = self.post("dd", "free saturday lunch in flagstaff")
+        self.assertEqual(r.status_code, 200, r.content)
+        d = r.json()
+        self.assertIn("Looking up places in Flagstaff", d["lookup_note"])
+        self.assertEqual(d["next_check_seconds"], 600)
+        self.assertEqual(d["area"], "Flagstaff")
+        plan = Plan.objects.get(pk=d["availability_id"])
+        self.assertEqual((plan.status, plan.place_text), ("finding_places", "Flagstaff"))
+        self.assertEqual(plan.area, Person.objects.get(handle="dd").home_area)  # placeholder until T401
+        self.assertTrue(plan.log.filter(type="finding_places").exists())
+        rows = list(PlaceLookup.objects.all())
+        self.assertEqual([(x.text_norm, x.status) for x in rows], [("flagstaff", "queued")])
+        r = self.post("aa", "free saturday lunch in Flagstaff")
+        self.assertEqual(r.status_code, 200, r.content)
+        self.assertEqual(PlaceLookup.objects.count(), 1)
+        self.assertEqual(Plan.objects.filter(status="finding_places").count(), 2)
+        again = self.post("dd", "free saturday lunch in flagstaff").json()  # a retry gets the same plan
+        self.assertEqual((again["availability_id"], again["duplicate"]), (plan.pk, True))
+
+    def test_live_places_off_keeps_the_ask_back(self):
+        from .models import PlaceLookup
+        with override_settings(LIVE_PLACES=False):
+            d = self.post("dd", "free saturday lunch in flagstaff").json()
+        self.assertEqual((d["needs"], d["unknown_place"], d["where_text"]), (["where"], "Flagstaff", api.COVERS_TEXT))
+        self.assertFalse(Plan.objects.filter(owner__handle="dd").exists())
+        self.assertFalse(PlaceLookup.objects.exists())
+
+    def test_missing_day_still_asks_back(self):
+        d = self.post("dd", "lunch in flagstaff sometime").json()
+        self.assertIn("when", d["needs"])
+        self.assertFalse(Plan.objects.filter(owner__handle="dd").exists())
+
+    def test_tick_leaves_the_plan_waiting_and_the_dashboard_says_finding_places(self):
+        from .models import MagicLink
+        d = self.post("dd", "free saturday lunch in flagstaff").json()
+        self.post("aa", "free saturday lunch near Noe Valley")
+        plan = Plan.objects.get(pk=d["availability_id"])
+        before = plan.log.count()
+        engine.tick()
+        plan.refresh_from_db()
+        self.assertEqual((plan.status, plan.log.count()), ("finding_places", before))
+        self.assertFalse(Offer.objects.filter(plan=plan).exists())
+        self.assertFalse(Offer.objects.filter(person=plan.owner).exists())  # not offered to aa's plan either
+        _, token = MagicLink.issue(plan.owner)
+        self.client.post(f"/d/{token}/")
+        page = self.client.get("/d/").content.decode()
+        self.assertIn("Finding places in Flagstaff", page)
+        self.assertIn("near Flagstaff", page)
+        rows = self.client.get("/api/v1/availability/", **self.auth["dd"]).json()["availability"]
+        self.assertEqual([(x["status"], x["state_text"]) for x in rows], [("finding_places", "finding places in Flagstaff")])
+
+    def test_open_command_prints_the_lookup_line(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("mif", Path(settings.BASE_DIR) / "integrations/openclaw/mif.py")
+        mif = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mif)
+        r = self.post("dd", "free saturday lunch in flagstaff").json()
+        args = mock.Mock(text="free saturday lunch in flagstaff", date=None, part=None, kind=None, area=None,
+                         radius=None, prefs=None)
+        with mock.patch.object(mif, "call", return_value=r):
+            line, _ = mif.cmd_open(args)
+        self.assertIn("Looking up places in Flagstaff", line)
+        self.assertIn("Near Flagstaff.", line)
 
 
 class Receiver:

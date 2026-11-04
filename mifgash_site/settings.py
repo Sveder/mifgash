@@ -52,6 +52,9 @@ RATE_LIMITS = os.environ.get("MIFGASH_RATE_LIMITS", "1") == "1"
 RATE_API_PER_MIN = int(os.environ.get("MIFGASH_RATE_API_PER_MIN", "240"))
 # T249: the longest long poll on GET /api/v1/events/?wait=S, in seconds.
 # T256 (F4b): public friend search is off; add a friend by exact handle. zz_ test people may still search.
+# T400: a free time in a city Mifgash does not know queues a live place lookup (OpenStreetMap, run by
+# the tick) instead of the ask-back. MIFGASH_LIVE_PLACES=0 turns back to the ask-back.
+LIVE_PLACES = os.environ.get("MIFGASH_LIVE_PLACES", "1") == "1"
 FRIEND_SEARCH = os.environ.get("MIFGASH_SEARCH", "0") == "1"
 EVENTS_WAIT_MAX = float(os.environ.get("MIFGASH_EVENTS_WAIT_MAX", "25"))
 TRUST_PROXY = os.environ.get("MIFGASH_TRUST_PROXY", "0") == "1"

@@ -6,7 +6,9 @@ import datetime as dt
 from django.conf import settings
 
 from . import engine, matching
-from .models import GROUP_MIN, KINDS, PARTS, Plan
+from .models import GROUP_MIN, KINDS, PARTS, Area, PlaceLookup, Plan
+
+LOOKUP_NEXT_CHECK = 600  # seconds: the agent checks back after the tick looked the city up (T400)
 
 
 def post(person, data, request):
@@ -22,6 +24,9 @@ def post(person, data, request):
         raise ValueError("radius_km must be a number")
     radius = max(0.5, min(radius, 25.0))
     fields, parsed, needs, text = read_availability(data, person, dt.date.today())
+    city = live_city(data, text, person, needs)
+    if city:
+        return finding_places(person, data, fields, text, city, radius, request)
     if needs:
         reply = {"needs": needs, "parsed": parsed}
         if "where" in needs:
@@ -36,7 +41,7 @@ def post(person, data, request):
             reply["kinds"] = [k for k, _ in KINDS]
         return reply, 200
     same = (Plan.objects.filter(owner=person, date=fields["date"], part=fields["part"],
-                                status__in=("open", "asking", "confirmed", "final"))
+                                status__in=("open", "asking", "confirmed", "final", "finding_places"))
             .select_related("area").order_by("pk").first())
     if same:  # an agent that retries after a timeout gets the first plan back, not a second one (T28)
         return {**plan_json(request, same), "duplicate": True}, 200
@@ -83,3 +88,57 @@ def log_pick(plan, pick):
     text = f"picked {place.name}" + (f": {pick['why']}" if pick.get("why") else "")
     log(plan, "mifgash:directory", plan.owner.address, "place_pick", place_id=place.pk, text=text,
         backend=pick.get("backend", ""), **({"cause": pick["cause"]} if pick.get("cause") else {}))
+
+
+def live_city(data, text, person, needs):
+    """T400: the city to look up live, or None. Only when the one thing missing is 'where', the text
+    (or the area field) names a place Mifgash does not cover, and settings.LIVE_PLACES is on."""
+    from .api import own_place, unknown_place
+    if not settings.LIVE_PLACES or needs != ["where"]:
+        return None
+    given = str(data.get("area") or "").strip()[:60]
+    if given:
+        return None if own_place(given, person)[0] else given
+    return unknown_place(text)
+
+
+def finding_places(person, data, fields, text, city, radius, request):
+    """T400: make the plan in status 'finding_places' and queue one PlaceLookup per city text. The area
+    is a placeholder (the owner's home area) until the tick (T401) makes the real one. No matching runs
+    while the plan waits: engine.tick only moves 'asking' plans and rematch_open only 'open' ones."""
+    from .api import log_post, plan_json
+    same = (Plan.objects.filter(owner=person, date=fields["date"], part=fields["part"],
+                                status__in=("open", "asking", "confirmed", "final", "finding_places"))
+            .select_related("area").order_by("pk").first())
+    if same:
+        return {**plan_json(request, same), "duplicate": True}, 200
+    area = person.home_area or person.work_area or Area.objects.order_by("pk").first()
+    if area is None:
+        return {"error": "no area exists yet"}, 400
+    group = fields["group_size"] or 1
+    group_dinner = fields["kind"] == "group_dinner"
+    plan = Plan.objects.create(
+        owner=person, raw_text=text, kind=fields["kind"], date=fields["date"], part=fields["part"],
+        area=area, place_text=city[:60], radius_km=radius, group_size=group,
+        min_guests=GROUP_MIN if group_dinner else 1 if group <= 2 else 2,
+        fill_by=engine.default_fill_by(fields["date"]) if group_dinner else None,
+        status="finding_places", llm_backend=fields.get("backend", ""), any_part=bool(fields["part_default"]),
+        kind_named=fields["kind_named"], wants=fields["wants"])
+    PlaceLookup.objects.get_or_create(text_norm=PlaceLookup.norm(city), defaults={"city_text": city[:60]})
+    log_post(plan, text or data, fields)
+    engine.log(plan, "mifgash:directory", person.address, "finding_places", text=lookup_text(city))
+    reply = plan_json(request, plan)
+    if fields["part_default"]:
+        reply["part_note"] = part_note_for(plan)
+    reply["lookup_note"] = lookup_text(city)
+    reply["next_check_seconds"] = LOOKUP_NEXT_CHECK
+    return reply, 200
+
+
+def lookup_text(city):
+    return f"Looking up places in {city}. Your agent hears back on its next check."
+
+
+def part_note_for(plan):
+    from .api import part_note
+    return part_note(plan.part, plan.any_part)

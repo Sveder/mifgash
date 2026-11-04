@@ -408,6 +408,8 @@ def cmd_open(args):
         return (f"Already posted: {free_when(r)} (id {r['availability_id']}), status {r['status']}. "
                 f"Nothing new was posted."), r
     status = r["proposal_note"] if r.get("proposal_note") else state.get(r["status"], "Status: " + r["status"] + ".")
+    if r.get("lookup_note"):  # T400: a city Mifgash looks up now
+        status = r["lookup_note"]
     want = ""
     if r.get("wants_text"):  # T320: the server display form ('avoids Mission Playground')
         want = f" Wants: {r['wants_text']}."

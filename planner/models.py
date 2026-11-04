@@ -400,6 +400,7 @@ class Plan(models.Model):
     STATUS = [
         ("draft", "Draft"),
         ("open", "Open, waiting for a match"),  # posted by an agent through the API
+        ("finding_places", "Finding places"),  # T400: a city Mifgash does not know yet; the tick looks it up
         ("asking", "Asking friends"),
         ("joined", "Joined a friend's plan"),  # the owner said yes inside another plan
         ("confirmed", "Confirmed"),
@@ -440,7 +441,9 @@ class Plan(models.Model):
     exact_time = models.TimeField(null=True, blank=True, help_text="set when the plan is final")
     # T255: what the owner wants from the place: {food, tastes, likes, dislikes, text}. planner/wants.py.
     wants = models.JSONField(default=dict, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS, default="draft")
+    status = models.CharField(max_length=16, choices=STATUS, default="draft")
+    # T400: the city the owner named when Mifgash has no area there yet ('Flagstaff'). Blank otherwise.
+    place_text = models.CharField(max_length=60, blank=True)
     seed = models.IntegerField(default=0, help_text="random seed for the offer order, kept for replay")
     llm_backend = models.CharField(max_length=10, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -550,3 +553,24 @@ class ChatTurn(models.Model):
 
     class Meta:
         ordering = ["created", "pk"]
+
+
+class PlaceLookup(models.Model):
+    """T400: one live place lookup per normalized city text ('flagstaff'). The tick (T401) geocodes it,
+    makes the Area and imports the venues, then the waiting finding_places plans go open."""
+    STATUS = [("queued", "Queued"), ("done", "Done"), ("failed", "Failed")]
+    text_norm = models.CharField(max_length=60, unique=True)
+    city_text = models.CharField(max_length=60)
+    status = models.CharField(max_length=10, choices=STATUS, default="queued")
+    tries = models.IntegerField(default=0)
+    error = models.TextField(blank=True)
+    area = models.ForeignKey(Area, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def norm(text):
+        return " ".join((text or "").lower().split())[:60]
+
+    def __str__(self):
+        return f"{self.text_norm} ({self.status})"
