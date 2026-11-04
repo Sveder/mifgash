@@ -1881,6 +1881,24 @@ class LivePlacesTickTests(TwoAgentsBase):
         self.assertNotIn("@", nom[0].full_url)
         self.assertIn("q=flagstaff", nom[0].full_url.lower())
 
+    def test_overpass_gets_a_longer_read_timeout_than_its_server_limit(self):
+        """T396: a live Overpass answer took 28.6 s; the read timeout must cover the [timeout:50] query."""
+        import io
+        from . import places_live
+        self.post("dd", "free saturday lunch in flagstaff")
+        timeouts = {}
+
+        def urlopen(req, timeout=None):
+            if "nominatim" in req.full_url:
+                timeouts["nominatim"] = timeout
+                return io.BytesIO(self.NOMINATIM.read_bytes())
+            timeouts["overpass"] = timeout
+            return io.BytesIO(SAMPLE.read_bytes())
+        with mock.patch("urllib.request.urlopen", side_effect=urlopen):
+            self.assertEqual(places_live.run_queued(), {"flagstaff": "done"})
+        self.assertEqual(timeouts["nominatim"], 25)
+        self.assertGreater(timeouts["overpass"], 50)
+
     def test_overpass_502_three_times_cancels_with_the_ask_back(self):
         from . import places_live
         from .models import AgentEvent, PlaceLookup

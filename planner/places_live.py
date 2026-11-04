@@ -29,7 +29,10 @@ log = logging.getLogger(__name__)
 
 NOMINATIM = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "Mifgash/1.0 (+https://mifgash.sveder.com)"
-TIMEOUT = 25
+TIMEOUT = 25  # Nominatim
+# Overpass: the query asks the server for up to 50 s ([timeout:50]); a live Flagstaff query took
+# 28.6 s from the droplet on 4/11, so a 25 s read timeout failed all 3 tries (T396).
+OVERPASS_TIMEOUT = 60
 PAUSES = (5, 15)  # wait before retry 1 and retry 2
 RETRY_CODES = (429, 502, 504)
 RADIUS_M = 3000
@@ -81,7 +84,7 @@ def area_fields(hit):
 def fetch_venues(area):
     """Overpass venues within 3 km of the area centre as import_venues entry dicts, source 'osm-live'."""
     try:
-        data = import_venues.fetch(area, radius_m=RADIUS_M, timeout=TIMEOUT, pauses=PAUSES, retry=_retry)
+        data = import_venues.fetch(area, radius_m=RADIUS_M, timeout=OVERPASS_TIMEOUT, pauses=PAUSES, retry=_retry)
     except import_venues.CommandError as e:
         raise LookupFailed(str(e))
     return import_venues.entries_from(data, area, source="osm-live")
