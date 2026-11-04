@@ -378,11 +378,14 @@ def cmd_open(args):
                 f"Nothing new was posted."), r
     status = r["proposal_note"] if r.get("proposal_note") else state.get(r["status"], "Status: " + r["status"] + ".")
     want = ""
-    w = r.get("wants") or {}
-    bits = ([w["food"]] if w.get("food") else []) + list(w.get("tastes") or [])
-    bits += [f"likes {x}" for x in w.get("likes") or []] + [f"avoids {x}" for x in w.get("dislikes") or []]
-    if bits:
-        want = f" Wants: {'; '.join(bits)}."
+    if r.get("wants_text"):  # T320: the server display form ('avoids Mission Playground')
+        want = f" Wants: {r['wants_text']}."
+    else:
+        w = r.get("wants") or {}
+        bits = ([w["food"]] if w.get("food") else []) + list(w.get("tastes") or [])
+        bits += [f"likes {x}" for x in w.get("likes") or []] + [f"avoids {x}" for x in w.get("dislikes") or []]
+        if bits:
+            want = f" Wants: {'; '.join(bits)}."
     if r.get("place_note"):
         want += f" {r['place_note']}"
     return f"Posted: {free_when(r)} (id {r['availability_id']}). {near}{want} {status}", r

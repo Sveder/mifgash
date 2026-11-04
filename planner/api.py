@@ -535,6 +535,12 @@ def place_pick_json(plan):
                            "model": llm.model_label(pick.get("backend"))}}
 
 
+def wants_summary(wants):
+    """T320: the display line ('avoids Mission Playground'), so an agent relays names in title case."""
+    from . import wants as wants_mod
+    return wants_mod.summary({k: v for k, v in (wants or {}).items() if k not in ("note", "pick", "time")})
+
+
 def plan_json(request, plan):
     return {
         "availability_id": plan.pk,
@@ -549,6 +555,7 @@ def plan_json(request, plan):
         **({"fill_by": plan.fill_by.isoformat()} if plan.fill_by else {}),
         "text": plan.raw_text,
         **({"wants": {k: v for k, v in plan.wants.items() if k not in ("note", "pick")}} if plan.wants else {}),
+        **({"wants_text": wants_summary(plan.wants)} if wants_summary(plan.wants) else {}),
         **place_pick_json(plan),
         **({"place_note": plan.wants["note"]} if (plan.wants or {}).get("note") else {}),
         **({"note": messages.waiting_text(plan)}

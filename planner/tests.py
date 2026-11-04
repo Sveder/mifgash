@@ -3136,6 +3136,18 @@ class MifClientTest(Base):
         self.assertEqual(plan.option_list()[0].name, "Ferry Building Marketplace")
         self.assertIn("Wants: sushi; quiet; avoids loud bars", line)
 
+    def test_open_reply_shows_place_names_in_title_case(self):
+        """T320 (QA 4/11 06:2x): the line the agent relays says 'avoids Mission Playground', not lowercase;
+        a generic phrase ('loud bars') stays lowercase."""
+        self.run_mif("a", "signup", "Chris", "chris_t320")
+        code, line = self.run_mif("a", "open", "lunch tomorrow near Hayes Valley. We do not like Mission Playground")
+        self.assertEqual(code, 0, line)
+        self.assertIn("Wants: avoids Mission Playground.", line)
+        self.assertNotIn("mission playground", line)
+        code, line = self.run_mif("a", "open", "dinner tomorrow near Hayes Valley. I hate loud bars")
+        self.assertEqual(code, 0, line)
+        self.assertIn("avoids loud bars", line)
+
     def test_link_gives_a_new_one_time_dashboard_link(self):
         """T81: after the signup link is used, 'mif.py link' prints a fresh link that logs in once."""
         import re
