@@ -426,10 +426,14 @@ class Plan(models.Model):
     PART_TITLES = {"morning": "Morning meetup", "lunch": "Lunch", "afternoon": "Afternoon meetup",
                    "evening": "Evening out"}
 
+    # T321: the card and .ics title per kind. 'With kids' is a form label, not a title ('With kids with Ava').
+    KIND_TITLES = {"lunch": "Lunch", "kids": "Playdate", "evening": "Evening out", "weekend": "Weekend outing",
+                   "group_dinner": "Group dinner"}
+
     @property
     def title(self):
-        """'Weekend outing' when the person named the kind, else from the part: 'Morning meetup' (T112)."""
-        return self.get_kind_display() if self.kind_named else self.PART_TITLES[self.part]
+        """'Playdate' when the person named the kind, else from the part: 'Morning meetup' (T112)."""
+        return self.KIND_TITLES[self.kind] if self.kind_named else self.PART_TITLES[self.part]
 
     def option_list(self):
         """Options: the best fit for the owner's wants first (T255), then nearest to the plan area (M2M

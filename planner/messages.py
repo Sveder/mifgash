@@ -75,7 +75,8 @@ def offer_text(owner, plan, options):
     """What the friend sees. Written as if this friend is the only person asked."""
     place = f"{options[0].name}, {options[0].address}" if options and options[0].address else (
         options[0].name if options else plan.area.name)
-    group = "" if plan.group_size == 1 else " A few friends may join too."
+    # T321: the group line only when more than 2 friends are asked (a playdate of 2-3 families is no group)
+    group = " A few friends may join too." if plan.group_size > 2 or plan.kind == "group_dinner" else ""
     return (f"{owner.name} is free for {kind_on(plan)}, "
             f"near {plan.area.name}. You are open then too. Want to meet? "
             f"Idea: {place}.{group}")

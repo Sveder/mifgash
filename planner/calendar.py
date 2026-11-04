@@ -15,8 +15,6 @@ from . import messages
 
 TZID = "America/Los_Angeles"
 LENGTH = dt.timedelta(minutes=90)
-TITLES = {"lunch": "Lunch", "kids": "Kids outing", "evening": "Evening out", "weekend": "Weekend outing",
-          "group_dinner": "Group dinner"}
 
 # US Pacific: PDT from the second Sunday of March 02:00, PST from the first Sunday of November 02:00.
 VTIMEZONE = [
@@ -82,7 +80,7 @@ def details(plan, person):
     others = [p for p in people if p.pk != person.pk] or [plan.owner]
     place = plan.chosen
     address = (place.address or place.area.name) if place else plan.area.name
-    title = f"{(TITLES[plan.kind] if plan.kind_named else plan.title)} with {messages.names(others)}"
+    title = f"{plan.title} with {messages.names(others)}"  # T321: one title for the card and the .ics
     location = f"{place.name}, {address}" if place else address
     lines = [f"When: {messages.us_day(plan.date)}, {messages.clock(plan.exact_time)}"] if plan.exact_time else []
     lines += [f"Map: https://maps.google.com/?q={quote(address)}",

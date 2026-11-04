@@ -7404,3 +7404,44 @@ class PromptInjectionTests(Base):
         for part in ("## 1. Assets", "## 2. Actors", "## 3. Where text crosses a trust line",
                      "## 4. The rules in the code", "## 5. Not covered yet"):
             self.assertIn(part, doc)
+
+
+class KidsWordingT321Tests(Base):
+    """T321: a playdate keeps the ages and needs, a 2-family ask has no group line, one title per kind."""
+
+    def test_ages_and_needs_are_kept(self):
+        from . import wants as w
+        got = w.merge(w.read("Free Saturday morning, kids 5 and 7, shade and a toilet, we do not like Dolores Park"))
+        self.assertEqual(got["tastes"], ["age 5", "age 7", "shade", "toilet"])
+        self.assertEqual(got["dislikes"], ["dolores park"])
+        self.assertIn("age 4", w.read("my 4 year old, indoor if it rains")["tastes"])
+        self.assertEqual(w.read("kids 3 and 6, we love Precita Park")["tastes"], ["age 3", "age 6"])
+        self.assertEqual(w.read("lunch at 12, 3 km, with 4 friends")["tastes"], [])  # no age from other numbers
+        self.assertNotIn("toilet", w.merge(w.read("no toilets please"))["tastes"])
+
+    def test_no_group_line_for_two_families(self):
+        friend = Person.objects.exclude(pk=self.me.pk).first()
+        p = self.plan(kind="kids", part="morning", group=2)
+        p.kind_named = True
+        p.save()
+        self.assertNotIn("A few friends", messages.offer_text(self.me, p, p.option_list()))
+        p.group_size = 3
+        self.assertIn("A few friends", messages.offer_text(self.me, p, p.option_list()))
+        self.assertTrue(friend)
+
+    def test_one_title_per_kind(self):
+        from . import calendar as cal
+        from .models import KINDS
+        for kind, _ in KINDS:
+            p = self.plan(kind=kind, part="evening" if kind in ("evening", "group_dinner") else "morning")
+            p.kind_named = True
+            p.save()
+            self.assertNotIn(" with", p.title.lower(), kind)
+            self.assertFalse(p.title.lower().startswith("with"), kind)
+            p.exact_time = dt.time(10, 0)
+            title = cal.details(p, Person.objects.exclude(pk=self.me.pk).first())[0]
+            self.assertEqual(title.lower().count(" with "), 1, (kind, title))
+            self.assertTrue(title.startswith(p.title), (kind, title))
+        p = self.plan(kind="kids", part="morning")
+        p.kind_named = True
+        self.assertEqual(p.title, "Playdate")

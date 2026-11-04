@@ -38,6 +38,14 @@ CATEGORY = {"bar", "pub", "cafe", "coffee", "park", "playground", "restaurant", 
             "bistro", "brewery", "lounge", "market", "mall", "beach", "kids", "chain", "food", "spot",
             "shop", "tiki bar", "coffee shop", "fast food", "noise", "crowd", "music"}
 GENERIC = set(TASTES) | set(FOODS) | CATEGORY
+# T321: a parent's facts are kept as taste words, so the place step and the card can use them:
+# 'my 4 year old' / 'kids 3 and 6' / 'ages 5 and 7' -> 'age 4'; 'shade and a toilet' -> 'shade', 'toilet'.
+AGE_RE = re.compile(r"\b(\d{1,2})[\s-]*(?:years?|yrs?|yo)[\s-]*olds?\b|\b(\d{1,2})[\s-]*yo\b")
+AGE_LIST_RE = re.compile(r"\b(?:kids?|children|child|boys?|girls?|sons?|daughters?|ages?|aged)\s+"
+                         r"(?:are\s+|of\s+)?(\d{1,2}(?:\s*(?:,|and|&)\s*\d{1,2})*)\b")
+NEEDS = {"shade": r"shade|shady", "toilet": r"toilets?|restrooms?|bathrooms?|wc",
+         "stroller": r"strollers?|buggy|pram", "changing table": r"changing tables?",
+         "fenced": r"fenced"}
 
 
 def empty():
@@ -124,7 +132,21 @@ def read(text):
             else:
                 neg = False
                 _plain(out, piece)
+    _kid_facts(out, t)
     return out
+
+
+def _kid_facts(out, t):
+    """T321: ages ('age 4') and needs ('shade', 'toilet') as taste words, never as a dislike."""
+    ages = [a or b for a, b in AGE_RE.findall(t)]
+    for m in AGE_LIST_RE.finditer(t):
+        ages += re.findall(r"\d{1,2}", m.group(1))
+    for a in ages:
+        if 0 < int(a) < 18:
+            _add(out["tastes"], f"age {int(a)}")
+    for word, pattern in NEEDS.items():
+        if re.search(r"\b(?:" + pattern + r")\b", t) and not any(word in d for d in out["dislikes"]):
+            _add(out["tastes"], word)
 
 
 def merge(*parts):
