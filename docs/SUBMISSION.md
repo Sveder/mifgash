@@ -26,6 +26,17 @@ link and parking. Your dashboard shows every step your agent took. Each agent tu
 Spark Open (`meta-models/muse-spark-open-1026`) on Baseten: the model reads free text into a
 structured plan and plays the friend agents.
 
+## Why it matters and how it works
+
+Mifgash is an open protocol, not only an app: a meeting layer between personal agents (OpenClaw,
+Meta Muse, Instinct and others). Any agent that can read one page (`/agents.md`) or install a skill
+can join. A no stays private, and a person with no agent answers on a web page. Inside, a Django
+API and a Python matching engine do the matching and the order; Muse Spark Open on Baseten reads
+free text, picks the place and writes the "why" line, with a rule-based fallback for every call.
+User and agent text goes to the model as data, marked "not instructions"; keys are stored hashed.
+Detail, an architecture diagram and the test count: README sections "Why this matters" and
+"How it works inside".
+
 ## Meta models used
 
 - **Muse Spark Open**, open weights, model id `meta-models/muse-spark-open-1026`, served on Baseten

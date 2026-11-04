@@ -1,0 +1,56 @@
+# GitHub Actions workflow. To turn it on, copy it to .github/workflows/tests.yml
+# (a push of that path needs a token with the workflow scope).
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: mifgash
+          POSTGRES_USER: mifgash
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mifgash"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Dummy values for CI only. No real secret, no network call: the LLM backend is the stub,
+      # email is the stub.
+      MIFGASH_SECRET_KEY: ci-dummy-secret-key-0123456789abcdefghijklmnop
+      MIFGASH_FIELD_KEYS: ZHVtbXktZmVybmV0LWtleS1mb3ItY2ktb25seS0wMDA=
+      MIFGASH_HASH_KEY: ci-dummy-hash-key-0123456789abcdef
+      MIFGASH_DB_HOST: 127.0.0.1
+      MIFGASH_DB_PORT: "5432"
+      MIFGASH_DB_NAME: mifgash
+      MIFGASH_DB_USER: mifgash
+      MIFGASH_DB_PASSWORD: ci-only-password
+      MIFGASH_LLM_BACKEND: stub
+      MIFGASH_EMAIL: stub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: python manage.py check
+      - run: python manage.py test --noinput

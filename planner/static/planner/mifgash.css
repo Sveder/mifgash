@@ -356,3 +356,24 @@ header{flex-wrap:wrap}header nav{order:3;flex:1 0 100%;margin-left:0;flex-wrap:w
 .free-form textarea::placeholder{opacity:.75;font-style:italic}
 .free-form #meet-err{margin:8px 0 4px}
 #meet-picked{margin-left:4px;font-weight:700;color:var(--ink)}
+/* ---- 'How this meetup came together' Sankey (planner/story.py) ---- */
+.story h3{margin:0 0 8px}.story h4{margin:14px 0 4px;font-size:14px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.story .small{font-size:13px;margin:4px 0 0}
+.story-when{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 4px;font-size:13px}
+.story-when li{background:var(--surface-2);border-radius:999px;padding:3px 10px}
+.story-when li+li::before{content:"\2192";color:var(--muted);margin:0 6px 0 -2px}
+.story-when b{font-weight:600}
+.sk-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+.sk{display:block;width:100%;min-width:340px;max-width:560px;height:auto;font-family:var(--font)}
+.sk-l{fill:none;stroke:var(--sea);stroke-opacity:.28;stroke-dasharray:1;stroke-dashoffset:0}
+.sk-l.yes{stroke:var(--meet);stroke-opacity:.45}.sk-l.wait{stroke:var(--sun);stroke-opacity:.5}
+.sk-l.quiet{stroke:var(--muted);stroke-opacity:.18}
+.sk-n{fill:var(--sea)}.sk-n.yes{fill:var(--meet)}.sk-n.wait{fill:var(--sun)}.sk-n.quiet{fill:var(--muted);fill-opacity:.55}
+.sk-t,.sk-s{fill:var(--ink);font-size:12px;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.sk-t{font-weight:600}.sk-s{fill:var(--muted);font-size:11px}
+@media (prefers-reduced-motion:no-preference){
+  .sk-l{stroke-dashoffset:1;animation:sk-draw .7s ease-out forwards;animation-delay:calc(var(--d) * .55s + .15s)}
+  .sk-n,.sk-t,.sk-s{opacity:0;animation:sk-in .35s ease-out forwards;animation-delay:calc(var(--d) * .55s)}
+}
+@keyframes sk-draw{to{stroke-dashoffset:0}}
+@keyframes sk-in{to{opacity:1}}

@@ -1,0 +1,9 @@
+{# 'How this meetup came together' (Michael 4/11): planner/story.py builds the SVG. A no stays private: counts only, no names but the yes people, no ask order. #}
+{% if story %}<section class="card story" id="story" aria-labelledby="story-h">
+<h3 id="story-h">How this meetup came together</h3>
+<ol class="story-when">{% for label, val in story.when %}<li><b>{{ label }}</b> <span class="num">{{ val }}</span></li>{% endfor %}</ol>
+{% if story.who %}<h4>Who</h4><div class="sk-wrap">{{ story.who|safe }}</div>
+<p class="mute small">Counts only. A no stays private: nobody sees who said no, who did not answer, or who was asked first.</p>
+{% elif story.going %}<p class="mute">Going: {{ story.going }}.</p>{% endif %}
+{% if story.where %}<h4>Where</h4><div class="sk-wrap">{{ story.where|safe }}</div>{% endif %}
+</section>{% endif %}

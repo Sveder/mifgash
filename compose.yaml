@@ -1,0 +1,82 @@
+# Run the whole Mifgash site on your own machine:
+#   docker compose up --build      then open http://localhost:8000/
+#   docker compose down -v         stop and delete the data
+# Values come from .env when it exists (see .env.example); the defaults below need no .env.
+x-app-env: &app-env
+  MIFGASH_DB_HOST: db
+  MIFGASH_DB_PORT: "5432"
+  MIFGASH_DB_NAME: ${MIFGASH_DB_NAME:-mifgash}
+  MIFGASH_DB_USER: ${MIFGASH_DB_USER:-mifgash}
+  MIFGASH_DB_PASSWORD: ${MIFGASH_DB_PASSWORD:-mifgash-local-only}
+  MIFGASH_LLM_BACKEND: ${MIFGASH_LLM_BACKEND:-stub}
+  BASETEN_API_KEY: ${BASETEN_API_KEY:-}
+  MIFGASH_DEBUG: ${MIFGASH_DEBUG:-0}
+  MIFGASH_HTTPS: ${MIFGASH_HTTPS:-0}
+  MIFGASH_ALLOWED_HOSTS: ${MIFGASH_ALLOWED_HOSTS:-localhost,127.0.0.1}
+  MIFGASH_TRUSTED_ORIGINS: ${MIFGASH_TRUSTED_ORIGINS:-http://localhost:8000,http://127.0.0.1:8000}
+  MIFGASH_PUBLIC_URL: ${MIFGASH_PUBLIC_URL:-http://localhost:8000}
+  MIFGASH_DEMO: ${MIFGASH_DEMO:-0}
+  MIFGASH_DEMO_TOKEN: ${MIFGASH_DEMO_TOKEN:-}
+  MIFGASH_EMAIL: ${MIFGASH_EMAIL:-stub}
+  MIFGASH_SECRET_KEY: ${MIFGASH_SECRET_KEY:-}
+  MIFGASH_FIELD_KEYS: ${MIFGASH_FIELD_KEYS:-}
+  MIFGASH_HASH_KEY: ${MIFGASH_HASH_KEY:-}
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${MIFGASH_DB_NAME:-mifgash}
+      POSTGRES_USER: ${MIFGASH_DB_USER:-mifgash}
+      POSTGRES_PASSWORD: ${MIFGASH_DB_PASSWORD:-mifgash-local-only}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  web:
+    build: .
+    image: mifgash:local
+    command: ["web"]
+    environment: *app-env
+    volumes:
+      - keys:/keys
+      - static:/static
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/agents.md', timeout=5)\""]
+      interval: 5s
+      timeout: 6s
+      retries: 30
+      start_period: 10s
+
+  tick:
+    image: mifgash:local
+    command: ["tick"]
+    environment: *app-env
+    volumes:
+      - keys:/keys
+    depends_on:
+      web:
+        condition: service_healthy
+
+  proxy:
+    image: nginx:1.27-alpine
+    ports:
+      - "${MIFGASH_PORT:-8000}:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static:/static:ro
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  keys:
+  static:

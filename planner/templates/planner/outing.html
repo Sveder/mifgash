@@ -1,5 +1,6 @@
 {% extends "planner/base.html" %}
 {% block body %}
 {% include "planner/_ticket.html" with m=m outing_page=True %}
+{% include "planner/_story.html" %}
 <p><a href="{% url 'dashboard' %}">Back to my dashboard</a></p>
 {% endblock %}

@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from . import api, calendar, demo, engine, finalize, llm, matching, messages, sandbox_agent
+from . import api, calendar, demo, engine, finalize, llm, matching, messages, sandbox_agent, story
 from . import wants as wants_mod
 from .models import AgentMessage, ChatTurn, Friendship, Invite, MagicLink, Offer, Person, Plan, Slot
 from .seed import demo_friends
@@ -299,7 +299,8 @@ def plan_log(request, uid):
         return plan_log_json(request, plan)
     p = dash_person(request)
     if p:  # F5a (T254): a person sees the activity rows in words, never the raw payload
-        return render(request, "planner/log.html", {"plan": plan, "viewer": p, "rows": viewer_rows(p, plan)})
+        return render(request, "planner/log.html", {"plan": plan, "viewer": p, "rows": viewer_rows(p, plan),
+                                                    "story": story.build(plan, p)})
     rows = [log_row(m) for m in AgentMessage.objects.filter(plan=plan)]  # MIFGASH_DEMO operator view
     offers = plan.offers.select_related("person").all()
     return render(request, "planner/log.html", {"plan": plan, "rows": rows, "offers": offers})
@@ -455,7 +456,7 @@ def outing(request, uid):
     side = p if p and p.pk in {x.pk for x in finalize.sides(plan)} else None
     # A demo visitor who is not on the plan sees the owner's ticket, with no forms.
     m = match_row(plan, side or plan.owner, request.build_absolute_uri("/"), forms=bool(side))
-    return render(request, "planner/outing.html", {"plan": plan, "m": m})
+    return render(request, "planner/outing.html", {"plan": plan, "m": m, "story": story.build(plan, p if p and side else None)})
 
 
 def short_side(token):

@@ -3,6 +3,7 @@
 {% if viewer %}{# F5a (T254): a dashboard person sees the same activity rows as the dashboard, in words #}
 <h2>{{ plan.title }}: activity</h2>
 <p class="mute">The steps your agent and Mifgash took for this outing.</p>
+{% include "planner/_story.html" %}
 <div class="log">{% for r in rows %}<div class="l"><span class="mute">{{ r.t }}</span> <span class="who">{{ r.who }}</span>{% if r.sent %} <span class="tag">sent to your agent</span>{% endif %}<br>{{ r.summary }}{% if r.model %} <span class="model">{{ r.model }}</span>{% endif %}</div>
 {% empty %}<div class="l mute">Nothing yet.</div>{% endfor %}</div>
 <p><a href="{% url 'dashboard' %}#activity">Back to the dashboard</a></p>

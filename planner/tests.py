@@ -8013,7 +8013,8 @@ class PlaydateNightTest1Tests(Base):
         return Plan.objects.get(pk=r.json()["availability_id"])
 
     def test_playdate_parse_and_match(self):
-        self.post("ben_p", {"text": "free for a playdate near Mission", "date": SUNDAY.isoformat(), "part": "morning",
+        self.post("ben_p", {"text": "free for a kids playdate near Mission",  # "kids": the stub parser (CI) reads it
+                            "date": SUNDAY.isoformat(), "part": "morning",
                             "preferences": "kids 3 and 6; we love Precita Park"})
         plan = self.post("grace_p", {"text": "playdate near Mission, kids 5 and 7", "date": SUNDAY.isoformat(),
                                      "part": "morning", "preferences": "shade and a toilet; we do not like Dolores Park"})
