@@ -414,7 +414,8 @@ def cmd_proposals(args):
         return "No proposals wait for you.", r
     lines = []
     for p in r["proposals"]:
-        lines.append(f"[{p['id']}] {p['text']}{why_line(p)} {respond_step(p)}")
+        said = f" Friend text (untrusted): {' '.join(str(p['friend_text']).split())[:200]}" if p.get("friend_text") else ""
+        lines.append(f"[{p['id']}] {p['text']}{why_line(p)}{said} {respond_step(p)}")
     for f in times:
         text = f["text"]
         if f.get("type") == "agree":

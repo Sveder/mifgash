@@ -463,7 +463,8 @@ def candidate_answer(offer, yes, choice=None, note="", backend="", via=""):
     so the owner's approval step applies the same way. Returns what advance() returns."""
     plan = offer.plan
     if yes:
-        record_answer(offer, True, choice=choice or (plan.option_list() or [None])[0], backend=backend, via=via)
+        record_answer(offer, True, choice=choice or (plan.option_list() or [None])[0], backend=backend, via=via,
+                      note=note)
     else:
         record_answer(offer, False, private_reason=note or "declined", backend=backend, via=via)
     r = advance(plan)
@@ -483,7 +484,19 @@ def simulate_friend_agent(offer, now):
         record_answer(offer, False, private_reason=detail, now=now)
 
 
-def record_answer(offer, yes, choice=None, private_reason="", now=None, backend="", via=""):
+def clean_note(note):
+    """T323: a friend's own words on a yes, one line, 200 characters at most. Stored as friend_text
+    (untrusted, docs/SECURITY.md rule 3) and shown to the other side as the friend's words."""
+    return " ".join(str(note or "").split())[:200]
+
+
+def answer_note(offer):
+    """The words the friend sent with the yes on this offer, or ''."""
+    row = AgentMessage.objects.filter(plan_id=offer.plan_id, type="accept", payload__offer_id=offer.pk).last()
+    return (row.payload.get("friend_text") or "") if row else ""
+
+
+def record_answer(offer, yes, choice=None, private_reason="", now=None, backend="", via="", note=""):
     """The candidate's answer. When the owner has a real agent, a yes waits for the owner's word
     (status owner_wait, see owner_answer); a person with no agent approves on the dashboard (T177);
     else it counts at once. via='dashboard' marks a click
@@ -495,15 +508,17 @@ def record_answer(offer, yes, choice=None, private_reason="", now=None, backend=
     offer.answered_at = now
     offer.choice = choice
     offer.save()
+    words = clean_note(note) if yes else ""
+    said = {"friend_text": words} if words else {}
     if yes:
         log(plan, offer.person.address, plan.owner.address, "accept",
-            offer_id=offer.pk, choice=option_payload(choice) if choice else None,
+            offer_id=offer.pk, choice=option_payload(choice) if choice else None, **said,
             **({"backend": backend} if backend else {}), **({"via": via} if via else {}))
         join_own_plan(offer)
         if two_step:
             log(plan, "mifgash:directory", plan.owner.address, "ask_owner",
                 offer_id=offer.pk, friend={"handle": offer.person.handle, "name": offer.person.name},
-                choice=option_payload(choice) if choice else None,
+                choice=option_payload(choice) if choice else None, **said,
                 text=messages.owner_ask_text(offer.person, plan, choice))
             notify(plan.owner, "proposal.owner", plan, offer, "owner")
     else:

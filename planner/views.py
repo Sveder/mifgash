@@ -182,7 +182,8 @@ def plan_state(plan):
     owner_wait = plan.offers.filter(status="owner_wait").select_related("person", "choice").first()
     return {
         "owner_wait": owner_wait,
-        "owner_wait_text": messages.owner_ask_text(owner_wait.person, plan, owner_wait.choice) if owner_wait else "",
+        "owner_wait_text": (messages.owner_ask_text(owner_wait.person, plan, owner_wait.choice)
+                            + said_words({"friend_text": engine.answer_note(owner_wait)})) if owner_wait else "",
         "status": plan.status,
         "guests": guests,
         "owner_text": last.text if last else "",
@@ -216,6 +217,12 @@ def friend_first(p):
     return messages.first_name(o.person) if o else "your friend"
 
 
+def said_words(p):
+    """T323: the friend's own note on a yes, marked as the friend's words (not Mifgash's)."""
+    words = (p.get("friend_text") or "").strip()
+    return f' Their words: "{words}"' if words else ""
+
+
 def log_row(m):
     """One log row in plain words. The order seed stays in the payload (operator view), not in the
     words. A click on the dashboard (payload via='dashboard') is credited to the person (T96)."""
@@ -226,7 +233,7 @@ def log_row(m):
     summary = {
         "find": f"looking for friends open {p.get('intent', {}).get('part')} near {p.get('intent', {}).get('area', {}).get('name')}: {p.get('candidates')} found, random order",
         "offer": p.get("text", ""),
-        "accept": "yes" + (f", picks {p['choice']['name']}" if p.get("choice") else ""),
+        "accept": "yes" + (f", picks {p['choice']['name']}" if p.get("choice") else "") + said_words(p),
         "decline": "not this time (reason stays private)",
         "expired": "no answer in time; moving on quietly",
         "confirm": p.get("text", ""),
@@ -237,7 +244,7 @@ def log_row(m):
         "push_refused": f"{p.get('event')}: not sent, {p.get('text', '')}",
         "email_stub": p.get("text", ""),
         "email_sent": p.get("text", ""),
-        "ask_owner": f"{friend_first(p)} said yes. Your call." if m.type == "ask_owner" else "",
+        "ask_owner": f"{friend_first(p)} said yes. Your call.{said_words(p)}" if m.type == "ask_owner" else "",
         "owner_approve": f"You approved {friend_first(p)}." if m.type == "owner_approve" else "",
         "owner_pass": "You passed (the reason stays private).",
         # G3 (T229): the group dinner rows in plain words, counts only
@@ -772,7 +779,7 @@ def dashboard(request):
     waiting = []
     for o in Offer.objects.filter(plan__owner=p, status="owner_wait", plan__status="asking").select_related(
             "person", "choice__area", "plan__area"):
-        waiting.append({"offer": o, "reason_model": llm.model_label(o.reason_backend), "when": messages.card_when(o.plan),
+        waiting.append({"offer": o, "note": engine.answer_note(o), "reason_model": llm.model_label(o.reason_backend), "when": messages.card_when(o.plan),
                         "place": o.choice or (o.plan.option_list() or [None])[0], "group": group_progress(o.plan)})
     # The friend's side of an owner_wait offer: they said yes, the owner has not decided yet.
     said_yes = []

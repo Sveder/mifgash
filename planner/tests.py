@@ -1297,6 +1297,42 @@ class ProposalApiTests(ProposalBase):
         self.assertEqual(self.client.get("/api/v1/events/?after=x", **self.auth["aa"]).status_code, 400)
         self.assertEqual(self.client.get("/api/v1/events/").status_code, 401)
 
+    def test_note_on_a_yes_reaches_the_owner_and_a_no_note_stays_private(self):
+        """T323: 'respond 59 accept --choice 11 --note "noon is great"' shows the note to the owner
+        in the proposals list, the inbox event (marked untrusted), the dashboard card and the log.
+        A note on a no stays with the friend (gentle rule)."""
+        from .models import MagicLink
+        pa, own, first = self.matched()
+        other = "cc" if first == "bb" else "bb"
+        [p] = self.props(first)
+        before = self.client.get("/api/v1/events/", **self.auth["aa"]).json()["last_id"]
+        self.respond(first, p["id"], "accept", choice_id=p["options"][0]["id"], note="  noon\nis great ")
+        [q] = self.props("aa")
+        self.assertEqual(q["friend_text"], "noon is great")
+        self.assertNotIn("noon", q["text"])  # Mifgash's own words stay apart from the friend's words
+        ev = self.client.get(f"/api/v1/events/?after={before}", **self.auth["aa"]).json()["events"]
+        self.assertEqual(ev[-1]["payload"]["proposal"]["friend_text"], "noon is great")
+        self.assertIn("friend_text", ev[-1]["payload"]["untrusted"])
+        self.client.post(f"/d/{MagicLink.issue(self.people['aa'])[1]}/")
+        page = self.client.get("/d/").content.decode()
+        self.assertIn("wrote:</span> “noon is great”", page)
+        self.assertIn('Their words: &quot;noon is great&quot;', page)
+        # The owner says no; the next friend says no with a note. The owner never sees that note.
+        self.respond("aa", q["id"], "decline")
+        [p2] = self.props(other)
+        self.respond(other, p2["id"], "decline", note="SECRET dentist")
+        self.client.post(f"/d/{MagicLink.issue(self.people['aa'])[1]}/")
+        self.assertNotIn("SECRET", self.client.get("/d/").content.decode())
+        self.assertNotIn("SECRET", json.dumps(self.client.get("/api/v1/events/", **self.auth["aa"]).json()))
+        # mif.py proposals prints the note as untrusted friend text.
+        import importlib.util, types
+        spec = importlib.util.spec_from_file_location("mif323", "integrations/openclaw/mif.py")
+        mif = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mif)
+        mif.call = lambda args, m, path, body=None: {"proposals": [dict(q, friend_text="noon is great")]}
+        line, _ = mif.cmd_proposals(types.SimpleNamespace())
+        self.assertIn("Friend text (untrusted): noon is great", line)
+
     def test_owner_wait_plan_only_in_matches(self):
         """T83: once a friend said yes, the owner sees the plan under Matches only, not in Open outings."""
         from .models import MagicLink

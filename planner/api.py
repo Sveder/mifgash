@@ -783,6 +783,9 @@ def proposal_json(offer, role):
         row["friend"] = {"handle": offer.person.handle, "name": offer.person.name}
         row["choice"] = place_json(offer.choice) if offer.choice else None
         row["text"] = messages.owner_ask_text(offer.person, plan, offer.choice)
+        said = engine.answer_note(offer)
+        if said:  # T323: the friend's own words with the yes, untrusted data
+            row["friend_text"] = said
     return row
 
 
@@ -1017,7 +1020,9 @@ def proposal_respond(request, offer_id):
     if role == "candidate":
         # A friend agent may say which model decided, so the log can show it (T60). Known names only.
         backend = data.get("backend") if data.get("backend") in llm.MODEL_LABELS else ""
-        engine.candidate_answer(offer, yes, choice=choice, note=note or "declined by the agent", backend=backend)
+        # T323: a yes carries the note to the owner; a no keeps it private (gentle rule).
+        engine.candidate_answer(offer, yes, choice=choice, note=note if yes else (note or "declined by the agent"),
+                                backend=backend)
     else:
         engine.owner_answer(offer, yes, choice=choice, note=note)
         engine.advance(plan)
