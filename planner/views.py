@@ -1055,6 +1055,14 @@ def match_row(pl, viewer, base=None, forms=True):
         row["times"] = time_choices(pl.exact_time.strftime("%H:%M"), pl.part)
         row["default_time"] = pl.exact_time.strftime("%H:%M")
         row["pick"] = pl.chosen_id
+    if pl.status == "final" and pl.proposed_time and pl.proposed_by_id:
+        # T328: a guest asked the owner to move the set time of a group. The owner approves or keeps.
+        ask = {"by": messages.first_name(pl.proposed_by), "time": pl.proposed_time.strftime("%H:%M"),
+               "label": messages.clock(pl.proposed_time), "place": pl.proposed_activity_id or pl.chosen_id}
+        if viewer.pk == pl.owner_id:
+            row["move_ask"] = ask
+        elif viewer.pk == pl.proposed_by_id:
+            row["move_asked"] = f"You asked {messages.first_name(pl.owner)} to move it to {ask['label']}."
     if pl.status == "confirmed" and forms:
         # T94: a person without an agent sets or agrees the exact time here.
         row["places"] = finalize.places(pl)
@@ -1109,7 +1117,10 @@ def dashboard_finalize(request, plan_id):
     if p.pk not in {x.pk for x in finalize.sides(plan)}:
         raise Http404
     try:
-        finalize.finalize(plan, p, (request.POST.get("time") or request.POST.get("other")), request.POST.get("activity_id") or None)
+        if request.POST.get("keep"):  # T328: the owner keeps the time a guest asked to move
+            finalize.keep(plan, p)
+        else:
+            finalize.finalize(plan, p, (request.POST.get("time") or request.POST.get("other")), request.POST.get("activity_id") or None)
     except finalize.FinalizeError as e:
         request.session["dash_error"] = e.message[:1].upper() + e.message[1:] + "."
     sandbox_agent.kick(p)  # M7b (T179): the demo friend confirms or counters the time

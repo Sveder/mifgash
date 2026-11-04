@@ -6486,6 +6486,60 @@ class GroupDinnerPlaceTimeTests(Base):
         self.assertEqual(plan.log.filter(type="finalize_agree").count(), 3)
         self.assertEqual(plan.log.filter(type="final").count(), 4)
 
+    def test_t328_a_guest_time_tap_is_an_ask_the_owner_approves_or_keeps(self):
+        """T328: in a group only the owner moves the set time. A guest's chip (API, /h/ page) is an
+        ask to the owner; the owner approves it (the same finalize call) or keeps the time."""
+        from .models import AgentEvent, MagicLink
+        plan = self.run_group()
+        set_at = plan.exact_time
+        new = (dt.datetime.combine(SUNDAY, set_at) + dt.timedelta(minutes=30)).time().strftime("%H:%M")
+        r = self.api("ann", "post", f"/api/v1/outings/{plan.pk}/finalize/", {"time": new})
+        self.assertEqual(r.status_code, 200, r.content)
+        d = r.json()
+        self.assertEqual((d["status"], d["time"], d["asked"], d["changed"]), ("final", set_at.strftime("%H:%M"), True, False))
+        plan.refresh_from_db()
+        self.assertEqual(plan.exact_time, set_at)  # the time did not move
+        self.assertFalse(plan.log.filter(type="time_change").exists())
+        ask = plan.log.get(type="move_ask")
+        self.assertTrue(ask.payload["text"].startswith(f"Ann asks to move the group dinner to {messages.clock(new)}"), ask.payload["text"])
+        ev = AgentEvent.objects.filter(person=self.people["oz"], plan=plan, event="outing.proposed").last()
+        self.assertEqual((ev.payload["type"], ev.payload["asked_by"], ev.payload["asked_time"]), ("move_ask", "Ann", new))
+        # nobody else hears of the ask
+        for h in ("ben",):
+            self.assertFalse(AgentEvent.objects.filter(person=self.people[h], plan=plan, payload__type="move_ask").exists())
+        # the owner sees it in outings and on the dashboard; the asker sees her own ask; Ben sees nothing
+        [o] = [x for x in self.api("oz", "get", "/api/v1/outings/").json()["outings"] if x["plan_id"] == plan.pk]
+        self.assertEqual((o["move_ask"]["by"], o["move_ask"]["time"]), ("Ann", new))
+        self.assertEqual(o["move_ask"]["approve"], f"finalize {plan.pk} --time {new}")
+        [g] = [x for x in self.api("ann", "get", "/api/v1/outings/").json()["outings"] if x["plan_id"] == plan.pk]
+        self.assertEqual(g["move_ask"]["by"], "you")
+        [b] = [x for x in self.api("ben", "get", "/api/v1/outings/").json()["outings"] if x["plan_id"] == plan.pk]
+        self.assertIsNone(b["move_ask"])
+        c = DemoClient()
+        _, token = MagicLink.issue(self.people["oz"])
+        c.post(f"/d/{token}/")
+        page = c.get("/d/").content.decode()
+        self.assertIn(f"<b>Ann</b> asks to move it to <b>{messages.clock(new)}</b>", page)
+        self.assertIn('name="keep" value="1"', page)
+        # Keep: the time stays, the ask closes, Ann hears it
+        c.post(f"/d/finalize/{plan.pk}/", {"keep": "1"})
+        plan.refresh_from_db()
+        self.assertEqual((plan.exact_time, plan.proposed_time), (set_at, None))
+        self.assertEqual(plan.log.get(type="move_keep").payload["text"],
+                         f"Oz keeps the group dinner at {messages.clock(set_at)}.")
+        # The guest without an agent asks from the /h/ page; the owner approves on the dashboard
+        hal_offer = plan.offers.get(person=self.hal)
+        self.assertEqual(self.client.post(f"/h/{hal_offer.token}/", {"time": new, "activity_id": plan.chosen_id}).status_code, 302)
+        plan.refresh_from_db()
+        self.assertEqual((plan.exact_time, plan.proposed_by), (set_at, self.hal))
+        c.post(f"/d/finalize/{plan.pk}/", {"time": new, "activity_id": plan.chosen_id})
+        plan.refresh_from_db()
+        self.assertEqual(plan.exact_time.strftime("%H:%M"), new)
+        self.assertIsNone(plan.proposed_time)
+        self.assertEqual(plan.log.filter(type="time_change").count(), 1)
+        self.assertTrue(AgentEvent.objects.filter(person=self.people["ann"], plan=plan, event="outing.final",
+                                                  payload__changed_by="Oz").exists())
+
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
     def test_a_new_time_resets_the_yeses(self):
         plan = self.run_group()

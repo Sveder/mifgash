@@ -935,6 +935,13 @@ def my_outing_json(request, plan, person, offer):
         # T268: Mifgash set the time itself (T258). Once a side moved it, a friend agent leaves it.
         moved = plan.log.filter(type="time_change").order_by("pk").first()
         row["time_moved"] = moved is not None
+        # T328: a guest's ask to move the time of a group (only the owner and the asker see it)
+        row["move_ask"] = None
+        if plan.proposed_time and plan.proposed_by_id and person.pk in (plan.owner_id, plan.proposed_by_id):
+            row["move_ask"] = {"by": "you" if plan.proposed_by_id == person.pk else first_name(plan.proposed_by),
+                               "time": plan.proposed_time.strftime("%H:%M"),
+                               "approve": f"finalize {plan.pk} --time {plan.proposed_time.strftime('%H:%M')}"
+                               if person.pk == plan.owner_id else None}
         row["moved_by"] = None
         if moved:
             by = next((p for p in people if p.address == moved.sender), None)

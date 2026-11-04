@@ -21,6 +21,11 @@
 {% else %}<input type="hidden" name="activity_id" value="{{ m.places.0.pk }}">{% endif %}
 <div class="fin-row"><select class="fin-time num" name="time" required aria-label="Time">{% for v, l in m.times %}<option value="{{ v }}"{% if v == m.default_time %} selected{% endif %}>{{ l }}</option>{% endfor %}</select>
 <button class="chip{% if not m.agree %} primary{% endif %}">{% if m.agree %}Propose{% else %}Set time{% endif %}</button></div></form>{% endif %}
+{% if m.move_ask %}<form method="post" action="{% url 'dashboard_finalize' m.plan.pk %}" class="agree move-ask">{% csrf_token %}
+<p class="proposed"><b>{{ m.move_ask.by }}</b> asks to move it to <b>{{ m.move_ask.label }}</b>.</p>
+<input type="hidden" name="activity_id" value="{{ m.move_ask.place }}">
+<div class="chips"><button class="chip primary" name="time" value="{{ m.move_ask.time }}">Move to {{ m.move_ask.label }}</button><button class="chip" name="keep" value="1">Keep {{ m.date.t }}</button></div></form>
+{% elif m.move_asked %}<p class="proposed mute">{{ m.move_asked }}</p>{% endif %}
 {% if m.change %}<form method="post" action="{% if m.action %}{{ m.action }}{% else %}{% url 'dashboard_finalize' m.plan.pk %}{% endif %}" class="fin change">{% csrf_token %}
 <input type="hidden" name="activity_id" value="{{ m.pick }}">
 <div class="mute">{% if human_page %}Suggest another time{% else %}Change time{% endif %}</div>

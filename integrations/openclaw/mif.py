@@ -211,7 +211,13 @@ def outing_line(o):
     who = ", ".join(o.get("who") or [])
     if o.get("group_size") and status != "gathering":  # G2 (T228): 'Group dinner, 4 people'
         text += f" (group of {o['group_size']})"
-    return f"[{o['plan_id']}] {state}: {text}." + (f" With {who}." if who else "")
+    line = f"[{o['plan_id']}] {state}: {text}." + (f" With {who}." if who else "")
+    ask = o.get("move_ask")  # T328: a guest asked the owner to move the time of a group
+    if ask and ask.get("by") == "you":
+        line += f" You asked to move it to {clock(ask['time'])}."
+    elif ask:
+        line += f" {ask['by']} asks to move it to {clock(ask['time'])}: '{ask['approve']}' to approve."
+    return line
 
 
 def calendar_links(r):
@@ -477,6 +483,8 @@ def cmd_finalize(args):
         body["activity_id"] = args.place
     r = call(args, "POST", f"outings/{args.id}/finalize/", body)
     head = f"{clock(r['time'])} at {r['place']['name']}, {r['address']}"
+    if r.get("asked"):  # T328: a guest in a group asks the owner; the time stays
+        return f"{r['text']} It stays {clock(r['time'])} until they answer.", r
     if r["status"] == "final" and r.get("changed"):  # T258: a set outing moved; the others hear it
         return f"Moved to {head}. The others hear the new time. {calendar_links(r)}", r
     if r["status"] == "final":

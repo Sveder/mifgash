@@ -230,15 +230,58 @@ def change(plan, person, raw_time, activity_id=None, backend=""):
         if not place:
             raise FinalizeError(400, "activity_id must be one of the places",
                                 places=[{"id": a.pk, "name": a.name} for a in options])
+    tag = {"backend": backend} if backend else {}
+    people = sides(plan)
+    if len(people) > 2 and person.pk != plan.owner_id:
+        # T328: in a group only the owner moves a set time. A guest's tap is an ask to the owner.
+        return move_ask(plan, person, time, place, tag)
     old_time, old_place = plan.exact_time, plan.chosen
     plan.exact_time, plan.chosen = time, place
-    plan.save(update_fields=["exact_time", "chosen"])
-    tag = {"backend": backend} if backend else {}
+    # T328: the owner's move answers any open ask from a guest
+    plan.proposed_time = plan.proposed_activity = plan.proposed_by = None
+    plan.save(update_fields=["exact_time", "chosen", "proposed_time", "proposed_activity", "proposed_by"])
     log(plan, person.address, "mifgash:directory", "time_change", time=time.strftime("%H:%M"),
         old_time=old_time.strftime("%H:%M") if old_time else None, place_id=place.pk,
         text=messages.moved_text(person, plan, old_place), **tag)
-    people = sides(plan)
     final_push(plan, [p for p in people if p.pk != person.pk],
                lambda p: messages.moved_text(person, plan, old_place) + " "
                + messages.final_text(plan, [x for x in people if x.pk != p.pk]), changed_by=person)
     return {**reply(plan, "final", time, place, []), "changed": True, "old_time": old_time.strftime("%H:%M") if old_time else None}
+
+
+def move_ask(plan, person, time, place, tag=None):
+    """T328: a guest in a group asks the owner to move the set time. The plan does not change.
+    The ask sits in proposed_* on the final plan (a final plan has no other use for them) until
+    the owner approves it (a finalize call with that time) or keeps the time (keep())."""
+    from .engine import api_agent, log, notify
+    plan.proposed_time, plan.proposed_activity, plan.proposed_by = time, place, person
+    plan.save(update_fields=["proposed_time", "proposed_activity", "proposed_by"])
+    text = messages.move_ask_text(person, plan, time, place)
+    log(plan, person.address, plan.owner.address, "move_ask", time=time.strftime("%H:%M"),
+        place_id=place.pk if place else None, text=text, **(tag or {}))
+    if api_agent(plan.owner):
+        notify(plan.owner, "outing.proposed", plan, type="move_ask", **reply(plan, "final", plan.exact_time, plan.chosen, []),
+               asked_by=messages.first_name(person), asked_time=time.strftime("%H:%M"), text=text)
+    return {**reply(plan, "final", plan.exact_time, plan.chosen, []), "changed": False, "asked": True,
+            "asked_time": time.strftime("%H:%M"),
+            "text": f"Asked {messages.first_name(plan.owner)} to move it to {messages.clock(time)}."}
+
+
+@transaction.atomic
+def keep(plan, person):
+    """T328: the owner keeps the set time; the guest who asked hears it. Only the owner."""
+    from .engine import api_agent, log, notify
+    from .models import Plan
+    plan = Plan.objects.select_for_update().get(pk=plan.pk)
+    if person.pk != plan.owner_id:
+        raise FinalizeError(403, "only the owner answers a time ask")
+    asker = plan.proposed_by
+    if plan.status != "final" or not asker:
+        raise FinalizeError(409, "no time ask is open on this outing")
+    plan.proposed_time = plan.proposed_activity = plan.proposed_by = None
+    plan.save(update_fields=["proposed_time", "proposed_activity", "proposed_by"])
+    text = messages.move_keep_text(person, plan)
+    log(plan, person.address, asker.address, "move_keep", time=plan.exact_time.strftime("%H:%M"), text=text)
+    if api_agent(asker):
+        notify(asker, "outing.final", plan, **reply(plan, "final", plan.exact_time, plan.chosen, []), text=text)
+    return {**reply(plan, "final", plan.exact_time, plan.chosen, []), "kept": True}

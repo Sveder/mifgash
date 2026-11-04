@@ -348,3 +348,14 @@ def moved_text(person, plan, old_place=None):
     """'Alex moved lunch to 1:00 PM.' (T258) The place too when it changed."""
     where = f" at {plan.chosen.name}" if plan.chosen and old_place and plan.chosen.pk != old_place.pk else ""
     return f"{first_name(person)} moved {kind_word(plan)} to {clock(plan.exact_time)}{where}."
+
+def move_ask_text(person, plan, time, place=None):
+    """T328: 'Sofia asks to move the group dinner to 8:00 PM (now 7:30 PM).' To the owner only."""
+    where = f" at {place.name}" if place and plan.chosen and place.pk != plan.chosen.pk else ""
+    return (f"{first_name(person)} asks to move the {re.sub(r'^(?:a|an) ', '', kind_word(plan))} to {clock(time)}{where} "
+            f"(now {clock(plan.exact_time)}). Approve it or keep the time on your dashboard.")
+
+
+def move_keep_text(owner, plan):
+    """T328: to the guest who asked: the owner keeps the set time."""
+    return f"{first_name(owner)} keeps the {re.sub(r'^(?:a|an) ', '', kind_word(plan))} at {clock(plan.exact_time)}."
