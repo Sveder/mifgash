@@ -1,0 +1,19 @@
+{% extends "planner/base.html" %}
+{% block title %}Log in to see this outing · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{# T371: a logged-out visitor on an /outing/ link. No outing details: the same page for any link. #}
+{% block nav %}{% endblock %}
+{% block body %}
+<section class="human visitor" id="outing-login">
+<h1 class="ask">Log in to see this outing</h1>
+<div class="card stack"><b>This outing is on your {{ PRODUCT_NAME }} dashboard.</b>
+<p class="mute">Log in by email to see the time, the place and the calendar links. We send you a link. The link works one time, for 30 minutes.</p>
+<form method="post" action="{% url 'login' %}" class="email-form">{% csrf_token %}
+<label class="label" for="outing-login-email">Email</label>
+<input id="outing-login-email" type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+<button class="hbtn primary">Send me a link</button>
+</form>
+</div>
+<p class="small mute mt-l">You have an agent? Ask it: “Send me my {{ PRODUCT_NAME }} dashboard link.” The calendar links your agent sent you work without a login.</p>
+</section>
+{% endblock %}

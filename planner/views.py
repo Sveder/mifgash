@@ -439,7 +439,14 @@ def open_page(request, token):
 
 
 def outing(request, uid):
-    """The outing ticket alone: the same partial and data as the dashboard card (T120)."""
+    """The outing ticket alone: the same partial and data as the dashboard card (T120).
+    T371: a visitor with no dashboard session gets a styled 'log in to see it' page instead of a
+    bare 404. The page is the same for any uuid, real or not, so it never says that an outing exists;
+    a logged-in person who is not on the plan still gets the 404."""
+    if not dash_person(request):
+        plan = Plan.objects.filter(uid=uid).first()
+        if not plan or not can_see_plan(request, plan):
+            return render(request, "planner/outing_login.html")
     plan = visible_plan(request, uid, Plan.objects.select_related("owner", "chosen__area", "area",
                                                                   "proposed_activity__area", "proposed_by"))
     if plan.status not in ("confirmed", "final"):

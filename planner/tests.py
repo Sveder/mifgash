@@ -2876,6 +2876,32 @@ class FinalizeTests(ProposalBase):
         self.assertEqual(page.count("Garlic: yes."), 1)
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
+    def test_outing_link_logged_out_gives_login_page(self):
+        """T371: logged out, a real /outing/ link answers a styled login page with no outing details;
+        an unknown uuid answers the same page; a logged-in stranger still gets 404."""
+        import uuid
+        from .models import MagicLink, Person
+        pa, first, other = self.confirmed()
+        fresh = Client()
+        r = fresh.get(f"/outing/{pa.uid}/")
+        self.assertEqual(r.status_code, 200)
+        page = r.content.decode()
+        self.assertIn("Log in to see this outing", page)
+        self.assertIn('action="/login/"', page)
+        self.assertNotIn(pa.chosen.name, page)
+        self.assertNotIn(self.people[first].name, page)
+        self.assertNotIn(pa.owner.name, page)
+        unknown = fresh.get(f"/outing/{uuid.uuid4()}/").content.decode()
+        import re
+        strip = lambda h: re.sub(r'name="csrfmiddlewaretoken" value="[^"]+"', "", h)
+        self.assertEqual(strip(unknown), strip(page))
+        on_plan = {pa.owner_id, *pa.offers.values_list("person_id", flat=True)}
+        stranger = Person.objects.exclude(pk__in=on_plan).first()
+        _, token = MagicLink.issue(stranger)
+        fresh.post(f"/d/{token}/")
+        self.assertEqual(fresh.get(f"/outing/{pa.uid}/").status_code, 404)
+
+    @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
     def test_outing_page_and_dashboard_share_one_ticket(self):
         """T120: /outing/<id>/ and the dashboard card show the same ticket; one primary button per card."""
         import re
@@ -4286,8 +4312,10 @@ class PublicPagesTests(ProposalBase):
         pa, first = self.final_plan()
         outsider = "cc" if first == "bb" else "bb"
         pa.offers.filter(person__handle=outsider).delete()
-        for url in (f"/outing/{pa.uid}/", f"/plan/{pa.uid}/", f"/plan/{pa.uid}/log/"):
+        for url in (f"/plan/{pa.uid}/", f"/plan/{pa.uid}/log/"):
             self.assertEqual(self.client.get(url).status_code, 404, url)  # no session, real signup
+        # T371: no session on /outing/ = the styled login page, with no outing details
+        self.assertContains(self.client.get(f"/outing/{pa.uid}/"), "Log in to see this outing")
         self.login(outsider)
         for url in (f"/outing/{pa.uid}/", f"/plan/{pa.uid}/", f"/plan/{pa.uid}/log/"):
             self.assertEqual(self.client.get(url).status_code, 404, url)
