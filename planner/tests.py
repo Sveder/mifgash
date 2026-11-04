@@ -6298,7 +6298,7 @@ class SandboxFriendTests(Base):
             sandbox_agent.answer_offers()
         offer.refresh_from_db()
         self.assertEqual((offer.status, offer.choice_id), ("owner_wait", idea.pk))
-        self.assertIsNone(engine.picked_place(offer))  # a yes to the Idea is no place vote
+        self.assertEqual(engine.picked_place(offer), idea)  # the yes names the Idea place
         self.assertIn(idea.name, messages.owner_ask_text(offer.person, plan, offer.choice, offer))
         self.assertNotIn(other.name, messages.owner_ask_text(offer.person, plan, offer.choice, offer))
 
@@ -6310,7 +6310,28 @@ class SandboxFriendTests(Base):
         prefs = {"likes": ["lunch"], "dislikes": ["loud"], "areas": []}
         self.assertEqual(friend_brain.decide("stub", prefs, proposal)[0]["choice_id"], 2)
         proposal["options"].reverse()
-        self.assertIsNone(friend_brain.decide("stub", prefs, proposal)[0]["choice_id"])
+        self.assertEqual(friend_brain.decide("stub", prefs, proposal)[0]["choice_id"], 2)  # the Idea, kept
+
+    def test_group_dinner_ends_at_the_place_the_friends_said_yes_to(self):
+        """T405 live 5/11: Maria, Lena and Sam said yes to the Idea place, and the outing moved to the
+        'middle of everybody' place nobody was asked about. Now each yes names the Idea place (or,
+        when the persona dislikes it, the next option), and the group vote keeps that place."""
+        from planner import friend_brain, sandbox_agent
+        self.client.post("/d/free/", {"text": "dinner Friday with 3 friends near Hayes Valley"})
+        plan = Plan.objects.get(owner=self.owner, kind="group_dinner")
+        proposal = {"kind": plan.kind, "options": [api.place_json(a) for a in plan.option_list()]}
+        want = next(o["id"] for o in proposal["options"]
+                    if not friend_brain.disliked(sandbox_agent.prefs(self.maria), proposal, o))
+        for _ in range(4):
+            offer = plan.offers.filter(status="owner_wait").first()
+            if not offer:
+                break
+            self.client.post(f"/d/answer/{offer.pk}/", {"answer": "accept"})
+            sandbox_agent.run()
+        plan.refresh_from_db()
+        self.assertIn(plan.status, ("confirmed", "final"))
+        self.assertEqual(plan.chosen_id, want)
+        self.assertFalse(AgentMessage.objects.filter(plan=plan, type="group_place").exists())
 
     def test_model_error_falls_back_to_the_stub(self):
         with override_settings(LLM_BACKEND="meta"):  # call_model raises in every test

@@ -101,13 +101,14 @@ def llm_decide(backend, prefs, proposal):
 
 def keep_idea(prefs, proposal, d):
     """T405: a yes keeps the place in the offer 'Idea:' line (the first option, the model's pick).
-    The friend names another place only when the persona dislikes the Idea place. choice_id None
-    means 'yes to the Idea', so the engine records no place vote."""
+    The friend names another place only when the persona dislikes the Idea place. The yes names the
+    Idea place on purpose, so a group dinner's vote (engine.group_vote) also keeps it and does not
+    fall back to the 'middle of everybody' place nobody was asked about."""
     options = proposal.get("options") or []
     if d.get("answer") != "accept" or not options:
         return d
     if not disliked(prefs, proposal, options[0]):
-        return {**d, "choice_id": None}
+        return {**d, "choice_id": options[0]["id"]}
     return d
 
 

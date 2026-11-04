@@ -4,7 +4,7 @@
     python3 scripts/try_demo_check.py [https://mifgash.sveder.com] [--limit 60]
 
 Steps: POST /try/, send the pre-filled line, wait for Maria's yes (the match), approve, wait for
-'It is set', read the outing card (T317: since T258 the time is set at once after the approve). Prints the seconds per step. Exit 1 when the
+'It is set', read the outing card and check it names the Idea place (T405) (T317: since T258 the time is set at once after the approve). Prints the seconds per step. Exit 1 when the
 whole run takes more than --limit seconds or a step does not arrive.
 """
 import argparse
@@ -88,6 +88,8 @@ def main():
 
     page, m = r.wait(r'action="(/d/answer/\d+/)"', "Maria's yes")
     r.mark("Maria's agent says yes (match)")
+    idea = re.search(r">\s*picked ([^<]+?)\s*<", page)  # T405: the 'picked' log row = the offer 'Idea:' place
+    idea = html.unescape(idea.group(1)) if idea else None
 
     page = r.post(m.group(1), {"answer": "accept"}, page)
     r.mark("approve the match")
@@ -102,6 +104,12 @@ def main():
     print("outing card:", words[:200])
     total = time.monotonic() - r.t0
     ok = total <= a.limit and "ics" in card
+    if idea:  # T405: Maria's yes keeps the Idea place, so the outing ends there
+        same = idea in words
+        print(f"Idea place: {idea} -> {'same place on the card' if same else 'FAIL: the card names another place'}")
+        ok = ok and same
+    else:
+        print("Idea place: no 'picked' row seen (not checked)")
     print(f"{'OK' if ok else 'FAIL'}: {total:.1f} s (limit {a.limit:.0f} s)")
     return 0 if ok else 1
 
