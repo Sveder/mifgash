@@ -28,3 +28,12 @@ class AnalyticsTests(TestCase):
         self.assertEqual(r.status_code, 302)
         self.assertIn("/ops/login/", r["Location"])
         self.assertNotIn("/ops/admin/login/", r["Location"])
+
+    def test_admin_header_links_ops_and_analytics(self):
+        from django.contrib.auth.models import User
+        User.objects.create_superuser("staff_t", "staff_t@example.com", "pw-x-123456")
+        self.client.login(username="staff_t", password="pw-x-123456")
+        r = self.client.get("/ops/admin/")
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'href="/_sl/dashboard/"')
+        self.assertContains(r, 'href="/ops/"')

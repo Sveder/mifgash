@@ -94,7 +94,7 @@ if os.environ.get("MIFGASH_ANALYTICS", "1") == "0":
 ROOT_URLCONF = "mifgash_site.urls"
 TEMPLATES = [{
     "BACKEND": "django.template.backends.django.DjangoTemplates",
-    "DIRS": [],
+    "DIRS": [BASE_DIR / "templates"],  # admin/base_site.html: Ops + Analytics links
     "APP_DIRS": True,
     "OPTIONS": {"context_processors": [
         "django.template.context_processors.request",
