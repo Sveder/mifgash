@@ -241,6 +241,12 @@ def food_match(a, food):
             or bool(FOOD_TAGS.get(food, set()) & tags))
 
 
+def is_liked(a, wants):
+    """T376: the place is one that a side named as liked ('we love Foreign Cinema')."""
+    _, name = place_words(a)
+    return any(len(like) > 3 and (like in name or name in like) for like in (wants or {}).get("likes") or [])
+
+
 def score(a, wants):
     """Higher first: a liked place 4, the food 3, each taste word 1."""
     if not wants:

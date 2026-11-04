@@ -174,7 +174,13 @@ def place_options(plan, exclude_tags=(), note=None, limit=3):
     from . import llm
     rows = suggest_activities(plan.kind, plan.area, plan.radius_km, limit=llm.PICK_MAX,
                               exclude_tags=exclude_tags, wants=plan.wants, note=note)
-    res = llm.pick_place(plan, rows)
+    liked = next((a for a in rows if wants_mod.is_liked(a, plan.wants)), None)
+    if liked is not None:
+        # T376: a place one side named as liked goes first. A place the other side avoids is
+        # already out of rows (_near drops the disliked), so no model call is needed here.
+        res = {"place": liked, "why": "", "backend": "", "cause": "liked place"}
+    else:
+        res = llm.pick_place(plan, rows)
     place = res["place"]
     wants = {k: v for k, v in (plan.wants or {}).items() if k != "pick"}
     if place is not None:

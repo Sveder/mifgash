@@ -7323,6 +7323,32 @@ class BothTastesTests(ProposalBase):
         if mine.status_code == 200:
             self.assertNotIn("sushi", json.dumps(mine.json().get("wants", {})))
 
+    def test_liked_place_beats_the_model_pick(self):
+        """T376 (NIGHT TEST 3 re-run): with the model on, it picked Aaha Indian Cuisine and Foreign
+        Cinema (Ben likes it, Ava does not avoid it) came second. The liked place goes first, with no
+        model call; a liked place the other side avoids never comes back."""
+        day = {"date": SUNDAY.isoformat(), "part": "evening", "kind": "evening", "area": "Mission"}
+        with override_settings(LLM_BACKEND="meta"), \
+                mock.patch("planner.llm._pick_call", side_effect=lambda backend, facts: {"id": int(re.findall(
+                    r"id (\d+): (?!Foreign Cinema)", facts)[-1]), "why": "Close to you."}) as m:
+            r = self.post("aa", {**day, "text": "free for dinner near Mission",
+                                 "preferences": "I am vegetarian, avoid loud bars"})
+            pa = Plan.objects.get(pk=r.json()["availability_id"])
+            calls = m.call_count
+            self.post("bb", {**day, "text": "free for dinner near Mission",
+                             "preferences": "sushi; likes Foreign Cinema"})
+            pa.refresh_from_db()
+            self.assertEqual(pa.option_list()[0].name, "Foreign Cinema")
+            self.assertEqual(m.call_count, calls)  # the liked place needs no model pick
+        from . import wants
+        from .models import Activity as A
+        fc = A.objects.filter(name="Foreign Cinema").first()
+        self.assertTrue(wants.is_liked(fc, {"likes": ["foreign cinema"]}))
+        self.assertFalse(wants.is_liked(fc, {"likes": ["zuni cafe"]}))
+        rows = matching.suggest_activities("evening", area("Mission"), 3.0, limit=8,
+                                           wants={"likes": ["foreign cinema"], "dislikes": ["foreign cinema"]})
+        self.assertNotIn(fc, rows)
+
     def test_tacos_finds_the_mexican_place(self):
         from . import wants
         from .models import Activity
