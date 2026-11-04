@@ -10,11 +10,11 @@ def infer(owner, draft):
     kind, part, date = draft.get("kind"), draft.get("part"), draft.get("date")
     if kind and not part:
         part = matching.DEFAULT_PART[kind]
-        if kind == "kids" and date and date.weekday() in (4, 5):
+        if kind == "kids" and date and date.weekday() in matching.WEEKEND:
             part = "morning"
     if part and not kind:
         kind = matching.KIND_FOR_PART.get(part)
-        if part == "morning" and date and date.weekday() not in (4, 5):
+        if part == "morning" and date and date.weekday() not in matching.WEEKEND:
             kind = None
     draft["kind"], draft["part"] = kind, part
     if kind == "kids" and not draft.get("group_size"):

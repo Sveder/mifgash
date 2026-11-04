@@ -136,10 +136,10 @@ PARKING = {
 }
 
 # name, has_agent, home, work, likes, dislikes, max_km, one_on_one, kids, slots[(weekday, part, area or None)]
-# weekday: 0 Mon ... 3 Thu, 4 Fri, 5 Sat, 6 Sun
+# weekday: 0 Mon ... 4 Fri, 5 Sat, 6 Sun. Morning outings sit on the US weekend, Sat and Sun (T395).
 PEOPLE = [
     ("Alex", True, "Castro", "SoMa", ["lunch", "kids"], ["crowded"], 4, False, [4, 7],
-     [(6, "lunch", "SoMa"), (1, "lunch", "SoMa"), (3, "evening", None), (4, "morning", None), (1, "afternoon", None)]),
+     [(6, "lunch", "SoMa"), (1, "lunch", "SoMa"), (3, "evening", None), (6, "morning", None), (1, "afternoon", None)]),
     ("Lucas", True, "Marina", "SoMa", ["lunch", "evening"], [], 5, False, [],
      [(6, "lunch", "SoMa"), (0, "lunch", "SoMa"), (2, "evening", None), (3, "evening", None)]),
     ("Priya", True, "Financial District", "Financial District", ["lunch", "evening", "weekend"], ["cheap"], 5, False, [],
@@ -147,18 +147,18 @@ PEOPLE = [
     ("Mateo", False, "Mission", "Hayes Valley", [], [], 6, False, [],
      [(3, "evening", None), (5, "morning", None), (6, "lunch", "Hayes Valley")]),
     ("Sofia", True, "Golden Gate Park", None, ["kids", "weekend"], ["paid"], 4, False, [5],
-     [(4, "morning", None), (5, "morning", None), (1, "afternoon", None), (3, "afternoon", None)]),
+     [(6, "morning", None), (5, "morning", None), (1, "afternoon", None), (3, "afternoon", None)]),
     ("Ethan", True, "Marina", "SoMa", ["lunch"], ["loud"], 4, True, [],
      [(6, "lunch", "SoMa"), (2, "lunch", "SoMa")]),
     ("Jordan", False, "Richmond", None, [], [], 5, False, [6],
-     [(6, "lunch", None), (5, "morning", None), (4, "morning", None)]),
+     [(6, "lunch", None), (5, "morning", None), (6, "morning", None)]),
     ("Maria", True, "Castro", None, ["evening", "kids", "weekend"], [], 5, False, [7],
-     [(3, "evening", None), (5, "morning", None), (6, "lunch", None), (4, "morning", None)]),
+     [(3, "evening", None), (5, "morning", None), (6, "lunch", None), (6, "morning", None)]),
 ]
 
 # The demo owner is an invented person, never the real user (T114: the real user signs up as himself).
 OWNER = ("Emma", "Noe Valley", "SoMa", ["lunch", "kids", "evening", "weekend"], [5, 8],
-         [(6, "lunch", "SoMa"), (3, "evening", None), (4, "morning", None), (5, "morning", None),
+         [(6, "lunch", "SoMa"), (3, "evening", None), (6, "morning", None), (5, "morning", None),
           (1, "afternoon", None), (2, "lunch", "SoMa")])
 
 

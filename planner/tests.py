@@ -914,9 +914,13 @@ class AvailabilityApiTests(Base):
     def test_weekday_lunch_with_no_place_uses_work_area(self):
         self.kai.work_area = area("Financial District")
         self.kai.save()
-        d = self.post({"text": "lunch Sunday"}).json()
+        d = self.post({"text": "lunch Friday"}).json()
         self.assertEqual(d["area"], "Financial District")
         self.assertIn("Near your work area", d["area_note"])
+        # T395: Sunday is the US weekend, so a Sunday lunch is near home.
+        d = self.post({"text": "lunch Sunday"}).json()
+        self.assertEqual(d["area"], self.kai.home_area.name)
+        self.assertIn("Near your home area", d["area_note"])
 
     def test_no_home_area_still_asks_where(self):
         self.kai.home_area = None
@@ -939,25 +943,44 @@ class AvailabilityApiTests(Base):
         return d
 
     def test_open_tomorrow_with_no_part_takes_a_default_part_and_says_so(self):
-        """T61: a day and no part posts a plan; lunch on Sun-Thu, evening on Fri and Sat."""
+        """T61: a day and no part posts a plan; lunch on Mon-Fri, evening on Sat and Sun (T395)."""
         tomorrow = dt.date.today() + dt.timedelta(days=1)
         r = self.post({"text": "I am open tomorrow"})
         self.assertEqual(r.status_code, 201, r.json())
         d = r.json()
-        want = "evening" if tomorrow.weekday() in (4, 5) else "lunch"
+        want = "evening" if tomorrow.weekday() in (5, 6) else "lunch"
         self.assertEqual((d["date"], d["part"]), (tomorrow.isoformat(), want))
         self.assertNotIn("needs", d)
         self.assertTrue(d["part_note"].startswith(f"I took {want}. A friend free at"))
-        sun_thu = self.next_day((6, 0, 1, 2, 3))
-        d = self.post({"date": sun_thu.isoformat(), "area": "soma"}).json()
+        mon_fri = self.next_day((0, 1, 2, 3, 4))
+        d = self.post({"date": mon_fri.isoformat(), "area": "soma"}).json()
         self.assertEqual((d["part"], d["kind"]), ("lunch", "lunch"))
         self.assertEqual(d["part_note"], "I took lunch. A friend free at another part of that day still fits, and their part wins. "
                          "Say morning, afternoon or evening to change it.")
-        fri_sat = self.next_day((4, 5))
-        d = self.post({"date": fri_sat.isoformat(), "area": "soma"}).json()
+        sat_sun = self.next_day((5, 6))
+        d = self.post({"date": sat_sun.isoformat(), "area": "soma"}).json()
         self.assertEqual(d["part"], "evening")
         self.assertEqual(d["part_note"], "I took evening. A friend free at another part of that day still fits, and their part wins. "
                          "Say morning, lunch or afternoon to change it.")
+
+    def test_us_work_week_for_the_lunch_and_part_defaults(self):
+        """T395: the demo world is San Francisco. A weekday lunch is Mon-Fri, the weekend Sat and Sun."""
+        from . import api as api_mod
+        from .models import Person
+        p = Person.objects.create(name="Wes Week", handle="zz_week395", home_area=area("Mission"), work_area=area("SoMa"))
+        sun = self.next_day((6,))
+        fri = self.next_day((4,))
+        self.assertEqual(api_mod.default_area(p, {"part": "lunch", "date": sun}), (area("Mission"), "home"))
+        self.assertEqual(api_mod.default_area(p, {"part": "lunch", "date": self.next_day((5,))}), (area("Mission"), "home"))
+        self.assertEqual(api_mod.default_area(p, {"part": "lunch", "date": fri}), (area("SoMa"), "work"))
+        for wd, want in ((0, "lunch"), (3, "lunch"), (4, "lunch"), (5, "evening"), (6, "evening")):
+            self.assertEqual(api_mod.default_part(p, self.next_day((wd,))), (want, "weekday"), wd)
+        # A kids plan with no part is a morning on Sat and Sun, an afternoon on a weekday.
+        from .agent import infer
+        self.assertEqual(infer(p, {"kind": "kids", "date": sun})["part"], "morning")
+        self.assertEqual(infer(p, {"kind": "kids", "date": fri})["part"], "afternoon")
+        self.assertIsNone(infer(p, {"part": "morning", "date": fri})["kind"])
+        self.assertEqual(infer(p, {"part": "morning", "date": sun})["kind"], "weekend")
 
     def test_default_part_comes_from_the_weekly_slot(self):
         tomorrow = dt.date.today() + dt.timedelta(days=1)
@@ -989,7 +1012,7 @@ class AvailabilityApiTests(Base):
     def test_day_with_no_part_matches_a_friend_who_named_a_part(self):
         """T79: A says only the day (default evening on Fri/Sat), B names lunch -> one lunch proposal.
         Both orders of posting."""
-        day = self.next_day((4, 5)).isoformat()
+        day = self.next_day((5, 6)).isoformat()
         for first, second in (("any", "lunch"), ("lunch", "any")):
             Plan.objects.all().delete()
             auth = self.friend_auth(f"rona{first}")
@@ -1009,7 +1032,7 @@ class AvailabilityApiTests(Base):
             self.assertTrue(all(o.kind == "lunch" for o in plan.options.all()))
 
     def test_two_plans_with_no_part_match_on_the_default_part(self):
-        day = self.next_day((6, 0, 1, 2, 3)).isoformat()
+        day = self.next_day((0, 1, 2, 3, 4)).isoformat()
         auth = self.friend_auth("ken")
         self.post({"date": day, "area": "soma"})
         self.post({"date": day, "area": "soma"}, auth)
@@ -1018,7 +1041,7 @@ class AvailabilityApiTests(Base):
         self.assertFalse(Plan.objects.filter(any_part=True).exists())
 
     def test_named_parts_on_both_sides_still_need_the_same_part(self):
-        day = self.next_day((6, 0, 1, 2, 3)).isoformat()
+        day = self.next_day((0, 1, 2, 3, 4)).isoformat()
         auth = self.friend_auth("ken")
         self.post({"date": day, "part": "lunch", "kind": "lunch", "area": "soma"})
         self.post({"date": day, "part": "evening", "kind": "evening", "area": "soma"}, auth)
@@ -1026,7 +1049,7 @@ class AvailabilityApiTests(Base):
 
     def test_a_friend_plan_with_no_part_joins_at_the_asking_part(self):
         """T79: B's 'open that day' plan is a candidate of A's lunch plan; B's yes joins it at lunch."""
-        day = self.next_day((4, 5)).isoformat()
+        day = self.next_day((5, 6)).isoformat()
         auth = self.friend_auth("ken")
         self.post({"date": day, "area": "soma"}, auth)  # Ken first: evening by default
         self.post({"date": day, "part": "lunch", "kind": "lunch", "area": "soma"})
@@ -1042,7 +1065,7 @@ class AvailabilityApiTests(Base):
     def test_open_day_matches_a_friend_slot_at_another_part(self):
         """T102: 'open that day' (evening by default on Fri/Sat) and a friend with only a weekly
         morning slot -> the offer goes out for the morning, and the reply names the morning."""
-        day = self.next_day((4, 5))
+        day = self.next_day((5, 6))
         self.friend_auth("noga")
         noga = Person.objects.get(handle="noga")
         noga.likes = ["weekend"]
@@ -1059,7 +1082,7 @@ class AvailabilityApiTests(Base):
         """T112: 'open that day' matched at the morning keeps kind 'weekend' inside, but the human
         sees 'Morning meetup' and 'a morning meetup', never 'Weekend outing'."""
         from planner import calendar, messages
-        day = self.next_day((4, 5))
+        day = self.next_day((5, 6))
         self.friend_auth("noga")
         noga = Person.objects.get(handle="noga")
         noga.likes = ["weekend"]
@@ -1080,7 +1103,7 @@ class AvailabilityApiTests(Base):
 
     def test_rematch_starts_an_open_day_plan_at_a_friend_part(self):
         """T102: rematch_open tries every part of an 'open that day' plan, by slot or by plan."""
-        day = self.next_day((4, 5))
+        day = self.next_day((5, 6))
         d = self.post({"date": day.isoformat(), "area": "soma"}).json()
         self.assertEqual((d["part"], d["status"]), ("evening", "open"))
         self.friend_auth("noga")
@@ -4607,9 +4630,9 @@ class ScreensTests(TestCase):
             self.assertEqual(self.client.get(f"/h/{ids[key]}/").status_code, 200)
         self.assertIn("Now you and Alex pick the exact time", self.client.get(f"/h/{ids['h_agreed']}/").content.decode())
         self.assertNotIn(timezone.localdate() + dt.timedelta(days=1), set(Plan.objects.values_list("date", flat=True)))
-        # T149: a weekend plan only on a Friday or a Saturday; every sent offer has a reason line.
+        # T149: a weekend plan only on a Saturday or a Sunday (T395); every sent offer has a reason line.
         for p in Plan.objects.filter(owner__in=[me, maria, jordan], kind="weekend"):
-            self.assertIn(p.date.weekday(), (4, 5))
+            self.assertIn(p.date.weekday(), (5, 6))
         for o in Offer.objects.filter(plan__owner__in=[me, maria]):
             self.assertTrue(o.reason)
         self.assertEqual(html.count('class="why"'), 2)

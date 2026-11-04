@@ -401,7 +401,7 @@ def open_slots(o, viewer=None, days=7):
         d = today + dt.timedelta(days=i)
         for s in Slot.objects.filter(person=o, weekday=d.weekday()).select_related("area"):
             kind = matching.KIND_FOR_PART[s.part]
-            if s.part == "morning" and d.weekday() not in (4, 5):
+            if s.part == "morning" and d.weekday() not in matching.WEEKEND:
                 continue
             idea = matching.suggest_activities(kind, s.where(), 3.0, limit=1)
             both = bool(viewer and Slot.objects.filter(person=viewer, weekday=d.weekday(), part=s.part).exists())

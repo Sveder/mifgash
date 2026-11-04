@@ -22,6 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from . import calendar, demo, engine, finalize, llm, matching, messages, push, ratelimit
 from .ratelimit import limit
+from .matching import WEEKEND
 from .agent import infer
 from .models import GROUP_MAX, KINDS, PARTS, AgentEvent, AgentKey, AgentMessage, Area, Friendship, Invite, MagicLink, Offer, Person, Plan, Slot, EMAIL_NEEDED, clean_email, clean_handle, clean_name
 from .seed import demo_friends
@@ -525,9 +526,9 @@ def where_reply(person, place):
 
 def default_area(person, fields):
     """(area, 'home'|'work') when the text names no place: the work area for a weekday lunch
-    (Sun-Thu) when it is set, else the home area. (None, None) when neither is set."""
+    (Mon-Fri, the US work week) when it is set, else the home area. (None, None) when neither is set."""
     date = fields.get("date")
-    if fields.get("part") == "lunch" and person.work_area and (date is None or date.weekday() not in (4, 5)):
+    if fields.get("part") == "lunch" and person.work_area and (date is None or date.weekday() not in WEEKEND):
         return person.work_area, "work"
     if person.home_area:
         return person.home_area, "home"
@@ -536,13 +537,13 @@ def default_area(person, fields):
 
 def default_part(person, date):
     """(part, 'slot'|'weekday') for a text with a day and no part of the day (T61): the person's weekly
-    slot for that weekday (the first in PARTS order when there are several), else evening on Fri and
-    Sat and lunch on Sun-Thu."""
+    slot for that weekday (the first in PARTS order when there are several), else evening on Sat and
+    Sun and lunch on Mon-Fri."""
     have = set(person.slots.filter(weekday=date.weekday()).values_list("part", flat=True))
     for key, _ in PARTS:
         if key in have:
             return key, "slot"
-    return ("evening" if date.weekday() in (4, 5) else "lunch"), "weekday"
+    return ("evening" if date.weekday() in WEEKEND else "lunch"), "weekday"
 
 
 def part_note(part, any_part=True):

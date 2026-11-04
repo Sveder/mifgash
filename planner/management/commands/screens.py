@@ -32,7 +32,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 
-from planner import llm
+from planner import llm, matching
 from planner.api import log_post
 from planner.management.commands.purge_test_people import delete
 from planner.models import Activity, MagicLink, Offer, Person, Plan
@@ -150,8 +150,8 @@ def make_states(me, maria, jordan, today):
     evening = list(Activity.objects.filter(kind="evening")[:3])
     weekend = list(Activity.objects.filter(kind="weekend")[:3]) or evening
     later = timezone.now() + dt.timedelta(days=2)
-    # A weekend plan sits on a Friday or a Saturday, never on a weekday (T149).
-    weekend_day = next(d for d in (day(11 + i) for i in range(7)) if d.weekday() in (4, 5))
+    # A weekend plan sits on a Saturday or a Sunday (the US week, T395), never on a weekday (T149).
+    weekend_day = next(d for d in (day(11 + i) for i in range(7)) if d.weekday() in matching.WEEKEND)
 
     def plan(status, date, part, kind, options, **kw):
         p = Plan.objects.create(owner=kw.pop("owner", me), raw_text=kw.pop("text", f"free {kind}"), kind=kind,

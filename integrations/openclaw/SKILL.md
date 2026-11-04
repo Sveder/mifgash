@@ -102,12 +102,12 @@ to the owner as it is. A used or expired link does not open again: run `link` fo
 - `what?` -- the kind is missing. Ask, then run `open` again with `--kind`.
 
 When the owner names a day and no part of the day ("I'm open tomorrow"), Mifgash takes one: the
-owner's weekly slot for that weekday, else lunch on Sun-Thu and evening on Fri and Sat. The line
+owner's weekly slot for that weekday, else lunch on Mon-Fri and evening on Sat and Sun. The line
 then says "I took lunch. A friend free at another part of that day still fits, and their part wins.
 Say morning, afternoon or evening to change it." Tell the owner that line. When a friend already
 named a part of that day, the line says "A friend is free for evening that day, so I took evening."
 
-When the owner names no place, Mifgash uses the owner's home area (the work area for a Sun-Thu
+When the owner names no place, Mifgash uses the owner's home area (the work area for a Mon-Fri
 lunch, when one is set). The line then says "Near your home area, <area>. Say another place to
 change it." Tell the owner that line as it is.
 

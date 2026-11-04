@@ -12,6 +12,10 @@ from . import wants as wants_mod
 from .models import BASE_KIND, Activity, Friendship, Plan, Slot
 
 # Default part of the day for each kind of plan.
+# The demo world is San Francisco: the weekend is Saturday and Sunday (date.weekday() 5 and 6),
+# the work week Monday to Friday (T395).
+WEEKEND = (5, 6)
+
 DEFAULT_PART = {"lunch": "lunch", "kids": "afternoon", "evening": "evening", "weekend": "morning",
                 "group_dinner": "evening"}
 

@@ -48,7 +48,7 @@ Return ONLY a JSON object, no prose, with these keys:
    (never a word the person avoids or hates: "I hate loud bars" -> no "loud"; never free, open or available)
  time: a clock time the person names for the meetup, as HH:MM on a 24-hour clock ("lunch at 1pm" -> "13:00"), or null
 Rules: lunch -> kind lunch, part lunch. Kids, playground, park with the kids -> kind kids.
-Drinks, cocktails, bar, dinner, night -> kind evening, part evening. Saturday or Friday morning outing -> kind weekend.
+Drinks, cocktails, bar, dinner, night -> kind evening, part evening. Saturday or Sunday morning outing -> kind weekend.
 "a few friends", "a group" -> group_size 3. "with someone", "a friend" -> 1. "with 4 friends" -> 4.
 Dinner with 2 or more friends ("dinner Friday with 3 friends", "group dinner") -> kind group_dinner.
 Do not guess the area: use null when no place is named.
