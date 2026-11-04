@@ -1816,6 +1816,129 @@ class LivePlacesTests(TwoAgentsBase):
         self.assertIn("Near Flagstaff.", line)
 
 
+@override_settings(LIVE_PLACES=True)
+class LivePlacesTickTests(TwoAgentsBase):
+    """T401: the tick looks a queued city up (Nominatim + Overpass, mocked), makes the Area and the
+    venues, and moves the waiting plans on. No test touches the network."""
+    NOMINATIM = Path(__file__).resolve().parent / "tests_data" / "nominatim_flagstaff.json"
+
+    def setUp(self):
+        super().setUp()
+        self.calls = []
+        for target in ("time.sleep", "planner.places_live.sleep"):
+            patcher = mock.patch(target)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def fake(self, overpass_codes=()):
+        import io
+        import urllib.error
+        codes = list(overpass_codes)
+
+        def urlopen(req, timeout=None):
+            self.calls.append(req)
+            if "nominatim.openstreetmap.org" in req.full_url:
+                return io.BytesIO(self.NOMINATIM.read_bytes())
+            self.assertIn("overpass-api.de", req.full_url)
+            if codes:
+                raise urllib.error.HTTPError(req.full_url, codes.pop(0), "Bad Gateway", {}, None)
+            return io.BytesIO(SAMPLE.read_bytes())
+        return mock.patch("urllib.request.urlopen", side_effect=urlopen)
+
+    def test_lookup_makes_area_and_venues_and_friends_match(self):
+        from . import places_live
+        from .models import PlaceLookup
+        a = Plan.objects.get(pk=self.post("dd", "free saturday lunch in flagstaff").json()["availability_id"])
+        b = Plan.objects.get(pk=self.post("aa", "free saturday lunch in Flagstaff").json()["availability_id"])
+        with self.fake():
+            out = places_live.run_queued()
+        self.assertEqual(out, {"flagstaff": "done"})
+        flag = Area.objects.get(name="Flagstaff, Arizona")
+        self.assertEqual(flag.city, "Flagstaff")
+        self.assertAlmostEqual(flag.lat, 35.1987522)
+        self.assertAlmostEqual(flag.lon, -111.6518229)
+        self.assertGreaterEqual(Activity.objects.filter(area=flag, source="osm-live").count(), 1)
+        self.assertEqual((PlaceLookup.objects.get().status, PlaceLookup.objects.get().area), ("done", flag))
+        for plan in (a, b):
+            plan.refresh_from_db()
+            self.assertEqual((plan.status, plan.area), ("open", flag))
+            row = plan.log.get(type="places_found")
+            self.assertRegex(row.payload["text"], r"^Found \d+ places in Flagstaff\. Looking for friends\.$")
+        engine.tick()
+        self.assertTrue(Offer.objects.filter(plan__in=[a, b]).exists())  # matching goes on, as in SF
+        asked = Plan.objects.filter(pk__in=[a.pk, b.pk], status="asking")
+        self.assertEqual(asked.count(), 1)
+
+    def test_nominatim_request_has_the_mifgash_user_agent_and_no_email(self):
+        from . import places_live
+        self.post("dd", "free saturday lunch in flagstaff")
+        with self.fake():
+            places_live.run_queued()
+        nom = [r for r in self.calls if "nominatim" in r.full_url]
+        self.assertEqual(len(nom), 1)
+        self.assertEqual(nom[0].get_header("User-agent"), "Mifgash/1.0 (+https://mifgash.sveder.com)")
+        self.assertNotIn("email", nom[0].full_url)
+        self.assertNotIn("@", nom[0].full_url)
+        self.assertIn("q=flagstaff", nom[0].full_url.lower())
+
+    def test_overpass_502_three_times_cancels_with_the_ask_back(self):
+        from . import places_live
+        from .models import AgentEvent, PlaceLookup
+        plan = Plan.objects.get(pk=self.post("dd", "free saturday lunch in flagstaff").json()["availability_id"])
+        with self.fake(overpass_codes=(502, 502, 502)):
+            out = places_live.run_queued()  # no exception
+        self.assertEqual(out, {"flagstaff": "failed"})
+        self.assertEqual(len([r for r in self.calls if "overpass" in r.full_url]), 3)
+        lookup = PlaceLookup.objects.get()
+        self.assertIn("502", lookup.error)
+        plan.refresh_from_db()
+        self.assertEqual(plan.status, "cancelled")
+        self.assertFalse(Area.objects.filter(name="Flagstaff, Arizona").exists())
+        ev = AgentEvent.objects.get(person=plan.owner, event="outing.closed")
+        self.assertIn(api.COVERS_TEXT, ev.payload["text"])
+        self.assertIn("Flagstaff", ev.payload["text"])
+        self.assertEqual(ev.payload["needs"], ["where"])
+        self.assertTrue(plan.log.filter(type="places_failed").exists())
+
+    def test_a_done_city_never_calls_the_apis_again(self):
+        from . import places_live
+        self.post("dd", "free saturday lunch in flagstaff")
+        with self.fake():
+            places_live.run_queued()
+        flag = Area.objects.get(name="Flagstaff, Arizona")
+        self.calls.clear()
+        with self.fake() as urlopen:
+            r = self.post("aa", "free sunday lunch in flagstaff")
+            self.assertIn(r.status_code, (200, 201), r.content)
+            places_live.run_queued()
+            engine.tick()
+        self.assertEqual(urlopen.call_count, 0)
+        plan = Plan.objects.get(owner__handle="aa")
+        self.assertEqual((plan.status in ("open", "asking"), plan.area), (True, flag))
+
+    def test_tick_command_runs_the_lookup_before_matching(self):
+        from io import StringIO
+        from django.core.management import call_command
+        self.post("dd", "free saturday lunch in flagstaff")
+        out = StringIO()
+        with self.fake():
+            call_command("tick", stdout=out)
+        self.assertIn("place lookups {'flagstaff': 'done'}", out.getvalue())
+        self.assertEqual(Plan.objects.get(owner__handle="dd").status, "open")
+
+    def test_new_osm_kinds_map_to_kinds(self):
+        from planner.management.commands.import_venues import entries_from
+        noe = area("Noe Valley")
+        els = [{"type": "node", "id": i, "lat": noe.lat, "lon": noe.lon, "tags": tags} for i, tags in enumerate([
+            {"amenity": "fast_food", "name": "Sample Burger"}, {"amenity": "ice_cream", "name": "Sample Scoop"},
+            {"leisure": "playground", "name": "Sample Playground"}, {"tourism": "museum", "name": "Sample Museum"}])]
+        rows = entries_from({"elements": els}, noe, source="osm-live")
+        kinds = {(r["name"], r["kind"]) for r in rows}
+        self.assertEqual(kinds, {("Sample Burger", "lunch"), ("Sample Scoop", "kids"), ("Sample Playground", "kids"),
+                                 ("Sample Museum", "kids"), ("Sample Museum", "weekend")})
+        self.assertEqual({r["source"] for r in rows}, {"osm-live"})
+
+
 class Receiver:
     """A local HTTP server that plays an agent's webhook. codes: the status to answer, in turn."""
 

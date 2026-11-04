@@ -124,7 +124,11 @@ def finding_places(person, data, fields, text, city, radius, request):
         fill_by=engine.default_fill_by(fields["date"]) if group_dinner else None,
         status="finding_places", llm_backend=fields.get("backend", ""), any_part=bool(fields["part_default"]),
         kind_named=fields["kind_named"], wants=fields["wants"])
-    PlaceLookup.objects.get_or_create(text_norm=PlaceLookup.norm(city), defaults={"city_text": city[:60]})
+    lookup, _ = PlaceLookup.objects.get_or_create(text_norm=PlaceLookup.norm(city), defaults={"city_text": city[:60]})
+    from .places_live import MAX_TRIES
+    if lookup.status == "failed" and lookup.tries < MAX_TRIES:  # T401: a new free time tries a failed city again
+        lookup.status = "queued"
+        lookup.save(update_fields=["status", "updated"])
     log_post(plan, text or data, fields)
     engine.log(plan, "mifgash:directory", person.address, "finding_places", text=lookup_text(city))
     reply = plan_json(request, plan)

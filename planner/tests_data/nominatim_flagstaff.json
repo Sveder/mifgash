@@ -1,0 +1,5 @@
+[{"place_id": 1, "licence": "Data (c) OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+  "osm_type": "relation", "osm_id": 111, "lat": "35.1987522", "lon": "-111.6518229", "class": "boundary",
+  "type": "administrative", "display_name": "Flagstaff, Coconino County, Arizona, United States",
+  "address": {"city": "Flagstaff", "county": "Coconino County", "state": "Arizona",
+              "country": "United States", "country_code": "us"}}]

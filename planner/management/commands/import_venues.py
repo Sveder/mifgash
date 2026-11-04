@@ -28,35 +28,59 @@ from planner.models import Activity, Area
 OVERPASS = "https://overpass-api.de/api/interpreter"
 FIXTURE = Path(__file__).resolve().parents[2] / "fixtures" / "osm_venues.json"
 RADIUS_M = 2000
-CAPS = {"food": 22, "drink": 10, "park": 4}
-KIND = {"restaurant": "lunch", "cafe": "lunch", "bar": "evening", "pub": "evening"}
-PRICE = {"restaurant": 2, "cafe": 1, "bar": 2, "pub": 1, "park": 0}
+CAPS = {"food": 22, "drink": 10, "park": 4, "fun": 4}
+# T401: fast_food and ice_cream are lunch / kids places; a playground is a kids outing; a museum is a
+# weekend outing and a kids outing.
+KIND = {"restaurant": "lunch", "cafe": "lunch", "bar": "evening", "pub": "evening", "fast_food": "lunch",
+        "ice_cream": "kids"}
+PRICE = {"restaurant": 2, "cafe": 1, "bar": 2, "pub": 1, "park": 0, "fast_food": 1, "ice_cream": 1,
+         "playground": 0, "museum": 2}
 EXTRA_TAGS = {"cafe": ["cafe", "coffee"], "bar": ["bar"], "pub": ["bar", "beer"],
-              "park": ["park", "free", "outdoor"]}
+              "park": ["park", "free", "outdoor"], "fast_food": ["quick"], "ice_cream": ["ice cream", "dessert"],
+              "playground": ["playground", "free", "outdoor"], "museum": ["museum", "indoor"]}
+BUCKET = {"restaurant": "food", "cafe": "food", "fast_food": "food", "bar": "drink", "pub": "drink",
+          "park": "park", "playground": "park", "ice_cream": "fun", "museum": "fun"}
 
 
-def query(area):
-    around = f"around:{RADIUS_M},{area.lat},{area.lon}"
+def query(area, radius_m=RADIUS_M):
+    around = f"around:{radius_m},{area.lat},{area.lon}"
     return (f'[out:json][timeout:50];'
-            f'nwr["amenity"~"^(restaurant|cafe)$"]["name"]({around});out center tags 120;'
+            f'nwr["amenity"~"^(restaurant|cafe|fast_food)$"]["name"]({around});out center tags 120;'
             f'nwr["amenity"~"^(bar|pub)$"]["name"]({around});out center tags 60;'
-            f'nwr["leisure"="park"]["name"]({around});out center tags 30;')
+            f'nwr["amenity"="ice_cream"]["name"]({around});out center tags 15;'
+            f'nwr["leisure"~"^(park|playground)$"]["name"]({around});out center tags 30;'
+            f'nwr["tourism"="museum"]["name"]({around});out center tags 15;')
 
 
-def fetch(area, tries=3, pause=20):
-    """One Overpass call per area. A 502/503/504/429 ('at capacity') gets 2 more tries."""
-    data = urllib.parse.urlencode({"data": query(area)}).encode()
+def fetch(area, tries=3, pause=20, radius_m=RADIUS_M, timeout=90, pauses=None, retry=None):
+    """One Overpass call per area. A 502/503/504/429 ('at capacity') gets 2 more tries.
+    `pauses` gives the wait before each retry; `retry(e)` False stops at once (T401: only 429/502/504)."""
+    data = urllib.parse.urlencode({"data": query(area, radius_m)}).encode()
+    pauses = list(pauses) if pauses is not None else [pause] * (tries - 1)
     last = None
-    for i in range(tries):
-        req = urllib.request.Request(OVERPASS, data=data, headers={"User-Agent": "mifgash-venue-import/1.0"})
+    for i in range(len(pauses) + 1):
+        req = urllib.request.Request(OVERPASS, data=data, headers={"User-Agent": "Mifgash/1.0 (+https://mifgash.sveder.com)"})
         try:
-            with urllib.request.urlopen(req, timeout=90) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.load(r)
         except Exception as e:  # HTTPError, timeout, bad JSON
             last = e
-            if i + 1 < tries:
-                time.sleep(pause)
+            if i < len(pauses) and (retry is None or retry(e)):
+                time.sleep(pauses[i])
+            else:
+                break
     raise CommandError(f"Overpass failed for {area.name}: {last}")
+
+
+def kind_key_of(t):
+    """The OSM tag that picks the venue type, or None."""
+    if t.get("amenity") in KIND:
+        return t["amenity"]
+    if t.get("leisure") in ("park", "playground"):
+        return t["leisure"]
+    if t.get("tourism") == "museum":
+        return "museum"
+    return None
 
 
 def _dist(lat1, lon1, lat2, lon2):
@@ -85,16 +109,16 @@ def diet_tags(t):
     return out
 
 
-def entries_from(data, area, areas=None):
+def entries_from(data, area, areas=None, source="osm"):
     """Overpass JSON -> venue dicts for one area. With `areas`, a place nearer another area centre
     is dropped (that area's own query gets it)."""
     areas = list(areas or [area])
-    picked = {"food": [], "drink": [], "park": []}
+    picked = {b: [] for b in CAPS}
     seen = set()
     for el in data.get("elements", []):
         t = el.get("tags") or {}
         name = " ".join((t.get("name") or "").split())[:80]
-        kind_key = t.get("amenity") if t.get("amenity") in KIND else ("park" if t.get("leisure") == "park" else None)
+        kind_key = kind_key_of(t)
         lat, lon = _point(el)
         if not name or not kind_key or lat is None or name.lower() in seen:
             continue
@@ -118,17 +142,19 @@ def entries_from(data, area, areas=None):
         url = t.get("website", "")
         url = url if url.startswith(("http://", "https://")) and len(url) <= 200 else ""
         rank = (not t.get("cuisine"), not street, round(_dist(lat, lon, area.lat, area.lon), 2))
-        bucket = "park" if kind_key == "park" else ("drink" if kind_key in ("bar", "pub") else "food")
+        bucket = BUCKET[kind_key]
         base = {"name": name, "area": area.name, "address": address, "tags": tags[:8], "note": note,
-                "url": url, "price": PRICE[kind_key], "source": "osm", "osm": f"{el['type']}/{el['id']}"}
+                "url": url, "price": PRICE[kind_key], "source": source, "osm": f"{el['type']}/{el['id']}"}
         picked[bucket].append((rank, base, kind_key))
     out = []
     for bucket, rows in picked.items():
         rows.sort(key=lambda r: r[0])
         for _, base, kind_key in rows[:CAPS[bucket]]:
-            if kind_key == "park":  # a park is a kids outing and a weekend outing
+            if kind_key in ("park", "museum"):  # a park or a museum is a kids outing and a weekend outing
                 out.append({**base, "kind": "kids", "tags": base["tags"] + ["kids"]})
                 out.append({**base, "kind": "weekend"})
+            elif kind_key == "playground":
+                out.append({**base, "kind": "kids", "tags": base["tags"] + ["kids"]})
             else:
                 out.append({**base, "kind": KIND[kind_key]})
                 if kind_key == "restaurant":  # T324: a restaurant serves dinner plans too
@@ -154,7 +180,7 @@ def load(entries):
         if row is None:
             Activity.objects.create(name=e["name"], area=area, kind=e["kind"], **fields)
             made += 1
-        elif row.source in ("osm", "seed"):
+        elif row.source in ("osm", "osm-live", "seed"):
             for k, v in fields.items():
                 setattr(row, k, v)
             row.save()
