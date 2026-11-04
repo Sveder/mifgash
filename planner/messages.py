@@ -172,6 +172,15 @@ def ui_when(date, part):
     return f"{ui_day(date)}, {UI_PARTS[part]}"
 
 
+def card_when(plan, title=None):
+    """ui_when for a card under a title (T318/T295): 'Thu 5 Nov' when the title already names the part
+    ('Lunch'), so the card never reads 'Lunch · Thu 5 Nov, lunch'; else 'Thu 5 Nov, lunch'."""
+    title = plan.title if title is None else title
+    if UI_PARTS[plan.part] in str(title).lower():
+        return ui_day(plan.date)
+    return ui_when(plan.date, plan.part)
+
+
 def when_exact(date, time):
     """'Fri 30/10 13:00'."""
     return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month} {time.strftime('%H:%M')}"

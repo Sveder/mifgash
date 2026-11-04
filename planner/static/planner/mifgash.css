@@ -258,7 +258,9 @@ h2.sec-l{font-size:18px;margin:26px 0 4px}
 .join-form button.hbtn{width:100%}
 #no-agent a.hbtn{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box;margin-top:8px}
 header nav a{white-space:nowrap}
-@media (max-width:420px){header nav{gap:10px;font-size:13px}header .brand b{font-size:20px}header{gap:8px}}
+@media (max-width:420px){header nav{gap:10px;font-size:13px}header .brand b{font-size:20px}header{gap:8px}
+/* T318: logo + 4 links + the theme button do not fit at 390 px; the links go to a 2nd row, the button stays by the logo */
+header{flex-wrap:wrap}header nav{order:3;flex:1 0 100%;margin-left:0;flex-wrap:wrap;row-gap:4px}header nav+.theme-btn{margin-left:auto}}
 /* M6b (T176): 'I am free' and 'Add a friend' on the dashboard of a person with no agent */
 .free-form .two{display:grid;grid-template-columns:1fr;gap:0 12px}
 @media (min-width:560px){.free-form .two{grid-template-columns:1fr 1fr}}

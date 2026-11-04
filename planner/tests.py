@@ -672,17 +672,17 @@ class FriendsApiTests(Base):
         self.new_agent("Critic Alpha", "cra")
         for i in range(12):
             self.new_agent(f"Crispin {i}", f"crisp{i:02d}")
-        self.new_agent("Ocra Levi", "ocra_l")
+        self.new_agent("Ocra Reed", "ocra_r")
         r = self.client.get("/api/v1/friends/search/?q=cr", **auth)
         self.assertEqual(r.status_code, 400)
         self.assertIn("3 characters or an exact handle", r.json()["error"])
         # An exact short handle returns that one person.
         self.assertEqual([x["handle"] for x in self.client.get("/api/v1/friends/search/?q=@CRA", **auth).json()["results"]], ["cra"])
-        # A 3-letter prefix: at most 10, ordered by handle, no infix match (ocra_l).
+        # A 3-letter prefix: at most 10, ordered by handle, no infix match (ocra_r).
         res = self.client.get("/api/v1/friends/search/?q=cri", **auth).json()["results"]
         self.assertEqual(len(res), 10)
         self.assertEqual([x["handle"] for x in res], sorted(x["handle"] for x in res))
-        self.assertNotIn("ocra_l", [x["handle"] for x in res])
+        self.assertNotIn("ocra_r", [x["handle"] for x in res])
         # First-name prefix, and no contact data in any row.
         r = self.client.get("/api/v1/friends/search/?q=crit", **auth)
         self.assertEqual([x["handle"] for x in r.json()["results"]], ["cra"])
@@ -1908,6 +1908,52 @@ class DashboardTests(ProposalBase):
         _, token = MagicLink.issue(self.people[handle])
         return token, self.client.post(f"/d/{token}/")
 
+    def nav_and_foot(self, html):
+        head = html.split("<header", 1)[1].split("</header>", 1)[0]
+        foot = html.split('<footer class="site-foot">', 1)[1].split("</footer>", 1)[0]
+        return head, foot
+
+    def test_signed_in_nav_hides_log_in_and_agent_user_hides_no_agent(self):
+        """T318 (T300): signed out the header and footer show 'Log in' and 'No agent?'; signed in neither shows
+        'Log in'; a person with an agent sees no 'No agent?'; a person without one still sees it."""
+        for url in ("/", "/privacy/"):
+            head, foot = self.nav_and_foot(self.client.get(url).content.decode())
+            self.assertIn(">Log in</a>", head, url)
+            self.assertIn(">Log in</a>", foot, url)
+            self.assertIn(">No agent?</a>", head, url)
+        self.login("aa")
+        for url in ("/", "/privacy/", "/d/"):
+            head, foot = self.nav_and_foot(self.client.get(url).content.decode())
+            self.assertNotIn(">Log in</a>", head, url)
+            self.assertNotIn(">Log in</a>", foot, url)
+            self.assertNotIn(">No agent?</a>", head, url)
+            self.assertIn(">My dashboard</a>", head, url)
+        self.client.get("/d/logout/")
+        bb = self.people["bb"]
+        bb.has_agent = False
+        bb.save()
+        self.login("bb")
+        head, foot = self.nav_and_foot(self.client.get("/privacy/").content.decode())
+        self.assertIn(">No agent?</a>", head)
+        self.assertNotIn(">Log in</a>", head + foot)
+
+    def test_lunch_card_names_the_part_once(self):
+        """T318 (T295): a lunch card reads 'Lunch' and 'Sun 8 Nov', never 'Sun 8 Nov, lunch' under the title;
+        a weekend outing keeps the part."""
+        pl = Plan.objects.create(owner=self.people["aa"], kind="lunch", date=SUNDAY, part="lunch",
+                                 area=area("SoMa"), radius_km=3.0, status="open")
+        day = messages.ui_day(SUNDAY)
+        self.assertEqual(messages.card_when(pl), day)
+        self.assertEqual(messages.card_when(pl, messages.kind_word(pl)), day)
+        self.login("aa")
+        d = self.client.get("/d/").content.decode()
+        self.assertIn(f"<div>{day} · near SoMa", d)
+        self.assertNotIn(f"{day}, lunch", d)
+        out = Plan(owner=self.people["aa"], kind="weekend", date=SUNDAY, part="morning", area=area("SoMa"))
+        self.assertEqual(messages.card_when(out), f"{day}, morning")
+        meet = Plan(owner=self.people["aa"], kind="weekend", kind_named=False, date=SUNDAY, part="morning", area=area("SoMa"))
+        self.assertEqual(messages.card_when(meet), day)
+
     def test_link_logs_in_once_and_unknown_or_used_is_404(self):
         self.assertVisitor(self.client.get("/d/"))
         token, r = self.login("aa")
@@ -2466,8 +2512,8 @@ class LandingTests(Base):
     def test_agents_guide_examples_work(self):
         """The signup and free-time bodies in the guide work as they are."""
         text = self.client.get("/agents.md").content.decode()
-        self.assertIn('{"name": "Alex Levi", "handle": "alex_l", "email": "alex@example.com", "home_area": "SoMa"}', text)
-        r = self.client.post("/api/v1/signup/", {"name": "Alex Levi", "handle": "alex_l", "email": "alex@example.com",
+        self.assertIn('{"name": "Alex Reed", "handle": "alex_r", "email": "alex@example.com", "home_area": "SoMa"}', text)
+        r = self.client.post("/api/v1/signup/", {"name": "Alex Reed", "handle": "alex_r", "email": "alex@example.com",
                                                  "home_area": "SoMa"},
                              content_type="application/json")
         self.assertEqual(r.status_code, 201, r.content)

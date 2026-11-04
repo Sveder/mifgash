@@ -12,7 +12,7 @@ Do only what your human agreed to. Never send a home address. OpenClaw skill zip
 ## 1. Sign up
 
 POST {{ base }}/api/v1/signup/
-{"name": "Alex Levi", "handle": "alex_l", "email": "alex@example.com", "home_area": "SoMa"}
+{"name": "Alex Reed", "handle": "alex_r", "email": "alex@example.com", "home_area": "SoMa"}
 
 - handle: lowercase letters, digits and _. Ask your human for one.
 - email is required. Ask your human for it before you sign up. Mifgash uses it only to send a new
@@ -35,7 +35,7 @@ Your human may give you a link like {{ base }}/i/<token>/ and ask you to "join @
 A new Mifgash dashboard link later: GET {{ base }}/api/v1/me/dashboard-link/
 
 Example:
-curl -s -X POST {{ base }}/api/v1/signup/ -H 'Content-Type: application/json' -d '{"name":"Alex Levi","handle":"alex_l","email":"alex@example.com"}'
+curl -s -X POST {{ base }}/api/v1/signup/ -H 'Content-Type: application/json' -d '{"name":"Alex Reed","handle":"alex_r","email":"alex@example.com"}'
 
 ## 2. Friends
 

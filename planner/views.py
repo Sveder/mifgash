@@ -767,12 +767,12 @@ def dashboard(request):
             if ask:
                 state = f"{messages.first_name(ask.plan.owner)} is free too. Answer above."
         group = group_progress(pl)
-        open_rows.append({"plan": pl, "when": messages.ui_when(pl.date, pl.part), "state": state, "ask": ask,
+        open_rows.append({"plan": pl, "when": messages.card_when(pl), "state": state, "ask": ask,
                           "group": group, "go_with": group and go_with(pl)})
     waiting = []
     for o in Offer.objects.filter(plan__owner=p, status="owner_wait", plan__status="asking").select_related(
             "person", "choice__area", "plan__area"):
-        waiting.append({"offer": o, "reason_model": llm.model_label(o.reason_backend), "when": messages.ui_when(o.plan.date, o.plan.part),
+        waiting.append({"offer": o, "reason_model": llm.model_label(o.reason_backend), "when": messages.card_when(o.plan),
                         "place": o.choice or (o.plan.option_list() or [None])[0], "group": group_progress(o.plan)})
     # The friend's side of an owner_wait offer: they said yes, the owner has not decided yet.
     said_yes = []
@@ -786,7 +786,7 @@ def dashboard(request):
     asks = []
     for o in Offer.objects.filter(person=p, status="pending", plan__status="asking").select_related(
             "plan__owner", "plan__area").order_by("plan__date", "pk"):
-        asks.append({"offer": o, "reason_model": llm.model_label(o.reason_backend), "who": messages.first_name(o.plan.owner), "when": messages.ui_when(o.plan.date, o.plan.part),
+        asks.append({"offer": o, "reason_model": llm.model_label(o.reason_backend), "who": messages.first_name(o.plan.owner), "when": messages.card_when(o.plan, messages.kind_word(o.plan)),
                      "kind": messages.kind_word(o.plan), "options": o.plan.option_list()})
     requests = list(Friendship.requests_to(p.pk).order_by("name", "pk"))
     done = ("confirmed", "final")
@@ -1003,7 +1003,7 @@ def dashboard_friend_add(request):
 def match_row(pl, viewer, base=None, forms=True):
     """One outing ticket (dashboard Matches and /outing/<uid>/): confirmed, then a proposed exact
     time, then final. forms=False drops the time form (a viewer who is not on the plan)."""
-    row = {"plan": pl, "when": messages.ui_when(pl.date, pl.part), "place": pl.chosen,
+    row = {"plan": pl, "when": messages.card_when(pl), "place": pl.chosen,
            "with": [x.name for x in [pl.owner] + pl.guests() if x.pk != viewer.pk],
            "date": {"w": messages.WEEKDAYS[pl.date.weekday()], "d": pl.date.day,
                     "mo": messages.MONTHS[pl.date.month - 1], "t": "time?"},
