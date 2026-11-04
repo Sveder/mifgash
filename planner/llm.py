@@ -45,6 +45,7 @@ Return ONLY a JSON object, no prose, with these keys:
  group_size: number of friends wanted (1 = one friend), or null
  food: a food type the person asks for, or null
  tastes: a list of short taste words the person asks for (quiet, outdoor, kid-friendly, new place, cheap), or []
+   (never a word the person avoids or hates: "I hate loud bars" -> no "loud"; never free, open or available)
  time: a clock time the person names for the meetup, as HH:MM on a 24-hour clock ("lunch at 1pm" -> "13:00"), or null
 Rules: lunch -> kind lunch, part lunch. Kids, playground, park with the kids -> kind kids.
 Drinks, cocktails, bar, dinner, night -> kind evening, part evening. Saturday or Friday morning outing -> kind weekend.

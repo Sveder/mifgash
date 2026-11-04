@@ -10,11 +10,14 @@ FOODS = ("sushi", "falafel", "hummus", "pizza", "burger", "vegan", "asian", "ita
          "mexican", "greek", "seafood", "sandwich", "brunch", "ramen", "thai", "indian", "chinese",
          "french", "californian", "tacos", "burrito", "wine", "cocktails", "beer")
 FOOD_RE = re.compile(r"\b(" + "|".join(FOODS) + r")\b")
-TASTES = ("quiet", "outdoor", "indoor", "kid-friendly", "new place", "cheap", "quick", "free",
+TASTES = ("quiet", "outdoor", "indoor", "kid-friendly", "new place", "cheap", "quick",
           "sea", "group", "historic", "loud", "crowded")
 # a taste word -> the place tags it fits
 TASTE_TAGS = {"kid-friendly": {"playground", "park", "kids"}, "new place": set()}
-NEG_RE = re.compile(r"\b(?:no|not|avoid|avoids|avoiding|hate|hates|dislike|dislikes|without|never)\b\s+(.+)")
+# T320: 'don't like', 'can't stand' as well. A dislike is the whole phrase after the word, never
+# single words: 'do not like Mission Playground' -> 'mission playground', not like/mission/playground.
+NEG_RE = re.compile(r"\b(?:no|not|avoid|avoids|avoiding|hate|hates|dislike|dislikes|without|never|"
+                    r"don't|dont|doesn't|doesnt|can't stand|cannot stand)\b\s*(.*)")
 POS_RE = re.compile(r"\b(?:likes?|loves?|enjoys?|prefers?|favou?rite)\b\s+(.+)")
 LIMIT = 8
 # words after 'no' / 'not' that are no place word: 'not tomorrow', 'no later than 2'
@@ -22,7 +25,19 @@ STOP = {"places", "place", "spots", "the", "a", "an", "too", "very", "at", "in",
         "today", "tomorrow", "tonight", "morning", "lunch", "afternoon", "evening", "noon", "later", "than",
         "earlier", "before", "after", "more", "one", "kids", "friends", "friend", "time", "rush", "it", "me",
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "weekend", "week",
-        "far", "much", "long", "problem", "worries", "matter"}
+        "far", "much", "long", "problem", "worries", "matter", "please", "really", "any", "so",
+        "free", "open", "available", "busy"}
+# T320: words at the start of a dislike phrase that are no part of the place: 'not LIKE x', 'can't STAND x'
+LEAD = {"like", "likes", "want", "wanna", "go", "going", "into", "care", "fan", "big", "stand", "eat",
+        "eating", "love", "enjoy", "do", "does", "really", "much", "we", "i", "no", "not", "never"}
+# T299: availability words are no want ('I am free Friday' -> no taste 'free')
+NOT_WANTS = {"free", "open", "available", "busy"}
+# T320: generic place words. A dislike phrase made only of these ('loud bars', 'coffee places') rules
+# out every place with one of the words as a tag; any other phrase ('Dolores Park') is a place name.
+CATEGORY = {"bar", "pub", "cafe", "coffee", "park", "playground", "restaurant", "club", "museum", "diner",
+            "bistro", "brewery", "lounge", "market", "mall", "beach", "kids", "chain", "food", "spot",
+            "shop", "tiki bar", "coffee shop", "fast food", "noise", "crowd", "music"}
+GENERIC = set(TASTES) | set(FOODS) | CATEGORY
 
 
 def empty():
@@ -42,31 +57,73 @@ def _add(items, word):
         items.append(w)
 
 
+def _one(w):
+    return w[:-1] if w.endswith("s") and not w.endswith("ss") and len(w) > 3 else w
+
+
+def phrase_words(phrase):
+    return [_one(w) for w in phrase.split()]
+
+
+def is_generic(phrase):
+    return bool(phrase) and (phrase in GENERIC or _one(phrase) in GENERIC
+                             or all(w in GENERIC for w in phrase_words(phrase)))
+
+
+def _dislike(items, text):
+    """The whole phrase after the 'no' word, without the lead and tail words around it."""
+    text = re.split(r"\b(?:near|around|in|at|on|for|with|when|if)\b", text)[0]
+    words = _clean(text).split()
+    while words and (words[0] in LEAD or words[0] in STOP or words[0].isdigit()):
+        words.pop(0)
+    while words and (words[-1] in STOP or words[-1].isdigit()):
+        words.pop()
+    if words:
+        _add(items, " ".join(words))
+
+
+def _plain(out, part):
+    pos = POS_RE.search(part)
+    if pos:  # 'I love tacos near the Mission' -> likes 'tacos', not 'tacos near the mission'
+        like = re.split(r"\b(?:near|around|in|at|on|for|with)\b", pos.group(1))[0]
+        _add(out["likes"], like)
+        if FOOD_RE.search(like) and not out["food"]:
+            out["food"] = FOOD_RE.search(like).group(1)
+        return
+    m = FOOD_RE.search(part)
+    if m and not out["food"]:
+        out["food"] = m.group(1)
+    for w in TASTES:
+        if re.search(r"\b" + re.escape(w) + r"\b", part):
+            _add(out["tastes"], w)
+
+
 def read(text):
-    """Plain-rule read of a free line: 'sushi; quiet; likes Ferry Building; avoids loud bars'."""
+    """Plain-rule read of a free line: 'sushi; quiet; likes Ferry Building; avoids loud bars'.
+    T320: a 'no' word carries over 'and' / 'or' ('I hate Tartine and loud bars' -> two dislikes),
+    a comma, ';', a full stop or 'but' ends it."""
     out = empty()
-    t = (text or "").lower()
-    for part in re.split(r"[;,\n]|\band\b|\bbut\b", t):
-        part = part.strip()
-        if not part:
-            continue
-        neg, pos = NEG_RE.search(part), POS_RE.search(part)
-        if neg:  # 'no loud places', 'avoids loud bars' -> dislikes 'loud', 'bars' -> 'bar'
-            for w in neg.group(1).split():
-                w = _clean(w)
-                if w in STOP or not w or w.isdigit():
-                    continue
-                _add(out["dislikes"], w[:-1] if w.endswith("s") and not w.endswith("ss") and len(w) > 3 else w)
-            continue
-        if pos:
-            _add(out["likes"], pos.group(1))
-            continue
-        m = FOOD_RE.search(part)
-        if m and not out["food"]:
-            out["food"] = m.group(1)
-        for w in TASTES:
-            if re.search(r"\b" + re.escape(w) + r"\b", part):
-                _add(out["tastes"], w)
+    t = (text or "").lower().replace("\u2019", "'")
+    for clause in re.split(r"[;\n!?]|\.(?:\s|$)|\bbut\b", t):
+        neg = False
+        for piece in re.split(r"(,|\band\b|\bor\b)", clause):
+            if piece == ",":
+                neg = False
+                continue
+            piece = piece.strip()
+            if not piece or piece in ("and", "or"):
+                continue
+            m = NEG_RE.search(piece)
+            if m:
+                if piece[:m.start()].strip():
+                    _plain(out, piece[:m.start()])
+                _dislike(out["dislikes"], m.group(1))
+                neg = True
+            elif neg and not POS_RE.search(piece):
+                _dislike(out["dislikes"], piece)
+            else:
+                neg = False
+                _plain(out, piece)
     return out
 
 
@@ -83,8 +140,13 @@ def merge(*parts):
                 _add(out[k], w)
         if p.get("text"):
             out["text"] = (out["text"] + " " + str(p["text"])).strip()[:300]
-    # a taste the person avoids is not a taste ('no loud places' must not rank loud first)
-    out["tastes"] = [w for w in out["tastes"] if w not in out["dislikes"]]
+    # a taste the person avoids is not a taste ('no loud places' must not rank loud first); T320: a
+    # word of a dislike phrase counts too ('hate loud bars' -> no taste 'loud'); T299: no 'free'
+    avoided = set(out["dislikes"]) | {w for d in out["dislikes"] for w in phrase_words(d)}
+    out["tastes"] = [w for w in out["tastes"] if w not in avoided and _one(w) not in avoided
+                     and w not in NOT_WANTS]
+    if out["food"] in NOT_WANTS:
+        out["food"] = None
     return out
 
 
@@ -95,8 +157,15 @@ def place_words(a):
 def is_disliked(a, dislikes):
     tags, name = place_words(a)
     for d in dislikes or []:
-        d = d.lower()
-        if d in tags or (len(d) > 3 and d in name):
+        d = _clean(d)
+        if not d:
+            continue
+        if " " not in d:
+            if d in tags or _one(d) in tags or (len(d) > 3 and d in name):
+                return True
+        elif d in name or d in tags:  # a place name ('mission playground') or a tag ('coffee shop')
+            return True
+        elif is_generic(d) and set(phrase_words(d)) & tags:  # 'loud bars' -> every loud place and bar
             return True
     return False
 
@@ -125,11 +194,17 @@ def score(a, wants):
     return s
 
 
+def shown(phrase):
+    """A place name in title case ('Mission Playground'), a generic phrase as it is ('loud bars')."""
+    p = str(phrase)
+    return p if is_generic(p.lower()) or p != p.lower() else " ".join(w[:1].upper() + w[1:] for w in p.split())
+
+
 def summary(wants):
     """One short line for the log and the API: 'sushi; quiet; likes ferry building; avoids loud'."""
     if not wants:
         return ""
     bits = ([wants["food"]] if wants.get("food") else []) + list(wants.get("tastes") or [])
-    bits += [f"likes {w}" for w in wants.get("likes") or []]
-    bits += [f"avoids {w}" for w in wants.get("dislikes") or []]
+    bits += [f"likes {shown(w)}" for w in wants.get("likes") or []]
+    bits += [f"avoids {shown(w)}" for w in wants.get("dislikes") or []]
     return "; ".join(bits)

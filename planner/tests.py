@@ -3132,9 +3132,9 @@ class MifClientTest(Base):
         self.assertEqual(code, 0, line)
         plan = Plan.objects.get(owner__handle="chris_t255")
         self.assertEqual(plan.wants["food"], "sushi")
-        self.assertIn("loud", plan.wants["dislikes"])
+        self.assertIn("loud bars", plan.wants["dislikes"])
         self.assertEqual(plan.option_list()[0].name, "Ferry Building Marketplace")
-        self.assertIn("Wants: sushi; quiet; avoids loud; avoids bar", line)
+        self.assertIn("Wants: sushi; quiet; avoids loud bars", line)
 
     def test_link_gives_a_new_one_time_dashboard_link(self):
         """T81: after the signup link is used, 'mif.py link' prints a fresh link that logs in once."""
@@ -6831,8 +6831,7 @@ class WantsTests(Base):
         self.assertEqual(w["food"], "sushi")
         self.assertEqual(set(w["tastes"]), {"quiet", "outdoor"})
         self.assertEqual(w["likes"], ["ferry building"])
-        self.assertIn("loud", w["dislikes"])
-        self.assertIn("bar", w["dislikes"])
+        self.assertEqual(w["dislikes"], ["loud bars"])  # T320: one phrase, never single words
         self.assertIn("likes Ferry Building", w["text"])
         self.assertEqual(names[0], "Ferry Building Marketplace")
 
@@ -6847,6 +6846,57 @@ class WantsTests(Base):
     def test_not_tomorrow_is_no_dislike(self):
         from . import wants
         self.assertEqual(wants.read("free Friday, not tomorrow, no loud places")["dislikes"], ["loud"])
+
+    def test_t320_negated_taste_is_a_dislike_not_a_taste(self):
+        """Live 4/11 00:32: 'I hate Tartine and loud bars' gave tastes ['loud']."""
+        from . import wants
+        w = wants.merge(wants.read("I hate Tartine and loud bars"))
+        self.assertEqual(w["dislikes"], ["tartine", "loud bars"])
+        self.assertNotIn("loud", w["tastes"])
+        # the model may still answer the taste 'loud': the merge drops it
+        w = wants.merge({"tastes": ["loud", "quiet"]}, wants.read("I hate Tartine and loud bars"))
+        self.assertEqual(w["tastes"], ["quiet"])
+
+    def test_t320_dislike_is_the_whole_place_name(self):
+        """Live 4/11 00:38: 'We do not like Mission Playground' gave like/mission/playground."""
+        from . import wants
+        w = wants.read("We do not like Mission Playground")
+        self.assertEqual(w["dislikes"], ["mission playground"])
+        self.assertEqual(wants.summary(w), "avoids Mission Playground")
+        self.assertEqual(wants.read("kids 5 and 7, we don't like Dolores Park")["dislikes"], ["dolores park"])
+
+    def test_t320_place_name_dislike_rules_out_that_place_only(self):
+        from . import wants
+        from .models import Activity
+        parks = list(Activity.objects.filter(tags__contains=["park"])[:5])
+        self.assertTrue(parks)
+        dolores = [a for a in Activity.objects.all() if "dolores park" in a.name.lower()]
+        for a in parks:
+            self.assertEqual(wants.is_disliked(a, ["dolores park"]), "dolores park" in a.name.lower(), a.name)
+        for a in dolores:
+            self.assertTrue(wants.is_disliked(a, ["dolores park"]))
+        bars = list(Activity.objects.filter(tags__contains=["bar"])[:3])
+        for a in bars:  # a generic phrase still rules out the kind of place
+            self.assertTrue(wants.is_disliked(a, ["loud bars"]), a.name)
+
+    def test_t320_free_is_no_want(self):
+        """T299: 'Wants: tacos; free; likes tacos'. The availability word is never a want."""
+        from . import wants
+        w = wants.merge(wants.read("I am free Friday, I love tacos near the Mission"), {"tastes": ["free", "open"]})
+        self.assertNotIn("free", w["tastes"])
+        self.assertNotIn("open", w["tastes"])
+        self.assertEqual(w["likes"], ["tacos"])
+        self.assertNotIn("free", wants.summary(w))
+
+    def test_t320_api_post_stores_the_phrases(self):
+        r = self.post({"text": "lunch tomorrow near Hayes Valley. I am free. We do not like Mission Playground",
+                       "preferences": "I hate Tartine and loud bars"})
+        self.assertEqual(r.status_code, 201, r.content)
+        _, plan = self.names(r)
+        self.assertEqual(sorted(plan.wants["dislikes"]), ["loud bars", "mission playground", "tartine"])
+        self.assertNotIn("free", plan.wants["tastes"])
+        self.assertNotIn("loud", plan.wants["tastes"])
+        self.assertIn("avoids Mission Playground", plan.log.get(type="read_as").payload["text"])
 
 
 
