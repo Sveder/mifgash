@@ -41,8 +41,22 @@ FORBIDDEN = ["declined", "rejected", "refused", "said no", "instead of", "first 
              "second choice", "preferred", "nobody wanted", "no one wanted", "busy with someone"]
 
 
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def fmt_day(date):
+    """'Wed Nov 4' (T351): the ONE date form in every human line (agent text, log rows, cards, pages).
+    The .ics file and the Google Calendar link keep their machine forms."""
+    return f"{WEEKDAYS[date.weekday()]} {MONTHS[date.month - 1]} {date.day}"
+
+
+def fmt_when(date, time):
+    """'Wed Nov 4, 12:30 PM' (T351). Takes a time or 'HH:MM'."""
+    return f"{fmt_day(date)}, {clock(time)}"
+
+
 def when(date, part):
-    return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month} {PART_WORDS[part]}"
+    return f"{fmt_day(date)} {PART_WORDS[part]}"
 
 
 def plan_time(plan):
@@ -57,7 +71,7 @@ def plan_time(plan):
 
 
 def plan_when(plan):
-    """'Sun 1/11 at 12:30 PM' for a lunch (its own time), or 'Sun 1/11' when the kind word already
+    """'Sun Nov 1 at 12:30 PM' for a lunch (its own time), or 'Sun Nov 1' when the kind word already
     says the part (an evening out)."""
     if PART_WORDS[plan.part] in kind_word(plan):
         return day(plan.date)
@@ -67,7 +81,7 @@ def plan_when(plan):
 
 
 def kind_on(plan):
-    """'lunch on Sun 1/11 at noon', 'an evening out on Sun 1/11': the part word only once."""
+    """'lunch on Sun Nov 1 at 12:30 PM', 'an evening out on Sun Nov 1': the part word only once."""
     return f"{kind_word(plan)} on {plan_when(plan)}"
 
 
@@ -189,17 +203,16 @@ def place_hint(place):
     return PLACE_HINTS.get(getattr(place, "name", ""), "")
 
 
-MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 UI_PARTS = {"morning": "morning", "lunch": "lunch", "afternoon": "afternoon", "evening": "evening"}
 
 
 def ui_day(date):
-    """The date on a web page: 'Sun 8 Nov' (T120). Agent text keeps 'Sun 8/11'."""
-    return f"{WEEKDAYS[date.weekday()]} {date.day} {MONTHS[date.month - 1]}"
+    """The date on a web page: 'Sun Nov 8' (T120, T351: the same form as the agent text)."""
+    return fmt_day(date)
 
 
 def ui_when(date, part):
-    """'Sun 8 Nov, lunch'."""
+    """'Sun Nov 8, lunch'."""
     return f"{ui_day(date)}, {UI_PARTS[part]}"
 
 
@@ -213,8 +226,8 @@ def card_when(plan, title=None):
 
 
 def when_exact(date, time):
-    """'Fri 30/10 1:00 PM'."""
-    return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month} {clock(time)}"
+    """'Fri Oct 30, 1:00 PM'."""
+    return fmt_when(date, time)
 
 
 def names(people):
@@ -242,8 +255,8 @@ def finalize_counter_text(proposer, time, old_time, place):
 
 
 def day(date):
-    """'Fri 30/10'."""
-    return f"{WEEKDAYS[date.weekday()]} {date.day}/{date.month}"
+    """'Fri Oct 30'."""
+    return fmt_day(date)
 
 
 def agree_time_text(proposer, plan, time, place):
@@ -262,15 +275,15 @@ def set_time_text(plan, others):
 
 def us_day(date):
     """'Tue Nov 3' (T258; US readers, the SF world)."""
-    return f"{WEEKDAYS[date.weekday()]} {MONTHS[date.month - 1]} {date.day}"
+    return fmt_day(date)
 
 
 def final_text(plan, others):
     """For each side when the plan is final. Names the other people, never the reader (T258)."""
     place = plan.chosen
     where = f"{place.name}, {place.address or place.area.name}" if place else plan.area.name
-    return (f"Set: {kind_word(plan)} with {names(others)}, {us_day(plan.date)} "
-            f"{clock(plan.exact_time)} at {where}. Change it on your dashboard if the time does not fit.")
+    return (f"Set: {kind_word(plan)} with {names(others)}, {fmt_when(plan.date, plan.exact_time)} "
+            f"at {where}. Change it on your dashboard if the time does not fit.")
 
 
 def auto_time_text(plan):

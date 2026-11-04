@@ -303,13 +303,18 @@ class Scenario:
 
 
 def outing_line(o):
-    """'Lunch, Fri 30/10, 13:00, Place, Address, with Sam (final)'."""
+    """'Lunch, Fri Oct 30, 1:00 PM, Place, Address, with Sam (final)'."""
     try:
-        day = dt.date.fromisoformat(o.get("date") or "").strftime("%a %d/%m")
+        d = dt.date.fromisoformat(o.get("date") or "")
+        day = f"{d:%a} {d:%b} {d.day}"
     except ValueError:
         day = o.get("date") or "day not set"
     place = o.get("place") or {}
-    parts = [str(o.get("kind") or "outing").capitalize(), day, o.get("time") or "time not set",
+    hm = o.get("time")
+    if hm:
+        h, m = (int(x) for x in hm.split(":")[:2])
+        hm = f"{(h % 12) or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
+    parts = [str(o.get("kind") or "outing").capitalize(), day, hm or "time not set",
              place.get("name", "place not set")]
     if place.get("address"):
         parts.append(place["address"])

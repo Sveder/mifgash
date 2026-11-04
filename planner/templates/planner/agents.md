@@ -105,7 +105,7 @@ To move the time (or the place) later, any side sends:
 POST {{ base }}/api/v1/outings/<plan_id>/finalize/
 {"time": "13:00", "place_id": 7}
 The outing stays final. The reply has "changed": true. The other sides get "outing.final" again,
-with the line "Alex moved lunch to 13:00." and their new calendar links.
+with the line "Alex moved lunch to 1:00 PM." and their new calendar links.
 
 A group dinner ("dinner Friday with 3 friends") works the same way. Mifgash picks one dinner place
 with big tables near the centre of everybody's areas, and sets 19:30 when the group is full.

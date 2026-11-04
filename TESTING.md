@@ -45,7 +45,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Kurt, I'm open tomorrow`
 - Kurt runs: `open "I'm open tomorrow"`
-- Kurt answers (Thursday test): `Posted: you are free Fri 30/10 morning (id N). A friend is
+- Kurt answers (Thursday test): `Posted: you are free Fri Oct 30 morning (id N). A friend is
   free for morning that day, so I took morning. ... Near your home area, SoMa. ...
   Finding friends now.`
 - Dashboard: the agent log has your post, a "Read as" row (tagged Claude) and a "find" row.
@@ -56,7 +56,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Kurt, any plans?` (or wait: Kurt runs `inbox` when he has a polling job)
 - Kurt runs: `proposals`
-- Kurt answers: `Maria is free for a weekend outing on Fri 30/10 morning and wants to meet at Embarcadero
+- Kurt answers: `Maria is free for a weekend outing on Fri Oct 30 morning and wants to meet at Embarcadero
   waterfront walk. Does it work for you? ... Places: [24] Embarcadero waterfront walk; [21] ... Ask your human.
   Yes: 'respond <proposal id> accept --choice 24' (or another place id). No: 'respond <proposal id>
   decline'.` The `inbox` line for the same proposal ends with the same places and commands.
@@ -67,7 +67,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Yes, the Embarcadero walk`
 - Kurt runs: `respond <proposal id> accept --choice 24`
-- Kurt answers: `You said yes. You are both in: Fri 30/10 morning, Embarcadero waterfront walk, with Maria.
+- Kurt answers: `You said yes. You are both in: Fri Oct 30 morning, Embarcadero waterfront walk, with Maria.
   Mifgash set 10:00. Add to calendar: https://mifgash.sveder.com/c/<code> .ics: ... To move it: 'finalize N --time HH:MM'.`
 - Dashboard: under Matches, a card that says "It is set" with 10:00, the calendar buttons and
   "Change time" chips (09:30, 10:30, 11:00) plus an Other select. Nobody runs `finalize`.
@@ -78,7 +78,7 @@ Each step: what you say, what Kurt should answer, what the dashboard shows, and 
 
 - You say: `Kurt, what is set on Mifgash?`
 - Kurt runs: `outings`
-- Kurt answers: `1 outing: [N] Final: Weekend (morning), Fri 30/10, 10:00, Embarcadero
+- Kurt answers: `1 outing: [N] Final: Weekend (morning), Fri Oct 30, 10:00 AM, Embarcadero
   waterfront walk, Embarcadero at Market St, San Francisco. With Maria.`
 
 ## 8. Move the time (optional)
@@ -89,13 +89,13 @@ Mifgash already set the time in step 6. Only move it when you want another time.
 - Kurt runs: `finalize N --time 10:30`
 - Kurt answers: `Moved to 10:30 at Embarcadero waterfront walk, Embarcadero at Market St, San Francisco. The
   others hear the new time. Add to calendar: https://mifgash.sveder.com/c/<code> .ics: ...`
-- Dashboard: the card says "It is set", "Fri 30/10, 10:30". The log has "Michael moved a weekend outing to 10:30."
+- Dashboard: the card says "It is set", "Fri Oct 30, 10:30 AM". The log has "Michael moved a weekend outing to 10:30."
 - You can also press a "Change time" chip on the dashboard card instead of the chat.
 
 ## 9. Add it to the calendar
 
 - You do: tap the Google Calendar link from Kurt's reply.
-- Result: Google Calendar opens a new event "Weekend outing with Maria", Fri 30/10 10:00, with the
+- Result: Google Calendar opens a new event "Weekend outing with Maria", Fri Oct 30 10:00, with the
   address in the location and the map link and parking in the details.
 - The .ics link downloads an invite for any other calendar app.
 

@@ -95,7 +95,7 @@ if (SUNDAY - _today).days < 2:
     SUNDAY += dt.timedelta(days=7)
 TUESDAY = SUNDAY + dt.timedelta(days=2)
 THURSDAY = SUNDAY + dt.timedelta(days=4)
-SUN_DM = f"{SUNDAY.day}/{SUNDAY.month}"
+SUN_DM = f"{SUNDAY:%b} {SUNDAY.day}"  # T351: the US form, 'Nov 8'
 SUN_YMD = SUNDAY.strftime("%Y%m%d")
 
 
@@ -1974,7 +1974,7 @@ class DashboardTests(ProposalBase):
         self.assertNotIn(">Log in</a>", head + foot)
 
     def test_lunch_card_names_the_part_once(self):
-        """T318 (T295): a lunch card reads 'Lunch' and 'Sun 8 Nov', never 'Sun 8 Nov, lunch' under the title;
+        """T318 (T295): a lunch card reads 'Lunch' and 'Sun Nov 8', never 'Sun Nov 8, lunch' under the title;
         a weekend outing keeps the part."""
         pl = Plan.objects.create(owner=self.people["aa"], kind="lunch", date=SUNDAY, part="lunch",
                                  area=area("SoMa"), radius_km=3.0, status="open")
@@ -2700,7 +2700,7 @@ class FinalizeTests(ProposalBase):
         pa.refresh_from_db()
         self.assertEqual((pa.status, pa.exact_time, pa.chosen_id), ("final", dt.time(13, 0), place))
         finals = {m.receiver: m.payload["text"] for m in AgentMessage.objects.filter(plan=pa, type="final")}
-        self.assertIn(f"Set: lunch with {first.upper()}, {messages.us_day(SUNDAY)} 1:00 PM at ", finals["agent:aa"])
+        self.assertIn(f"Set: lunch with {first.upper()}, {messages.us_day(SUNDAY)}, 1:00 PM at ", finals["agent:aa"])
         self.assertIn("with AA,", finals[f"agent:{first}"])
         sets = AgentMessage.objects.filter(plan=pa, type="finalize_set").first()
         self.assertEqual(sets.payload["text"], f"Set: 1:00 PM at {pa.chosen.name}. Waiting for {first.upper()}.")
@@ -2852,7 +2852,7 @@ class FinalizeTests(ProposalBase):
         self.fin(first, pa, time="13:00")
         page = self.client.get("/d/").content.decode()
         self.assertIn("It is set", page)
-        self.assertIn(f"Sun {SUNDAY.day} {SUNDAY:%b}, 1:00 PM", page)
+        self.assertIn(f"Sun {SUNDAY:%b} {SUNDAY.day}, 1:00 PM", page)
         self.assertNotIn("proposes", page)
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
@@ -3331,10 +3331,43 @@ class MifClientTest(Base):
         self.assertIn(f"[outing {plan}] Ben proposes 1:00 PM at ", line)
         self.assertIn(f"Agree: 'finalize {plan} --time 13:00 --place {place}'.", line)
         code, line = self.run_mif("a", "finalize", str(plan), "--time", "13:00", "--place", str(place))
-        self.assertIn("Final: 13:00", line)
+        self.assertIn("Final: 1:00 PM at ", line)
         self.assertIn("Add to calendar: http://testserver/c/", line)
         self.assertNotIn("calendar.google.com", line)  # T82: the short link only
         self.assertLess(len(line), 200)
+
+    def test_one_us_date_form_everywhere(self):
+        """T351: 'Wed Nov 4' in every mif.py line and on the dashboard (Activity + Matches); no D/M digits."""
+        import re
+        day = dt.date.today() + dt.timedelta(days=3)
+        us = f"{day:%a} {day:%b} {day.day}"
+        link = re.search(r"http://testserver(/d/[^ ]+)", self.run_mif("a", "signup", "Chris", "chris_t351")[1]).group(1)
+        self.run_mif("b", "signup", "Ben", "ben_t351")
+        self.run_mif("a", "friends", "add", "ben_t351")
+        self.run_mif("b", "friends", "accept", "chris_t351")
+        open_args = ["open", "--date", day.isoformat(), "--part", "lunch", "--kind", "lunch", "--area", "SoMa"]
+        lines = [self.run_mif("b", *open_args)[1], self.run_mif("b", "open-list")[1], self.run_mif("a", *open_args)[1]]
+        offer = Offer.objects.get(person__handle="chris_t351")
+        lines.append(self.run_mif("a", "proposals")[1])
+        place = offer.plan.option_list()[0].pk
+        lines.append(self.run_mif("a", "respond", str(offer.pk), "accept", "--choice", str(place))[1])
+        lines += [self.run_mif("b", "proposals")[1], self.run_mif("b", "respond", str(offer.pk), "accept")[1]]
+        lines += [self.run_mif(w, "inbox")[1] for w in "ab"]
+        lines.append(self.run_mif("b", "finalize", str(offer.plan_id), "--time", "13:00", "--place", str(place))[1])
+        out = self.run_mif("a", "outings")[1]
+        lines.append(out)
+        self.assertIn(f"Final: Lunch, {us}, 1:00 PM, ", out)
+        self.assertIn(us, lines[0])
+        dm = re.compile(r"\b\d{1,2}/\d{1,2}\b")
+        for line in lines:
+            self.assertIsNone(dm.search(re.sub(r"https?://\S+", "", line)), line)
+        c = self.client_class()
+        c.post(link)
+        page = c.get("/d/").content.decode()
+        text = re.sub(r"<[^>]+>", " ", re.sub(r"<script.*?</script>|<a [^>]*>|href=\"[^\"]*\"", " ", page, flags=re.S))
+        self.assertIn(f"{us}, 1:00 PM", text)  # the Matches card
+        self.assertIn(f"lunch with Ben, {us}", text)  # the Activity rows
+        self.assertIsNone(dm.search(text), text)
 
     def test_friend_count_and_decline_lines(self):
         """T86: one friend is '1 friend', two are '2 friends'; a decline says 'not this time'."""
@@ -3361,7 +3394,7 @@ class MifClientTest(Base):
         self.run_mif("c", "signup", "Cai", "cai_t28", "--home", "noe valley")
         day = (dt.date.today() + dt.timedelta(days=2)).isoformat()
         args = ["open", "--date", day, "--part", "lunch", "--kind", "lunch", "--area", "SoMa"]
-        self.assertRegex(self.run_mif("c", *args)[1], r"^Posted: you are free \w{3} \d+/\d+ at lunch \(id \d+\)")
+        self.assertRegex(self.run_mif("c", *args)[1], r"^Posted: you are free \w{3} [A-Z][a-z]{2} \d+ at lunch \(id \d+\)")
         self.assertIn("Already posted: you are free ", self.run_mif("c", *args)[1])
         line = self.run_mif("c", "open", "open yesterday for lunch near SoMa")[1]
         self.assertIn("Not posted yet. Ask your human: when? That day is in the past.", line)
@@ -3387,18 +3420,18 @@ class MifClientTest(Base):
         self.assertIn("Asking: Chris said yes, waits for your OK", line)
         self.run_mif("b", "respond", str(offer.pk), "accept")
         plan = offer.plan_id
-        day_txt = f"{day.strftime('%a')} {day.day}/{day.month}"
+        day_txt = f"{day:%a} {day:%b} {day.day}"
         code, line = self.run_mif("a", "outings")
         self.assertEqual(line, f"1 outing: [{plan}] Confirmed, no exact time yet: Lunch, {day_txt}, "
                                f"{place.name}, {place.address}. With Ben.")
         self.run_mif("b", "finalize", str(plan), "--time", "13:00", "--place", str(place.pk))
         code, line = self.run_mif("a", "outings", str(plan))
-        self.assertIn(f"Proposed by Ben for 13:00: Lunch, {day_txt}, 13:00, {place.name}", line)
+        self.assertIn(f"Proposed by Ben for 1:00 PM: Lunch, {day_txt}, 1:00 PM, {place.name}", line)
         self.assertIn(f"'finalize {plan} --time 13:00 --place {place.pk}'", line)
         self.assertIn("Proposed by you", self.run_mif("b", "outings", str(plan))[1])
         self.run_mif("a", "finalize", str(plan), "--time", "13:00", "--place", str(place.pk))
         code, line = self.run_mif("a", "outings", str(plan))
-        self.assertIn(f"Final: Lunch, {day_txt}, 13:00, {place.name}, {place.address}. With Ben.", line)
+        self.assertIn(f"Final: Lunch, {day_txt}, 1:00 PM, {place.name}, {place.address}. With Ben.", line)
         self.assertIn("Add to calendar: http://testserver/c/", line)
         self.assertIn(".ics", line)
         code, line = self.run_mif("a", "--json", "outings", "999999")
@@ -3627,6 +3660,17 @@ class HumanPageTests(ProposalBase):
         _, token = MagicLink.issue(self.people["aa"])
         c.post(f"/d/{token}/")
         return c.get("/d/").content.decode()
+
+    def test_human_page_uses_the_us_date_form(self):
+        """T351: the /h/ page and the invite text say 'Sun Nov 8', never 'Sun 8/11'."""
+        import re
+        p, offer = self.ask_human()
+        invite = AgentMessage.objects.get(plan=p, type="invite_link", receiver=self.hh.address)
+        page = self.client.get(f"/h/{offer.token}/").content.decode()
+        text = re.sub(r"<[^>]+>", " ", re.sub(r"<script.*?</script>", " ", page, flags=re.S))
+        self.assertIn(f"Sun {SUNDAY:%b} {SUNDAY.day}", text)
+        for t in (text, re.sub(r"https?://\S+", "", invite.payload["text"])):
+            self.assertIsNone(re.search(r"\b\d{1,2}/\d{1,2}\b", t), t)
 
     @override_settings(AUTO_TIME=False)  # T258: the old two-step time round
     def test_human_flow_to_confirmed_outing(self):
@@ -3868,8 +3912,8 @@ class ScenarioTests(TestCase):
         leo = Person.objects.get(handle="scn_leo")
         plan = Plan.objects.get(owner=leo, status="final")
         self.assertEqual(plan.exact_time, dt.time(13, 30))  # Sam's counter (T70)
-        day = plan.date.strftime("%a %d/%m")
-        self.assertIn(f"Lunch, {day}, 13:30, {plan.chosen.name}, {plan.chosen.address}, with Sam (final)", out)
+        day = f"{plan.date:%a} {plan.date:%b} {plan.date.day}"
+        self.assertIn(f"Lunch, {day}, 1:30 PM, {plan.chosen.name}, {plan.chosen.address}, with Sam (final)", out)
         self.assertNotIn("lunch (lunch)", out)
         self.assertEqual([p.handle for p in plan.guests()], ["scn_sam"])
         link = re.search(r"http://testserver(/d/\S+/)", out).group(1)
@@ -6398,7 +6442,7 @@ class GroupDinnerPlaceTimeTests(Base):
         plan = self.run_group()
         self.api("oz", "post", f"/api/v1/outings/{plan.pk}/finalize/", {"time": "19:30", "activity_id": plan.chosen.pk})
         line = mif.outing_line(self.api("oz", "get", f"/api/v1/outings/{plan.pk}/").json())
-        m = re.search(r"Proposed by you for 19:30, waiting for (\w+), (\w+), (\w+): Group dinner, ", line)
+        m = re.search(r"Proposed by you for 7:30 PM, waiting for (\w+), (\w+), (\w+): Group dinner, ", line)
         self.assertEqual(set(m.groups()) if m else None, {"Ann", "Ben", "Hal"}, line)
         self.assertIn("(group of 4)", line)
         self.assertNotIn("Group_dinner", line)
@@ -7112,7 +7156,7 @@ class AutoTimeTests(ProposalBase):
             self.assertIn("calendar.google.com", pl["google_calendar_url"])
             self.assertIn("/c/", pl["google_calendar_short"])
             self.assertTrue(pl["text"].startswith(f"Set: lunch with "), pl["text"])
-            self.assertIn(f"{messages.us_day(SUNDAY)} 12:30 PM at {pa.chosen.name}", pl["text"])
+            self.assertIn(f"{messages.us_day(SUNDAY)}, 12:30 PM at {pa.chosen.name}", pl["text"])
             links[h] = pl["ics_url"]
         self.assertNotEqual(links["aa"], links[first])
         # the inbox line the agent reads carries the short calendar link

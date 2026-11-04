@@ -19,6 +19,7 @@ import logging
 from django.conf import settings
 from django.utils import timezone
 
+from .messages import fmt_when
 from .models import AgentEvent, AgentMessage
 
 log = logging.getLogger(__name__)
@@ -27,7 +28,8 @@ SENDER = "mifgash:email"
 
 def event_line(e):
     text = str((e.payload or {}).get("text") or "").strip()
-    return f"- {text or e.event} ({timezone.localtime(e.created):%a %-d/%-m %H:%M})"
+    t = timezone.localtime(e.created)
+    return f"- {text or e.event} ({fmt_when(t.date(), t.time())})"
 
 
 def compose(person, events):

@@ -89,18 +89,27 @@ def save_key(path, key):
 
 
 def short_day(iso):
-    """'2026-11-01' -> 'Sun 1/11', the same form as the server's messages. Bad input comes back as is."""
+    """'2026-11-01' -> 'Sun Nov 1', the same form as the server's messages (T351). Bad input comes back as is."""
     try:
         d = datetime.date.fromisoformat(iso or "")
     except ValueError:
         return iso or "day not set"
-    return f"{d.strftime('%a')} {d.day}/{d.month}"
+    return f"{d.strftime('%a')} {d.strftime('%b')} {d.day}"
+
+
+def clock(hm):
+    """'13:00' -> '1:00 PM' (T351, the server's clock form). Anything else comes back as is."""
+    try:
+        h, m = (int(x) for x in str(hm).split(":")[:2])
+    except (TypeError, ValueError):
+        return hm
+    return f"{(h % 12) or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
 
 
 def when(row):
-    """'lunch on Fri 30/10', or 'kids on Fri 30/10 (morning)' when the part adds something."""
+    """'lunch on Fri Oct 30', or 'kids on Fri Oct 30 (morning)' when the part adds something."""
     kind, part = row.get("kind") or "", row.get("part") or ""
-    if row.get("kind_named") is False:  # no kind the person did not say: 'Fri 30/10 morning' (T112)
+    if row.get("kind_named") is False:  # no kind the person did not say: 'Fri Oct 30 morning' (T112)
         return f"{short_day(row.get('date'))} {PART_PHRASE.get(part, part)}".strip()
     tail = f" ({part})" if part and part != kind else ""
     return f"{kind} on {short_day(row.get('date'))}{tail}".strip()
@@ -111,8 +120,8 @@ KIND_PHRASE = {"kids": "with the kids", "weekend": "for a weekend outing"}
 
 
 def free_when(row):
-    """'you are free Fri 30/10 morning'. The kind only when the person named it and the part does
-    not already say it (T112): 'you are free Sat 31/10 morning, with the kids'."""
+    """'you are free Fri Oct 30 morning'. The kind only when the person named it and the part does
+    not already say it (T112): 'you are free Sat Oct 31 morning, with the kids'."""
     part = row.get("part") or ""
     text = f"you are free {short_day(row.get('date'))} {PART_PHRASE.get(part, part)}".strip()
     kind = KIND_PHRASE.get(row.get("kind")) if row.get("kind_named", True) else None
@@ -155,17 +164,17 @@ def agree_step(plan_id, time, place_id=None):
 
 
 def day_label(row, time=None):
-    """'Lunch, Fri 30/10, 13:00' -- the part only when it adds something, the time when known."""
+    """'Lunch, Fri Oct 30, 1:00 PM' -- the part only when it adds something, the time when known."""
     kind, part = row.get("kind") or "", row.get("part") or ""
     if kind == "group_dinner":  # G2 (T228): an evening by definition, no '(evening)'
         kind = part = "group dinner"
     head = (kind or part or "Outing").capitalize() + (f" ({part})" if part and kind and part != kind else "")
     day = short_day(row.get("date"))
-    return ", ".join(x for x in (head, day, time) if x)
+    return ", ".join(x for x in (head, day, clock(time) if time else None) if x)
 
 
 def outing_line(o):
-    """One outing in plain words: '[12] Final: Lunch, Fri 30/10, 13:00, Place, Address. With Alex.'"""
+    """One outing in plain words: '[12] Final: Lunch, Fri Oct 30, 1:00 PM, Place, Address. With Alex.'"""
     place = o.get("place")
     time = o.get("time")
     status = o.get("status")
@@ -176,7 +185,7 @@ def outing_line(o):
     elif status == "proposed":
         by = o.get("proposed_by")
         state = "Proposed by you" if by == "you" else f"Proposed by {by or 'a friend'}"
-        state += f" for {o.get('proposed_time')}"
+        state += f" for {clock(o.get('proposed_time'))}"
         if o.get("you_agreed") and o.get("waiting_for"):  # G2 (T228): a group agrees one by one
             state += f", waiting for {', '.join(o['waiting_for'])}"
         time = o.get("proposed_time")
@@ -443,7 +452,7 @@ def cmd_respond(args):
         who = "You are both in:" if len(others) <= 1 else f"You are in: {len(others) + 1} people,"
         line += f" {who} {o.get('when_text') or when(o)}, {place}, with {', '.join(others)}."
         if o.get("time"):  # T258: Mifgash set the time itself
-            line += (f" Mifgash set {o['time']}. {calendar_links(o)} "
+            line += (f" Mifgash set {clock(o['time'])}. {calendar_links(o)} "
                      f"To move it: 'finalize {o['plan_id']} --time HH:MM'.")
         else:
             line += f" Pick the time next: 'finalize {o['plan_id']} --time HH:MM'."
@@ -459,7 +468,7 @@ def cmd_finalize(args):
     if args.place is not None:
         body["activity_id"] = args.place
     r = call(args, "POST", f"outings/{args.id}/finalize/", body)
-    head = f"{r['time']} at {r['place']['name']}, {r['address']}"
+    head = f"{clock(r['time'])} at {r['place']['name']}, {r['address']}"
     if r["status"] == "final" and r.get("changed"):  # T258: a set outing moved; the others hear it
         return f"Moved to {head}. The others hear the new time. {calendar_links(r)}", r
     if r["status"] == "final":

@@ -1,6 +1,6 @@
 # Mifgash: proof of concept
 
-Built for the Meta Global AI Developer Hackathon (Cerebral Valley, 26/10 - 4/11/2026).
+Built for the Meta Global AI Developer Hackathon (Cerebral Valley, Oct 26 - Nov 4, 2026).
 Spec: [SPEC.md](SPEC.md). Live site: https://mifgash.sveder.com. Source: https://github.com/Sveder/mifgash (MIT).
 
 You tell your agent when you are free. Your agent asks friends who are free too, near you,
@@ -8,15 +8,15 @@ one at a time, in a random order. Nobody sees a "no".
 
 ## Built during the hackathon
 
-All code in this repository is new work, written during the event (26/10 - 4/11/2026).
+All code in this repository is new work, written during the event (Oct 26 - Nov 4, 2026).
 
-- The public repo is one squashed commit. The dated private history (over 170 commits, 28/10 - 4/11/2026) is kept and is available to the judges on request.
-- The first proof of concept (28/10/2026) was built during the event too. It was a chat on the
+- The public repo is one squashed commit. The dated private history (over 170 commits, Oct 28 - Nov 4, 2026) is kept and is available to the judges on request.
+- The first proof of concept (Oct 28, 2026) was built during the event too. It was a chat on the
   site; the agent-first product replaced it the same day.
 
 | Part | Status |
 |---|---|
-| All code in this repository | **New**, written during the hackathon (from 28/10/2026) |
+| All code in this repository | **New**, written during the hackathon (from Oct 28, 2026) |
 | Demo people (`planner/seed.py`) | **New**, invented |
 | Activity catalog (`planner/seed.py`) | **New**, real public places typed in by hand during the hackathon (`source='hackathon'`) |
 | Older data (school-holiday kids activities, 128 rows) | **Not used yet**. If imported, the rows get `source='reused'` and the demo marks them |
@@ -197,7 +197,7 @@ One setting, `MIFGASH_LLM_BACKEND`:
 
 - `claude` (default now): Claude Sonnet 5.5 through the local `claude -p --output-format json` CLI. No API key needed on the build box.
 - `meta`: Muse Spark Open on Baseten, model `meta-models/muse-spark-open-1026`. Needs `BASETEN_API_KEY` (header `Authorization: Api-Key <key>`). Set `MIFGASH_META_ENV` to an env file outside the repo that holds `BASETEN_API_KEY`, `BASETEN_BASE_URL` and `BASETEN_MODEL`.
-  The model reasons before it answers (300-2900 tokens in the 29/10 dry run), so `MIFGASH_META_MAX_TOKENS` defaults to 4000; 800 cut the JSON answer. For a dry run with a call cap, set `MIFGASH_META_CALL_LOG=<file>` and `MIFGASH_META_CALL_CAP=<n>`: the server and `demo/friend_agent.py` write one JSON line per Baseten call (seconds, finish reason, tokens, answer, never the key) and stop calling at n; the stub then takes over.
+  The model reasons before it answers (300-2900 tokens in the Oct 29 dry run), so `MIFGASH_META_MAX_TOKENS` defaults to 4000; 800 cut the JSON answer. For a dry run with a call cap, set `MIFGASH_META_CALL_LOG=<file>` and `MIFGASH_META_CALL_CAP=<n>`: the server and `demo/friend_agent.py` write one JSON line per Baseten call (seconds, finish reason, tokens, answer, never the key) and stop calling at n; the stub then takes over.
 - `stub`: deterministic keyword parser. No network. The tests use it.
 
 If a model call fails, the stub fills in, so the demo never stops. The model only reads the
@@ -231,8 +231,8 @@ from Telegram. The server must run with `MIFGASH_DEMO=1`, and the script needs t
 6. The friend agents poll once: Sam's agent accepts. Leo's agent approves. The outing is confirmed.
 7. Leo's agent sets the exact time and place (13:00 for lunch). Sam's agent reads the proposed
    time from `GET /api/v1/outings/`. Sam prefers 13:30 (`preferred_times` in his persona), so
-   his agent counters once with 13:30. Leo's log shows "Sam's agent suggests 13:30 instead of
-   13:00". Leo's agent reads the counter and sends 13:30 back. The outing is final at 13:30.
+   his agent counters once with 13:30. Leo's log shows "Sam's agent suggests 1:30 PM instead of
+   1:00 PM". Leo's agent reads the counter and sends 13:30 back. The outing is final at 13:30.
 8. Each side gets its own `.ics` link and Google Calendar link. The script fetches both `.ics` files.
 9. Leo: "I am open tomorrow evening near SoMa". Priya fits, so Mifgash sends her a `/h/` web link
    (`GET /api/v1/demo/links/?handle=scn_priya` shows it to the script, demo only). The script answers
