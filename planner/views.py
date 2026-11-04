@@ -721,15 +721,21 @@ INVITE_PROMPT = "Using {link} (remember it as {name}), sign me up and join @{han
 
 
 def try_demo(request):
-    """M7a (T178): GET shows one button. POST makes a sandbox owner and a sandbox friend (Maria,
-    with her own agent), logs the browser in and opens /d/. 5 sessions an hour per IP; when the
-    sandbox is full the page says so with 503."""
+    """M7a (T178): GET shows one button. POST makes a sandbox owner and three sandbox friends (Maria,
+    Sam and Lena, each with an own agent), logs the browser in and opens /d/. T317: a browser that
+    already holds a live sandbox person goes back to /d/ and does not count. About 20 sessions an
+    hour per IP; the cap answer is the try page with a friendly line (429). A full sandbox is 503."""
     from . import ratelimit, sandbox
     if request.method != "POST":
         return render(request, "planner/try.html", {"busy": False})
-    slow = ratelimit.check(request, "try", ip=sandbox.IP_RATE)
-    if slow:
-        return slow
+    me = dash_person(request)
+    if me and me.is_sandbox and me.expires_at and me.expires_at > timezone.now():
+        return redirect("dashboard")
+    wait = ratelimit.wait_for(request, "try", ip=sandbox.IP_RATE)
+    if wait:
+        r = render(request, "planner/try.html", {"busy": False, "cap_minutes": max(1, -(-wait // 60))}, status=429)
+        r["Retry-After"] = str(wait)
+        return r
     try:
         p = sandbox.create_session()
     except sandbox.Busy:

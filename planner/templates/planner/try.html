@@ -6,6 +6,7 @@
 <section class="human visitor">
 <h1 class="ask">Try {{ PRODUCT_NAME }}</h1>
 {% if busy %}<p class="err" role="status">The demo is busy, try later.</p>{% endif %}
+{% if cap_minutes %}<p class="err" role="status" id="try-cap">Many demos from your network right now. Try again in {{ cap_minutes }} minute{{ cap_minutes|pluralize }}, or use <a href="{% url 'setup' %}">Set me up</a>.</p>{% endif %}
 <div class="card stack" id="try-what"><b>What happens</b>
 <ol class="try-steps">
 <li>You get a demo dashboard and three demo friends, Maria, Sam and Lena, each with an own agent.</li>

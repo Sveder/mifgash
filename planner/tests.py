@@ -5469,15 +5469,43 @@ class SandboxTests(Base):
         self.assertFalse(Person.objects.filter(pk=old.pk).exists())
 
     @override_settings(RATE_LIMITS=True)
-    def test_sixth_session_per_ip_is_429(self):
-        codes = [self.client.post("/try/").status_code for _ in range(6)]
-        self.assertEqual(codes, [302] * 5 + [429])
+    def test_cap_per_ip_is_a_friendly_html_page(self):
+        from django.test import Client
+        from . import sandbox
+        n = sandbox.IP_RATE[0]
+        self.assertGreaterEqual(n, 20)  # T317: judges share one network
+        codes = [Client().post("/try/").status_code for _ in range(n + 1)]
+        self.assertEqual(codes, [302] * n + [429])
+        r = Client().post("/try/")
+        self.assertEqual(r.status_code, 429)
+        self.assertTrue(r["Content-Type"].startswith("text/html"))
+        self.assertTrue(r.has_header("Retry-After"))
+        self.assertContains(r, "Many demos from your network right now. Try again in", status_code=429)
+        self.assertContains(r, 'href="/setup/"', status_code=429)
+        self.assertContains(r, "Start the demo", status_code=429)
+
+    @override_settings(RATE_LIMITS=True)
+    def test_second_click_same_browser_reuses_the_session(self):
+        self.assertRedirects(self.client.post("/try/"), "/d/", fetch_redirect_response=False)
+        for _ in range(3):
+            self.assertRedirects(self.client.post("/try/"), "/d/", fetch_redirect_response=False)
+        self.assertEqual(Person.objects.filter(is_sandbox=True, name="You").count(), 1)
+        from django.core.cache import cache
+        from . import ratelimit
+        import time
+        key = f"rl:try:ip:127.0.0.1:{int(time.time() // 3600)}"
+        self.assertEqual(cache.get(key), 1)  # the repeat clicks did not count
+        # An expired session makes a new one.
+        Person.objects.filter(is_sandbox=True).update(expires_at=timezone.now() - dt.timedelta(minutes=1))
+        self.client.post("/try/")
+        self.assertEqual(Person.objects.filter(is_sandbox=True, name="You").count(), 2)
 
     def test_full_sandbox_is_busy(self):
         from . import sandbox
         with mock.patch.object(sandbox, "MAX_ROWS", 4):
             self.assertEqual(self.client.post("/try/").status_code, 302)
-            r = self.client.post("/try/")
+            from django.test import Client
+            r = Client().post("/try/")  # T317: the same browser would reuse its session
         self.assertEqual(r.status_code, 503)
         self.assertContains(r, "The demo is busy, try later.", status_code=503)
 

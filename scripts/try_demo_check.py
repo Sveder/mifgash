@@ -3,8 +3,8 @@
 
     python3 scripts/try_demo_check.py [https://mifgash.sveder.com] [--limit 60]
 
-Steps: POST /try/, send the pre-filled line, wait for Maria's yes (the match), approve, wait for her
-time, agree, wait for 'It is set', read the outing card. Prints the seconds per step. Exit 1 when the
+Steps: POST /try/, send the pre-filled line, wait for Maria's yes (the match), approve, wait for
+'It is set', read the outing card (T317: since T258 the time is set at once after the approve). Prints the seconds per step. Exit 1 when the
 whole run takes more than --limit seconds or a step does not arrive.
 """
 import argparse
@@ -77,7 +77,7 @@ def main():
     page = r.s.get(r.url("/"), timeout=30).text  # the landing hero form, as a visitor clicks it
     page = r.post("/try/", {}, page)
     if "sandbox-form" not in page:
-        raise SystemExit("FAIL: POST /try/ did not open a demo dashboard (rate limit or busy?)")
+        raise SystemExit("FAIL: POST /try/ did not open a demo dashboard" + (" (the per-IP cap)" if "try-cap" in page else " (busy?)"))
     r.mark("Try it now (POST /try/)")
 
     text = html.unescape(re.search(r'id="sandbox-text"[^>]*value="([^"]*)"', page).group(1))
@@ -92,13 +92,9 @@ def main():
     page = r.post(m.group(1), {"answer": "accept"}, page)
     r.mark("approve the match")
 
-    page, m = r.wait(r'<form method="post" action="(/d/finalize/\d+/)" class="agree">.*?name="time" value="([^"]+)">'
-                     r'<input type="hidden" name="activity_id" value="(\d+)">', "Maria's time")
-    r.mark(f"Maria's agent proposes {m.group(2)}")
-
-    page = r.post(m.group(1), {"time": m.group(2), "activity_id": m.group(3)}, page)
-    page, _ = r.wait(r'class="status set">It is set', "the final outing")
-    r.mark("agree, outing is set")
+    # Since T258 Mifgash sets the time at once after the approve, so no time round-trip (T317).
+    page, _ = r.wait(r'class="status set">It is set', "the 'It is set' card")
+    r.mark("outing is set")
 
     card = re.search(r'<article class="card ticket"[^>]*>(.*?)</article>', page, re.S).group(1)
     words = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", card)).split())

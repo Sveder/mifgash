@@ -38,6 +38,13 @@ def too_many(wait):
     return r
 
 
+def wait_for(request, scope, ip=None):
+    """Count one request against the per-IP limit. Returns seconds to wait, or 0 (T317: for HTML pages)."""
+    if not settings.RATE_LIMITS or not ip:
+        return 0
+    return hit(f"{scope}:ip:{client_ip(request)}", *ip)
+
+
 def check(request, scope, ip=None, key=None):
     """ip / key: (limit, seconds). Returns a 429 response or None."""
     if not settings.RATE_LIMITS:

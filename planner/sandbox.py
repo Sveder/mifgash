@@ -17,7 +17,7 @@ from .models import AgentKey, Area, Friendship, Person, Slot
 
 TTL = dt.timedelta(hours=24)
 MAX_ROWS = 400  # open sandbox Person rows; four per session
-IP_RATE = (5, 3600)  # sessions per IP per hour
+IP_RATE = (20, 3600)  # new sessions per IP per hour (T317: judges share one network)
 AREA = "Hayes Valley"
 PREFILL = "free for lunch Thursday near Hayes Valley"
 GROUP_HINT = "dinner Friday with 3 friends near Hayes Valley"  # G3 (T229): the second line to try
