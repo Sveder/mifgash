@@ -268,6 +268,22 @@ class MessageTests(Base):
         self.assertEqual(outing_json(p)["when_text"], f"Sun {SUN_DM}")
         self.assertEqual(outing_json(self.plan())["when_text"], f"Sun {SUN_DM} at 12:30 PM")
 
+    def test_you_is_free_grammar(self):
+        """T404: the /try/ demo owner is called 'You': 'You are free', never 'You is free'."""
+        p = self.plan()
+        alex = Person.objects.get(name="Alex")
+        you = Person(name="You", handle="try_x")
+        t = messages.offer_text(you, p, p.option_list())
+        self.assertTrue(t.startswith("You are free for lunch on "), t)
+        self.assertNotIn("You is", t)
+        self.assertIn("other times you are open", messages.expired_text(you))
+        self.assertIn("You are free for lunch", messages.owner_ask_text(you, p, None))
+        self.assertIn("and want to meet", messages.owner_ask_text(you, p, None))
+        named = messages.offer_text(alex, p, p.option_list())
+        self.assertTrue(named.startswith("Alex"), named)
+        self.assertIn(" is free for lunch on ", named)
+        self.assertIn("and wants to meet", messages.owner_ask_text(alex, p, None))
+
     def test_offer_text_hides_the_queue(self):
         p = self.plan()
         t = messages.offer_text(self.me, p, p.option_list()).lower()

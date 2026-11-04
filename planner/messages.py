@@ -101,7 +101,7 @@ def offer_text(owner, plan, options):
         options[0].name if options else plan.area.name)
     # T321: the group line only when more than 2 friends are asked (a playdate of 2-3 families is no group)
     group = f" {group_ask_line(plan)}" if is_group(plan) else ""
-    return (f"{owner.name} is free for {kind_on(plan)}, "
+    return (f"{is_word(owner)} free for {kind_on(plan)}, "
             f"near {plan.area.name}. You are open then too. Want to meet? "
             f"Idea: {place}.{group}")
 
@@ -166,6 +166,12 @@ def confirmed_text(plan, guests):
     return f"Done. {names} will meet you for {kind_on(plan)} at {place}."
 
 
+def is_word(person):
+    """T404: 'Maria is' / 'You are'. The /try/ demo owner is called 'You'."""
+    name = (person.name or "").strip() or person.handle
+    return "You are" if name == "You" else f"{name} is"
+
+
 def first_name(person):
     return (person.name or "").split()[0] if (person.name or "").strip() else person.handle
 
@@ -204,7 +210,7 @@ def group_closed_text(plan):
 def expired_text(owner):
     """A friend opens an old link. No blame on either side."""
     return (f"This plan is already closed. No problem. "
-            f"Below are other times {owner.name} is open, if one fits you.")
+            f"Below are other times {is_word(owner).replace('You are', 'you are')} open, if one fits you.")
 
 
 def human_slot_text(owner, slot_date, part):
@@ -235,9 +241,9 @@ def owner_ask_text(friend, plan, choice, offer=None):
     place = choice.name if choice else plan.area.name
     vote = group_vote_line(plan, offer) if offer is not None and is_group(plan) else ""
     if vote:
-        return f"{friend.name} is free for {kind_on(plan)}. {vote} Does it work for you? Yes, or not this time."
-    return (f"{friend.name} is free for {kind_on(plan)} "
-            f"and wants to meet at {place}. Does it work for you? Yes, or not this time.")
+        return f"{is_word(friend)} free for {kind_on(plan)}. {vote} Does it work for you? Yes, or not this time."
+    return (f"{is_word(friend)} free for {kind_on(plan)} "
+            f"and {'want' if is_word(friend) == 'You are' else 'wants'} to meet at {place}. Does it work for you? Yes, or not this time.")
 
 
 def group_vote_line(plan, offer):
