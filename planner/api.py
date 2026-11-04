@@ -788,7 +788,8 @@ def proposal_json(offer, role):
     else:
         row["friend"] = {"handle": offer.person.handle, "name": offer.person.name}
         row["choice"] = place_json(offer.choice) if offer.choice else None
-        row["text"] = messages.owner_ask_text(offer.person, plan, offer.choice)
+        row["text"] = messages.owner_ask_text(offer.person, plan, offer.choice, offer)
+        row["reason"] = messages.owner_reason(offer)  # T329: the why line names the same place
         said = engine.answer_note(offer)
         if said:  # T323: the friend's own words with the yes, untrusted data
             row["friend_text"] = said

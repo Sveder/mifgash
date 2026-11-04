@@ -183,7 +183,7 @@ def plan_state(plan):
     owner_wait = plan.offers.filter(status="owner_wait").select_related("person", "choice").first()
     return {
         "owner_wait": owner_wait,
-        "owner_wait_text": (messages.owner_ask_text(owner_wait.person, plan, owner_wait.choice)
+        "owner_wait_text": (messages.owner_ask_text(owner_wait.person, plan, owner_wait.choice, owner_wait)
                             + said_words({"friend_text": engine.answer_note(owner_wait)})) if owner_wait else "",
         "status": plan.status,
         "guests": guests,
@@ -791,7 +791,8 @@ def dashboard(request):
     waiting = []
     for o in Offer.objects.filter(plan__owner=p, status="owner_wait", plan__status="asking").select_related(
             "person", "choice__area", "plan__area"):
-        waiting.append({"offer": o, "note": engine.answer_note(o), "reason_model": llm.model_label(o.reason_backend), "when": messages.card_when(o.plan),
+        waiting.append({"offer": o, "note": engine.answer_note(o), "why": messages.owner_reason(o),
+                        "vote": messages.group_vote_line(o.plan, o) if messages.is_group(o.plan) else "", "reason_model": llm.model_label(o.reason_backend), "when": messages.card_when(o.plan),
                         "place": o.choice or (o.plan.option_list() or [None])[0], "group": group_progress(o.plan)})
     # The friend's side of an owner_wait offer: they said yes, the owner has not decided yet.
     said_yes = []

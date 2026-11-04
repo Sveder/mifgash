@@ -226,11 +226,55 @@ def still_open_text(plan):
             "and I will tell you when a friend fits.")
 
 
-def owner_ask_text(friend, plan, choice):
-    """The owner's agent asks its human. The owner sees only this friend, never the queue."""
+def owner_ask_text(friend, plan, choice, offer=None):
+    """The owner's agent asks its human. The owner sees only this friend, never the queue.
+    T329: in a group, a guest's own place pick reads as a vote next to the group's votes so far."""
     place = choice.name if choice else plan.area.name
+    vote = group_vote_line(plan, offer) if offer is not None and is_group(plan) else ""
+    if vote:
+        return f"{friend.name} is free for {kind_on(plan)}. {vote} Does it work for you? Yes, or not this time."
     return (f"{friend.name} is free for {kind_on(plan)} "
             f"and wants to meet at {place}. Does it work for you? Yes, or not this time.")
+
+
+def group_vote_line(plan, offer):
+    """T329: 'Mia votes Zuni Cafe; the group so far: Foreign Cinema (2).' The votes of the guests who
+    are in (engine.group_vote, T350), never a name of a friend who said no. '' when no pick."""
+    from .engine import accepted, group_vote, picked_place
+    pick = picked_place(offer)
+    if not pick:
+        return ""
+    _, votes = group_vote(plan, [o for o in accepted(plan) if o.pk != offer.pk])
+    line = f"{first_name(offer.person)} votes {pick.name}"
+    if votes:
+        so_far = ", ".join(f"{n} ({c})" for n, c in sorted(votes.items(), key=lambda kv: (-kv[1], kv[0])))
+        line += f"; the group so far: {so_far}"
+    return line + "."
+
+
+def vote_lost_line(plan, person):
+    """T329: for a guest whose own place pick lost the group vote: ' Most of the group picked X.'"""
+    from .engine import picked_place
+    if not (is_group(plan) and plan.chosen):
+        return ""
+    offer = plan.offers.filter(person=person, status="accepted").first()
+    pick = picked_place(offer) if offer else None
+    if pick and pick.pk != plan.chosen.pk:
+        return f" Most of the group picked {plan.chosen.name}."
+    return ""
+
+
+def owner_reason(offer):
+    """T329: the 'why it fits' line the owner reads next to a friend's yes. The line was written for
+    Mifgash's own first idea; when the friend picked another place it names the wrong place, so the
+    owner gets no why line then (the ask names the friend's place)."""
+    reason = offer.reason or ""
+    choice = offer.choice
+    if not reason or not choice or choice.name in reason:
+        return reason or None
+    if any(a.name in reason for a in offer.plan.option_list() if a.pk != choice.pk):
+        return None
+    return reason
 
 
 def joined_text(plan):

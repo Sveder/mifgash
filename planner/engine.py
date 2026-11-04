@@ -548,7 +548,7 @@ def record_answer(offer, yes, choice=None, private_reason="", now=None, backend=
             log(plan, "mifgash:directory", plan.owner.address, "ask_owner",
                 offer_id=offer.pk, friend={"handle": offer.person.handle, "name": offer.person.name},
                 choice=option_payload(choice) if choice else None, **said,
-                text=messages.owner_ask_text(offer.person, plan, choice))
+                text=messages.owner_ask_text(offer.person, plan, choice, offer))
             notify(plan.owner, "proposal.owner", plan, offer, "owner")
     else:
         # The reason stays with the friend's agent. The owner's agent gets a bare "decline".

@@ -6328,7 +6328,8 @@ class GroupDinnerTests(Base):
         self.assertIn("You are in. 1 of 3 in, waiting for 2 more.", pages[a])
         seen = json.dumps([self.api(h, "get", u).json() for h in ("oz", a, nxt)
                            for u in ("/api/v1/outings/", "/api/v1/proposals/", "/api/v1/events/")]) + "".join(pages.values())
-        self.assertNotIn(no.name.split()[0], seen)
+        # a whole word: the friend 'Eve' must not match 'Evening'
+        self.assertNotRegex(seen, rf"\b{re.escape(no.name.split()[0])}\b")
 
     def test_dashboards_render_while_the_group_fills(self):
         from .models import MagicLink
@@ -6442,6 +6443,32 @@ class GroupDinnerPlaceTimeTests(Base):
         self.assertEqual(plan.chosen, self.asked_options[0][2])
         self.assertEqual(plan.log.get(type="group_vote").payload["votes"],
                          {self.asked_options[0][2].name: 2, self.asked_options[0][0].name: 1})
+
+    def test_t329_owner_ask_shows_the_vote_and_the_loser_is_told(self):
+        """T329: a guest's pick reads as a vote next to the group's votes so far; the guest whose pick
+        lost reads 'Most of the group picked X' in the final line; the why line never names another place."""
+        from . import messages
+        from .models import Offer
+        plan = self.run_group(picks=[2, 2, 0])
+        win, lose = self.asked_options[0][2], self.asked_options[0][0]
+        asks = list(plan.log.filter(type="ask_owner").order_by("pk"))
+        self.assertIn(f"votes {win.name}.", asks[0].payload["text"])  # the first vote: nothing so far
+        self.assertNotIn("so far", asks[0].payload["text"])
+        self.assertIn(f"votes {win.name}; the group so far: {win.name} (1).", asks[1].payload["text"])
+        self.assertIn(f"votes {lose.name}; the group so far: {win.name} (2).", asks[2].payload["text"])
+        self.assertNotIn("wants to meet at", asks[2].payload["text"])
+        loser = Offer.objects.get(pk=asks[2].payload["offer_id"]).person
+        for m in plan.log.filter(type="final"):
+            if m.receiver == loser.address:
+                self.assertTrue(m.payload["text"].endswith(f"Most of the group picked {win.name}."), m.payload["text"])
+            else:
+                self.assertNotIn("Most of the group", m.payload["text"])
+        # the why line: dropped when it names another place than the friend's pick, kept when it agrees
+        o = Offer.objects.get(pk=asks[2].payload["offer_id"])
+        o.reason = f"{win.name} fits: a big table for the group."
+        self.assertIsNone(messages.owner_reason(o))
+        o.reason = f"{lose.name} fits: a big table for the group."
+        self.assertEqual(messages.owner_reason(o), o.reason)
 
     def test_t350_a_tie_goes_to_mifgash_first_pick(self):
         plan = self.run_group(picks=[2, 1, None])  # one vote each; the guest with no pick is no vote

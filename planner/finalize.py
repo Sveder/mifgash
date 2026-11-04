@@ -177,7 +177,8 @@ def finalize(plan, person, raw_time, activity_id=None, backend=""):
         return reply(plan, "proposed", time, place, waiting)
     plan.exact_time, plan.chosen, plan.status = time, place, "final"
     plan.save(update_fields=["exact_time", "chosen", "status"])
-    final_push(plan, people, lambda p: messages.final_text(plan, [x for x in people if x.pk != p.pk]))
+    final_push(plan, people, lambda p: messages.final_text(plan, [x for x in people if x.pk != p.pk])
+               + messages.vote_lost_line(plan, p))
     return reply(plan, "final", time, place, [])
 
 
@@ -213,7 +214,8 @@ def auto_final(plan):
         place_id=place.pk, source="text" if (plan.wants or {}).get("time") else "part default",
         text=messages.auto_time_text(plan))
     people = sides(plan)
-    final_push(plan, people, lambda p: messages.final_text(plan, [x for x in people if x.pk != p.pk]))
+    final_push(plan, people, lambda p: messages.final_text(plan, [x for x in people if x.pk != p.pk])
+               + messages.vote_lost_line(plan, p))
     return True
 
 
