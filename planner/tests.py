@@ -4360,9 +4360,9 @@ class PurgeTestPeopleTests(Base):
 
     def test_handle_patterns(self):
         from .management.commands.purge_test_people import is_test_handle
-        for h in ("zz_t81", "crit_echo0252", "jordan_c29", "maria_250b", "sam_e605"):
+        for h in ("zz_t81", "crit_echo0252", "jordan_c29", "maria_250b", "sam_e605", "zzr_jamie255", "zzd_olivia"):
             self.assertTrue(is_test_handle(h), h)
-        for h in ("maria", "michael", "leo", "maria_board", "sveder", "maria_25zz"):
+        for h in ("maria", "michael", "leo", "maria_board", "sveder", "maria_25zz", "zzz", "zza"):
             self.assertFalse(is_test_handle(h), h)
 
     def test_purge_removes_test_people_and_frees_the_seeded_friend(self):

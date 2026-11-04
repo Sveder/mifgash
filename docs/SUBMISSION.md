@@ -6,6 +6,10 @@ Text for the Cerebral Valley submit form (Meta Global AI Developer Hackathon, 26
 
 Mifgash
 
+## Team
+
+Sveder (solo).
+
 ## Tagline
 
 Your agent plans. You say yes.
@@ -62,5 +66,5 @@ Not entered: Best Creative (no Muse Image or Muse Wonder in the product).
 ## Links
 
 - Repository (public, MIT, one squashed commit): https://github.com/Sveder/mifgash
-- Demo video: the link is added on the submit form (3 minutes; shot list in `demo/VIDEO.md`).
+- Demo video: `mifgash-demo-v3.mp4`, 2 minutes 38 seconds (under the 3-minute limit), 1920x1080. The public link is added on the submit form and in the README (shot list in `demo/VIDEO.md`).
 - Live site: https://mifgash.sveder.com

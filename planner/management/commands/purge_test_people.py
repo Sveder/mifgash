@@ -1,6 +1,6 @@
 """Remove test signups from the database, so friend search shows the demo world only (T89).
 
-A test person has a handle that starts with zz_ or crit_, ends with _c29, or is a seeded handle
+A test person has a handle that starts with zz_, zz<letter>_ or crit_, ends with _c29, or is a seeded handle
 plus _ and 4 hex characters (maria_250b). --all removes every person who is not seeded, except
 the handles named with --keep. Seeded demo people are never removed.
 
@@ -25,6 +25,9 @@ def is_test_handle(handle):
     if handle in SEEDED:
         return False
     if handle.startswith(("zz_", "crit_")) or handle.endswith("_c29"):
+        return True
+    # night and critic runs: zzc_ava, zzr_jamie255
+    if re.match(r"zz[a-z]_", handle):
         return True
     # a demo first name plus a run tag: maria_250b, sam_e605
     return bool(re.fullmatch(r"[a-z]+_(?=[0-9a-f]*[0-9])[0-9a-f]{4}", handle))
@@ -87,7 +90,7 @@ def delete(people, plan_ids=None, addr_q=None):
 
 
 class Command(BaseCommand):
-    help = "Delete test signups (zz_*, crit_*, *_c29, <name>_<4 hex>) and everything they own."
+    help = "Delete test signups (zz_*, zz<letter>_*, crit_*, *_c29, <name>_<4 hex>) and everything they own."
 
     def add_arguments(self, parser):
         parser.add_argument("--dry-run", action="store_true", help="print the handles and row counts only")

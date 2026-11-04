@@ -107,7 +107,7 @@ Mifgash already set the time in step 6. Only move it when you want another time.
 ## After the test
 
 - Write down what broke: one line per step, with the step number.
-- Your signup stays. Test people (handles that start with `zz_` or `crit_`) are removed by
+- Your signup stays. Test people (handles that start with `zz_`, `zz<letter>_` such as `zzr_jamie255`, or `crit_`) are removed by
   `manage.py purge_test_people`.
 
 ## For the critic and the developer runs
