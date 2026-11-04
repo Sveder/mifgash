@@ -858,7 +858,8 @@ def my_outings(person):
     where the friend said yes (waiting for the owner) or was accepted."""
     rows = {}
     for plan in Plan.objects.filter(owner=person, status__in=("asking", "confirmed", "final")):
-        if plan.status != "asking" or plan.offers.filter(status="owner_wait").exists():
+        # T327: a group dinner that still fills is on the owner's list once one friend is in.
+        if plan.status != "asking" or plan.offers.filter(status__in=("owner_wait", "accepted")).exists():
             rows[plan.pk] = (plan, None)
     for offer in Offer.objects.filter(person=person, status__in=("owner_wait", "accepted"),
                                       plan__status__in=("asking", "confirmed", "final")).select_related("plan"):
@@ -866,9 +867,13 @@ def my_outings(person):
     return sorted(rows.values(), key=lambda r: (r[0].date, r[0].pk))
 
 
-def outing_status(plan):
+def outing_status(plan, person=None, offer=None):
     if plan.status == "asking":
-        return "waiting_for_owner"
+        # T327: a group dinner that fills one by one: the owner has no yes to approve, or the
+        # caller is a guest who is in already. Both wait for more friends, not for the owner.
+        mine_in = offer is not None and offer.status == "accepted"
+        owner_free = offer is None and not plan.offers.filter(status="owner_wait").exists()
+        return "gathering" if mine_in or owner_free else "waiting_for_owner"
     if plan.status == "confirmed" and plan.proposed_time:
         return "proposed"
     return plan.status
@@ -878,7 +883,12 @@ def my_outing_json(request, plan, person, offer):
     """One outing as the caller sees it. Names are first names; an owner sees only the friend
     who said yes; a friend never learns about other friends who were asked."""
     from .messages import first_name
-    if plan.status == "asking":
+    status = outing_status(plan, person, offer)
+    group_in = messages.group_in(plan) if messages.is_group(plan) else []
+    if status == "gathering":  # T327: the owner and the friends who are in; never who declined
+        people = [plan.owner] + group_in
+        place = (offer.choice if offer else None) or (plan.option_list() or [None])[0]
+    elif plan.status == "asking":
         waiting = offer or plan.offers.filter(status="owner_wait").select_related("person", "choice").first()
         people = [plan.owner, waiting.person]
         place = waiting.choice or (plan.option_list() or [None])[0]
@@ -888,7 +898,7 @@ def my_outing_json(request, plan, person, offer):
     row = {
         "plan_id": plan.pk,
         "role": "owner" if plan.owner_id == person.pk else "friend",
-        "status": outing_status(plan),
+        "status": status,
         "kind": plan.kind,
         "date": plan.date.isoformat(),
         "part": plan.part,
@@ -899,9 +909,18 @@ def my_outing_json(request, plan, person, offer):
         "group_size": 1 + len(plan.guests()) if plan.kind == "group_dinner" else None,  # people in, owner too
         "time": plan.exact_time.strftime("%H:%M") if plan.exact_time else None,
         "proposed_time": None, "proposed_place": None, "proposed_by": None,
+        # T327: while a group still fills: the friends who are in (first names) and the friends wanted
+        "in": [first_name(p) for p in group_in] if plan.status == "asking" else [],
+        "wanted": plan.group_size if messages.is_group(plan) else None,
+        "progress": None,
         # T268: the human page of the outing (uuid URL, F8a); demo/video_run.py prints it
         "url": calendar.base_url().rstrip("/") + reverse("outing", args=[plan.uid]),
     }
+    if plan.status == "asking" and messages.is_group(plan):
+        if plan.owner_id == person.pk:
+            row["progress"] = messages.group_owner_text(plan, group_in)
+        elif status == "gathering":
+            row["progress"] = messages.group_guest_text(plan, group_in)
     if plan.status == "confirmed" and plan.proposed_time:
         row["proposed_time"] = plan.proposed_time.strftime("%H:%M")
         row["proposed_place"] = place_json(plan.proposed_activity) if plan.proposed_activity else None

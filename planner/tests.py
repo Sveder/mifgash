@@ -5955,7 +5955,7 @@ class SandboxFriendTests(Base):
         self.client.post(f"/d/answer/{plan.offers.get(status='owner_wait').pk}/", {"answer": "accept"})
         self.client.post(f"/d/answer/{plan.offers.get(status='owner_wait').pk}/", {"answer": "accept"})
         d = self.client.get("/d/")
-        self.assertContains(d, "Group dinner: 2 of 3 in so far")
+        self.assertContains(d, "Group dinner: 2 of 3 in (")  # T327: the names of the yeses
         self.assertNotContains(d, "who said yes</button>")  # Lena is still asked: no early confirm
         self.answer_all(plan)
         plan.refresh_from_db()
@@ -6013,7 +6013,7 @@ class SandboxFriendTests(Base):
         plan.refresh_from_db()
         self.assertEqual(plan.status, "asking")  # no friend left to ask; the group waits for its deadline
         d = self.client.get("/d/")
-        self.assertContains(d, "Group dinner: 2 of 3 in.")
+        self.assertContains(d, "Group dinner: 2 of 3 in (Maria, Sam), asking more".replace("Maria, Sam", ", ".join(o.person.name for o in plan.offers.filter(status="accepted").order_by("answered_at", "pk"))))
         self.assertContains(d, "Go with the 2 who said yes")
         self.client.post(f"/d/group/{plan.pk}/confirm/")
         plan.refresh_from_db()
@@ -6270,6 +6270,50 @@ class GroupDinnerTests(Base):
             self.assertNotIn("declin", seen.lower(), h)
             for w in messages.FORBIDDEN:
                 self.assertNotIn(w, seen.lower())
+
+    def test_group_progress_for_owner_guest_and_next_ask(self):
+        """T327: 1 of 3 in. The owner's outings and dashboard name who is in; the guest who is in does
+        not read 'waiting for <owner>'; the next ask names the people in; the friend who said no is
+        never named anywhere."""
+        import importlib.util
+        from .models import MagicLink
+        plan = self.post_group(3)
+        no = self.people[self.answer(plan, False)]
+        a = self.answer(plan, True)
+        nxt = self.asked(plan)
+        a_first = self.people[a].name.split()[0]
+        self.assertEqual(plan.status, "asking")
+        # the owner's outings row and the mif.py line
+        [row] = self.api("oz", "get", "/api/v1/outings/").json()["outings"]
+        self.assertEqual((row["status"], row["in"], row["wanted"]), ("gathering", [a_first], 3))
+        self.assertEqual(row["progress"], f"Group dinner: 1 of 3 in ({a_first}), asking more")
+        spec = importlib.util.spec_from_file_location("mif_t327", Path(settings.BASE_DIR) / "integrations/openclaw/mif.py")
+        mif = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mif)
+        self.assertIn(f"Asking: 1 of 3 in ({a_first}), asking more", mif.outing_line(row))
+        # the guest who is in
+        [g] = self.api(a, "get", "/api/v1/outings/").json()["outings"]
+        self.assertEqual(g["status"], "gathering")
+        self.assertEqual(g["progress"], "You are in. 1 of 3 in, waiting for 2 more.")
+        line = mif.outing_line(g)
+        self.assertIn("You are in, 1 of 3 in, waiting for 2 more", line)
+        self.assertNotIn("waiting for Oz", line)
+        # the next friend's ask names the people in
+        [p] = [x for x in self.api(nxt, "get", "/api/v1/proposals/").json()["proposals"] if x["role"] == "candidate"]
+        self.assertIn(f"{a_first} is coming, 2 places left.", p["text"])
+        self.assertNotIn("may join too", p["text"])
+        # dashboards: owner card and guest card
+        pages = {}
+        for h in ("oz", a, nxt):
+            c = DemoClient()
+            _, token = MagicLink.issue(self.people[h])
+            c.post(f"/d/{token}/")
+            pages[h] = c.get("/d/").content.decode()
+        self.assertIn(f"Group dinner: 1 of 3 in ({a_first}), asking more", pages["oz"])
+        self.assertIn("You are in. 1 of 3 in, waiting for 2 more.", pages[a])
+        seen = json.dumps([self.api(h, "get", u).json() for h in ("oz", a, nxt)
+                           for u in ("/api/v1/outings/", "/api/v1/proposals/", "/api/v1/events/")]) + "".join(pages.values())
+        self.assertNotIn(no.name.split()[0], seen)
 
     def test_dashboards_render_while_the_group_fills(self):
         from .models import MagicLink

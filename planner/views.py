@@ -355,6 +355,9 @@ def human_offer(request, token):
         "kind": messages.kind_word(plan), "when": messages.ui_when(plan.date, plan.part),
         "expired_text": messages.expired_text(plan.owner),
         "closed_text": messages.group_closed_text(plan),
+        # T327: a guest who is in while the group still fills sees the count, not only 'thank you'
+        "group_line": messages.group_guest_text(plan) if (state == "waiting" and offer.status == "accepted"
+                                                           and messages.is_group(plan)) else None,
     })
 
 
@@ -795,6 +798,13 @@ def dashboard(request):
         place = o.choice or (o.plan.option_list() or [None])[0]
         said_yes.append({"offer": o, "text": messages.said_yes_text(o), "place": place,
                          "owner": messages.first_name(o.plan.owner)})
+    # T327: a guest who is in on a group dinner that still fills sees the count, not 'waiting for the owner'.
+    for o in Offer.objects.filter(person=p, status="accepted", plan__status="asking").select_related(
+            "plan__owner", "plan__area", "choice__area").order_by("plan__date", "pk"):
+        if messages.is_group(o.plan):
+            place = o.choice or (o.plan.option_list() or [None])[0]
+            said_yes.append({"offer": o, "text": messages.group_guest_text(o.plan), "place": place,
+                             "owner": messages.first_name(o.plan.owner), "in": True})
     # Offers that wait for this person's own answer, and open friend requests. A person whose agent
     # has no webhook answers here; the push log says 'waiting on the dashboard'.
     asks = []
@@ -846,12 +856,11 @@ def dashboard(request):
 
 
 def group_progress(plan):
-    """G3 (T229): '2 of 3 in' for a group dinner that still asks. It counts the yeses only, so it
-    never shows who said no or who was asked. None for a plan of two."""
+    """G3 (T229): '2 of 3 in (Noah, Sofia)' for a group dinner that still asks. It names the yeses only,
+    so it never shows who said no or who was asked. None for a plan of two."""
     if plan.kind != "group_dinner" or plan.status != "asking":
         return None
-    n = plan.offers.filter(status="accepted").count()
-    return f"{n} of {plan.group_size} in"
+    return messages.group_count(plan)  # T327: '2 of 3 in (Noah, Sofia)': names of the yeses only
 
 
 def go_with(plan):

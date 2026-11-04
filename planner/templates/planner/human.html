@@ -23,7 +23,7 @@
 <p class="mute">{{ who }} does not see a "not this time". You do not need a reason.</p>
 </form>
 {% elif state == "waiting" %}
-<div class="card c-ask"><p class="big">Thank you.</p><p>I tell you as soon as it is set.</p></div>
+<div class="card c-ask"><p class="big">Thank you.</p>{% if group_line %}<p data-group>{{ group_line }}</p>{% endif %}<p>I tell you as soon as it is set.</p></div>
 {% elif state == "set" %}
 {% if plan.status != "final" %}<p class="big ok mt-l">{% if plan.group_size > 1 or plan.kind == "group_dinner" %}You are in.{% else %}You are both in.{% endif %} <span class="mute">Now you and {{ who }} pick the exact time.</span></p>{% endif %}
 {% if error %}<p class="err">{{ error }}</p>{% endif %}

@@ -97,10 +97,53 @@ def offer_text(owner, plan, options):
     place = f"{options[0].name}, {options[0].address}" if options and options[0].address else (
         options[0].name if options else plan.area.name)
     # T321: the group line only when more than 2 friends are asked (a playdate of 2-3 families is no group)
-    group = " A few friends may join too." if plan.group_size > 2 or plan.kind == "group_dinner" else ""
+    group = f" {group_ask_line(plan)}" if is_group(plan) else ""
     return (f"{owner.name} is free for {kind_on(plan)}, "
             f"near {plan.area.name}. You are open then too. Want to meet? "
             f"Idea: {place}.{group}")
+
+
+def is_group(plan):
+    """T321: a group line only when more than 2 friends are asked, or for a group dinner."""
+    return plan.group_size > 2 or plan.kind == "group_dinner"
+
+
+def group_in(plan):
+    """T327: the friends who are in on a group plan (an accepted yes), in the order they said yes.
+    Only yeses: a friend who declined or was not asked yet is never in this list (gentle rule)."""
+    return [o.person for o in plan.offers.filter(status="accepted").select_related("person").order_by(
+        "answered_at", "pk")]
+
+
+def group_count(plan, people=None):
+    """T327: '2 of 3 in (Noah, Sofia)', or '0 of 3 in'. The count is of friends; the owner is not counted."""
+    people = group_in(plan) if people is None else people
+    who = f" ({', '.join(first_name(p) for p in people)})" if people else ""
+    return f"{len(people)} of {plan.group_size} in{who}"
+
+
+def group_ask_line(plan, people=None):
+    """T327: the group line in an ask: 'Noah is coming, 1 place left.' No yes yet: the old line."""
+    people = group_in(plan) if people is None else people
+    if not people:
+        return "A few friends may join too."
+    left = plan.group_size - len(people)
+    verb = "is" if len(people) == 1 else "are"
+    room = f", {left} place{'s' if left != 1 else ''} left" if left > 0 else ""
+    return f"{names(people)} {verb} coming{room}."
+
+
+def group_owner_text(plan, people=None):
+    """T327: the owner's line while a group dinner still asks: 'Group dinner: 2 of 3 in (Noah, Sofia), asking more'."""
+    return f"{plan.title}: {group_count(plan, people)}, asking more"
+
+
+def group_guest_text(plan, people=None):
+    """T327: a guest who is in, while the group still fills: 'You are in. 2 of 3 in, waiting for 1 more.'"""
+    people = group_in(plan) if people is None else people
+    left = max(plan.group_size - len(people), 0)
+    more = f", waiting for {left} more" if left else ""
+    return f"You are in. {len(people)} of {plan.group_size} in{more}."
 
 
 def human_invite_text(plan, options):

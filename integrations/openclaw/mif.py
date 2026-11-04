@@ -178,10 +178,18 @@ def outing_line(o):
     place = o.get("place")
     time = o.get("time")
     status = o.get("status")
-    if status == "waiting_for_owner":
+    gang = o.get("in") or []
+    count = f"{len(gang)} of {o.get('wanted')} in" + (f" ({', '.join(gang)})" if gang else "")
+    if status == "gathering":  # T327: a group dinner fills one friend at a time
+        left = max((o.get("wanted") or 0) - len(gang), 0)
+        state = (f"Asking: {count}, asking more" if o.get("role") == "owner"
+                 else "You are in, " + count.split(" (")[0] + (f", waiting for {left} more" if left else ""))
+    elif status == "waiting_for_owner":
         who = ", ".join(o.get("who") or []) or "your friend"
         state = (f"Asking: {who} said yes, waits for your OK" if o.get("role") == "owner"
                  else f"Asking: you said yes, waiting for {who}")
+        if gang and o.get("role") == "owner":  # T327: the friends who are in already
+            state += f"; {count}"
     elif status == "proposed":
         by = o.get("proposed_by")
         state = "Proposed by you" if by == "you" else f"Proposed by {by or 'a friend'}"
@@ -201,7 +209,7 @@ def outing_line(o):
         parts += [place["name"], place.get("address") or ""]
     text = ", ".join(x for x in parts if x)
     who = ", ".join(o.get("who") or [])
-    if o.get("group_size"):  # G2 (T228): 'Group dinner, 4 people'
+    if o.get("group_size") and status != "gathering":  # G2 (T228): 'Group dinner, 4 people'
         text += f" (group of {o['group_size']})"
     return f"[{o['plan_id']}] {state}: {text}." + (f" With {who}." if who else "")
 

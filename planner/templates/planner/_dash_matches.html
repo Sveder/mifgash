@@ -8,7 +8,7 @@
 {% if w.note %}<p class="said"><span class="mute">{{ w.offer.person.name }} wrote:</span> “{{ w.note }}”</p>{% endif %}
 <form method="post" action="{% url 'dashboard_answer' w.offer.pk %}" class="chips">{% csrf_token %}
 <button class="chip primary" name="answer" value="accept">Approve</button><button class="chip" name="answer" value="decline">Not this time</button></form></div>{% endfor %}
-{% for y in said_yes %}<div class="card"><div class="mute">You said yes</div>
+{% for y in said_yes %}<div class="card"><div class="mute">{% if y.in %}You are in{% else %}You said yes{% endif %}</div>
 <div class="big">{{ y.offer.plan.title }} · with {{ y.owner }}</div>
 <p>{{ y.text }}</p>{% if y.place %}<div class="mute">{{ y.place.address|default:y.place.area.name }}</div>{% endif %}</div>{% endfor %}
 {% for m in matches %}{% include "planner/_ticket.html" %}

@@ -1,6 +1,6 @@
 <h3 class="sec">Open outings</h3>
 {% for r in open_rows %}<div class="card"><div class="big">{{ r.plan.title }}</div>
 <div>{{ r.when }} · near {{ r.plan.area.name }} · up to {{ r.plan.radius_km|floatformat:0 }} km</div>
-<div class="mt">{% if r.ask %}<a class="status you" href="#ask-{{ r.ask.pk }}">{{ r.state }}</a>{% elif r.group %}<span class="status looking" data-group>Group dinner: {{ r.group }}. Asking friends one at a time</span>{% elif r.plan.status == "asking" %}<span class="status looking">Asking friends one at a time</span>{% else %}<span class="status looking">Waiting for a match</span>{% endif %}</div>
+<div class="mt">{% if r.ask %}<a class="status you" href="#ask-{{ r.ask.pk }}">{{ r.state }}</a>{% elif r.group %}<span class="status looking" data-group>{{ r.plan.title }}: {{ r.group }}, asking more</span>{% elif r.plan.status == "asking" %}<span class="status looking">Asking friends one at a time</span>{% else %}<span class="status looking">Waiting for a match</span>{% endif %}</div>
 {% if r.go_with %}<form method="post" action="{% url 'dashboard_group_confirm' r.plan.pk %}" class="chips mt">{% csrf_token %}<button class="chip primary">Go with the {{ r.go_with }} who said yes</button></form>{% endif %}</div>
 {% empty %}<p class="mute">{% if moved %}Your open time is under Matches {% if busy %}above{% else %}below{% endif %}.{% elif free %}No open outings. Post a free time {% if busy %}below{% else %}above{% endif %}.{% else %}No open outings. Tell your agent when you are free.{% endif %}</p>{% endfor %}
