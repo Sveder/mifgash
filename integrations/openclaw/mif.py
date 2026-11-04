@@ -394,6 +394,8 @@ def cmd_open(args):
             asks.append(f"when? (day, and one of: {', '.join(r.get('parts', []))})")
         if "where" in needs:
             head = f"'{r['unknown_place']}' is not covered. " if r.get("unknown_place") else ""
+            if r.get("where_text"):
+                head += r["where_text"] + " "
             asks.append(f"where? {head}Near: {', '.join(r.get('suggestions', []))}")
         if "what" in needs:
             asks.append(f"what? (one of: {', '.join(r.get('kinds', []))})")

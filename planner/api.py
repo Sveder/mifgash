@@ -451,8 +451,12 @@ OTHER_CITIES = {
     "San Rafael": (37.9735, -122.5311), "Walnut Creek": (37.9101, -122.0652), "San Mateo": (37.5630, -122.3255),
     "Redwood City": (37.4852, -122.2364), "Palo Alto": (37.4419, -122.1430), "San Jose": (37.3382, -121.8863),
     "Sacramento": (38.5816, -121.4944), "Los Angeles": (34.0522, -118.2437), "Seattle": (47.6062, -122.3321),
+    "New York": (40.7128, -74.0060), "NYC": (40.7128, -74.0060), "Brooklyn": (40.6782, -73.9442),
+    "Manhattan": (40.7831, -73.9712), "London": (51.5074, -0.1278), "Paris": (48.8566, 2.3522),
+    "Chicago": (41.8781, -87.6298), "Boston": (42.3601, -71.0589), "Austin": (30.2672, -97.7431),
 }
 NEAR_KM = 15.0
+COVERS_TEXT = "Mifgash covers San Francisco for now."
 PLACE_RE = re.compile(r"\b(?:in|near|at|around|by)\s+((?:[A-Z][\w'-]*)(?:\s+[A-Z][\w'-]*){0,2})")
 NOT_PLACES = {"the", "my", "home", "work", "office", "today", "tomorrow", "tonight", "lunch",
               "morning", "afternoon", "evening", "noon"} | set(llm.DAY_WORDS)
@@ -469,7 +473,35 @@ def unknown_place(text):
         word = m.group(1).strip()
         if word.split()[0].lower() not in NOT_PLACES and not find_area(word):
             return word
+    for m in LOWER_PLACE_RE.finditer(t):  # T394: 'lunch in new york' with no capital letters
+        words = []
+        for w in m.group(1).split():
+            if w in NOT_PLACES or w in PLACE_STOP or w[0].isdigit():
+                break
+            words.append(w)
+        if not words or covered(" ".join(words)):
+            continue
+        return " ".join(w.upper() if len(w) == 2 else w.capitalize() for w in words)
     return None
+
+
+# T394: a lower-case place after in/near/around. 'at' and 'by' are left out here: 'at noon', 'by 6'.
+LOWER_PLACE_RE = re.compile(r"\b(?:in|near|around)\s+([a-z][\w'-]*(?:\s+[a-z][\w'-]*){0,2})")
+PLACE_STOP = {"a", "an", "me", "here", "there", "us", "you", "town", "city", "person", "general", "mind",
+              "for", "with", "and", "or", "on", "at", "by", "after", "before", "about", "if", "when", "this",
+              "next", "week", "weekend", "day", "days", "hour", "hours", "bit", "while", "time", "advance",
+              "dinner", "breakfast", "brunch", "coffee", "drinks", "playdate", "pm", "am", "mood", "case", "sf"}
+COVERED_WORDS = {"sf", "san francisco", "the city", "bay area", "the bay area"}
+
+
+def covered(words):
+    """True when the words (or their first 1-2 words) name an area or a city Mifgash covers."""
+    parts = words.split()
+    for n in range(len(parts), 0, -1):
+        head = " ".join(parts[:n])
+        if head in COVERED_WORDS or area_fits(head):
+            return True
+    return False
 
 
 def where_reply(person, place):
@@ -485,6 +517,8 @@ def where_reply(person, place):
             point = types.SimpleNamespace(lat=lat, lon=lon)
             if min(matching.km(a, point) for a in Area.objects.all()) <= NEAR_KM:
                 near = point
+        if near is None:
+            reply["where_text"] = COVERS_TEXT
     reply["suggestions"] = area_suggestions(person, near=near)
     return reply
 

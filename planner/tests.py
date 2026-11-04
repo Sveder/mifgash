@@ -1692,6 +1692,26 @@ class FarPlaceTests(Base):
                              **self.auth["dd"]).json()
         self.assertEqual((d["needs"], d["unknown_place"]), (["where"], "Atlantis"))
 
+    def test_lower_case_far_city_asks_back_and_makes_no_plan(self):  # T394
+        for text, place in (("free saturday lunch in new york", "New York"), ("dinner in brooklyn friday", "Brooklyn"),
+                            ("coffee in london tomorrow", "London"), ("lunch tomorrow near flagstaff az", "Flagstaff AZ")):
+            d = self.post("dd", text).json()
+            self.assertEqual((d.get("needs"), d.get("unknown_place")), (["where"], place), text)
+            self.assertEqual(d["where_text"], "Mifgash covers San Francisco for now.", text)
+            self.assertEqual(len(d["suggestions"]), 3, text)
+        self.assertFalse(Plan.objects.filter(owner__handle="dd").exists())
+
+    def test_lower_case_known_area_and_time_words_still_plan(self):  # T394
+        for text in ("lunch tomorrow", "open tomorrow lunch in the evening", "lunch tomorrow near me",
+                     "dinner tomorrow in sf", "lunch tomorrow in mission", "lunch tomorrow in noe"):
+            r = self.post("dd", text)
+            self.assertEqual(r.status_code, 201, (text, r.content))
+            Plan.objects.filter(owner__handle="dd").delete()
+
+    def test_nearby_city_has_no_covers_line(self):  # T394
+        d = self.post("dd", "open tomorrow lunch in emeryville").json()
+        self.assertNotIn("where_text", d)
+
     def test_near_the_office_with_no_work_area_names_no_place(self):
         d = self.post("dd", "open tomorrow for lunch near the office").json()
         self.assertEqual(d["needs"], ["where"])
