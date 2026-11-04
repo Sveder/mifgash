@@ -7669,6 +7669,14 @@ class ImportVenuesTest(Base):
         from django.core.management import call_command
         call_command("import_venues", file=str(FIXTURE), stdout=StringIO())
         self.assertGreaterEqual(Activity.objects.exclude(source="hackathon").count(), 14 * 15)
+        # T324: with the real fixture a vegetarian dinner near Mission gets a vegetarian restaurant
+        from planner import wants as wants_mod
+        note = []
+        rows = matching.suggest_activities("evening", area("Mission"), 3.0, limit=llm.PICK_MAX,
+                                           wants=wants_mod.merge(wants_mod.read("I am vegetarian")), note=note)
+        self.assertEqual(note, [])
+        self.assertIn("vegetarian", rows[0].tags, rows[0].name)
+        self.assertIn("dinner", rows[0].tags, rows[0].name)
 
     def sushi_plan(self):
         self.run_import()
