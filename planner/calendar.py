@@ -12,6 +12,7 @@ from django.conf import settings
 from django.urls import reverse
 
 from . import messages
+from .models import map_query
 
 TZID = "America/Los_Angeles"
 LENGTH = dt.timedelta(minutes=90)
@@ -79,11 +80,10 @@ def details(plan, person):
     people = [plan.owner] + plan.guests()
     others = [p for p in people if p.pk != person.pk] or [plan.owner]
     place = plan.chosen
-    address = (place.address or place.area.name) if place else plan.area.name
+    location = map_query(place, place.area if place else plan.area)  # T370: name, street or area, city
     title = f"{plan.title} with {messages.names(others)}"  # T321: one title for the card and the .ics
-    location = f"{place.name}, {address}" if place else address
     lines = [f"When: {messages.us_day(plan.date)}, {messages.clock(plan.exact_time)}"] if plan.exact_time else []
-    lines += [f"Map: https://maps.google.com/?q={quote(address)}",
+    lines += [f"Map: https://maps.google.com/?q={quote(location)}",
              f"Parking: {(place.parking if place else '') or 'Street parking'}",
              "Planned by Mifgash."]
     if plan.kind == "group_dinner":  # G2 (T228): the invite names every person at the table

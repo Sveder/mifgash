@@ -5883,7 +5883,7 @@ class SandboxFriendTests(Base):
         self.assertNotIn(" at ", place.address)
         self.assertIn("Grove St", place.parking)
         d = self.client.get("/d/").content.decode()
-        self.assertIn("query=" + quote(place.address, safe=""), d)  # the Map chip
+        self.assertIn("query=" + quote(place.map_query, safe=""), d)  # the Map chip
         ics_url = re.search(r'href="(?:http://testserver)?([^"]+\.ics[^"]*)"', d).group(1)
         text = self.client.get(ics_url).content.decode()
         location = next(x for x in text.split("\r\n") if x.startswith("LOCATION:"))
@@ -7952,3 +7952,42 @@ class KidsWordingT321Tests(Base):
         p = self.plan(kind="kids", part="morning")
         p.kind_named = True
         self.assertEqual(p.title, "Playdate")
+
+
+class MapQueryTests(DjangoTestCase):
+    """T370: the Map button, the calendar Map line and the .ics LOCATION name the place and the city."""
+
+    def setUp(self):
+        self.oak = Area.objects.create(name="Oakland - Downtown T370", city="Oakland", lat=37.80, lon=-122.27)
+        self.hayes = Area.objects.create(name="Hayes Valley T370", city="San Francisco", lat=37.77, lon=-122.42)
+
+    def test_query_parts(self):
+        from .models import map_query
+        street = Activity(name="Fox Theater bar", kind="evening", area=self.oak, address="1312 Broadway")
+        self.assertEqual(street.map_query, "Fox Theater bar, 1312 Broadway, Oakland")
+        park = Activity(name="Koshland Park", kind="kids", area=self.hayes, address="")
+        self.assertEqual(park.map_query, "Koshland Park, Hayes Valley T370, San Francisco")
+        seed_place = Activity(name="Souvla", kind="lunch", area=self.hayes, address="517 Hayes St, San Francisco")
+        self.assertEqual(seed_place.map_query, "Souvla, 517 Hayes St, San Francisco")  # no doubled city
+        self.assertEqual(self.hayes.map_query, "Hayes Valley T370, San Francisco")
+        daly = Area(name="Daly City", city="Daly City", lat=0, lon=0)
+        self.assertEqual(map_query(None, daly), "Daly City")
+
+    def test_card_ics_and_google_link(self):
+        from urllib.parse import quote, quote_plus
+        from django.template.loader import render_to_string
+        from types import SimpleNamespace
+        a = Person.objects.create(name="Ann T370", handle="t370_ann", home_area=self.hayes)
+        b = Person.objects.create(name="Ben T370", handle="t370_ben", home_area=self.hayes)
+        park = Activity.objects.create(name="Koshland Park", kind="kids", area=self.hayes, address="")
+        plan = Plan.objects.create(owner=a, kind="lunch", area=self.hayes, date=dt.date(2026, 11, 6),
+                                   status="final", exact_time=dt.time(12, 30), chosen=park)
+        Offer.objects.create(plan=plan, person=b, status="accepted", order=1)
+        want = "Koshland Park, Hayes Valley T370, San Francisco"
+        body = calendar.ics(plan, b).replace("\r\n ", "")
+        self.assertIn("LOCATION:Koshland Park\\, Hayes Valley T370\\, San Francisco", body)
+        self.assertIn("maps.google.com/?q=" + quote(want), body.replace("\\,", ","))
+        g = calendar.links(plan, b, base="https://x.test")["google_calendar_url"]
+        self.assertIn("location=" + quote_plus(want), g)
+        html = render_to_string("planner/_ticket.html", {"m": SimpleNamespace(plan=plan, place=park, calendar=None)})
+        self.assertIn("query=" + quote(want, safe=""), html.replace("&amp;", "&"))

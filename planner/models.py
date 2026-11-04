@@ -44,6 +44,10 @@ class Area(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def map_query(self):
+        return map_query(None, self)
+
 
 HANDLE_RE = re.compile(r"^[a-z0-9_]{2,32}$")
 
@@ -372,6 +376,24 @@ class Activity(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def map_query(self):
+        return map_query(self, self.area)
+
+
+def map_query(place, area):
+    """T370: one search text for the Map button, the calendar Map line and the .ics LOCATION:
+    '<place name>, <address or area>, <city>'. The city is added only when the address or area
+    text does not hold it, so '1 Ferry Building, San Francisco' is not doubled. No model call."""
+    parts = [place.name] if place else []
+    where = ((place.address if place else "") or (area.name if area else "")).strip()
+    if where and (not place or where.lower() != place.name.lower()):
+        parts.append(where)
+    city = (area.city if area else "").strip()
+    if city and city.lower() not in where.lower():
+        parts.append(city)
+    return ", ".join(parts)
 
 
 class Plan(models.Model):
