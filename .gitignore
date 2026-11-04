@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+db.sqlite3
+.env
+*.log
+.venv/
+media/screens/
+server.md
+*.sqlite3
+media/rough-cut/
+staticfiles/
+
+# TTS for the demo video (T183): venv, voice model, generated audio
+.venv-tts/
+media/voices/
+media/mifgash-demo/narration/
+media/mifgash-demo/*.wav
+media/mifgash-demo/*.mp4

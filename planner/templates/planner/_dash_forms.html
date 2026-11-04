@@ -1,0 +1,33 @@
+{# F5b (T257): one big button opens the 'Set up a meetup' modal: a date grid and ONE text box. The parse (Muse on the live site) reads what, where, who and taste; a missing fact comes back as an error line inside the modal. #}
+<h3 class="sec">Set up a meetup</h3>
+<button type="button" class="hbtn primary meet-open" id="meet-open" aria-haspopup="dialog" aria-controls="meet-dialog">Set up a meetup</button>
+<p class="small mute">{{ PRODUCT_NAME }} asks your friends one at a time. Nobody sees who said no.</p>
+<dialog class="meet-dialog" id="meet-dialog" aria-labelledby="meet-title"{% if free.open %} data-reopen="1"{% endif %}>
+<form method="post" action="{% url 'dashboard_free' %}" class="join-form free-form" id="free-form">{% csrf_token %}
+<div class="meet-head"><h2 id="meet-title">Set up a meetup</h2><button type="button" class="chip quiet meet-close" id="meet-close" aria-label="Close">&times;</button></div>
+<fieldset class="meet-cal" id="meet-cal"><legend class="label">Day <span class="mute" id="meet-picked">{% if free.date %}{% for mo in free.months %}{% for w in mo.weeks %}{% for c in w %}{% if c.picked %}{{ c.label }}{% endif %}{% endfor %}{% endfor %}{% endfor %}{% endif %}</span>{% if not free.date %}<span class="mute" id="meet-hint"> (or name it in the text)</span>{% endif %}</legend>
+{% for mo in free.months %}<div class="cal-month" data-month="{{ forloop.counter0 }}"{% if not forloop.first %} hidden{% endif %}>
+<div class="cal-nav"><button type="button" class="chip quiet cal-prev" aria-label="Previous month"{% if forloop.first %} disabled{% endif %}>&lsaquo;</button><span class="cal-label">{{ mo.label }}</span><button type="button" class="chip quiet cal-next" aria-label="Next month"{% if forloop.last %} disabled{% endif %}>&rsaquo;</button></div>
+<div class="cal-grid" role="radiogroup" aria-label="{{ mo.label }}"><span class="cal-dow">Sun</span><span class="cal-dow">Mon</span><span class="cal-dow">Tue</span><span class="cal-dow">Wed</span><span class="cal-dow">Thu</span><span class="cal-dow">Fri</span><span class="cal-dow">Sat</span>
+{% for w in mo.weeks %}{% for c in w %}{% if c %}<label class="cal-day{% if c.today %} today{% endif %}{% if c.off %} off{% endif %}"><input type="radio" name="date" value="{{ c.v }}" data-label="{{ c.label }}"{% if c.off %} disabled{% endif %}{% if c.picked %} checked{% endif %}><span>{{ c.day }}</span></label>{% else %}<span class="cal-day pad"></span>{% endif %}{% endfor %}{% endfor %}
+</div></div>{% endfor %}
+</fieldset>
+<label class="label" for="free-text">What, where, who, taste</label>
+<textarea id="free-text" name="text" maxlength="500" rows="4" autocomplete="off"{% if free.error %} aria-invalid="true" aria-describedby="meet-err"{% endif %} placeholder="{% for e in free.examples %}{{ e }}{% if not forloop.last %}&#10;{% endif %}{% endfor %}">{{ free.text }}</textarea>
+{% if free.error %}<p class="err" id="meet-err" role="alert">{{ free.error }}</p>{% endif %}
+<button class="hbtn primary mt-l">Post my free time</button>
+</form>
+</dialog>
+<h3 class="sec">Add a friend</h3>
+<div class="card join-form friend-form" id="friend-form">
+<form method="post" action="{% url 'dashboard_friend_add' %}" class="search-row">{% csrf_token %}
+<label class="label" for="friend-handle">Friend's nickname (@handle)</label>
+<div class="row"><input id="friend-handle" type="text" name="handle" maxlength="40" placeholder="@handle" autocapitalize="none" autocomplete="off" spellcheck="false" required><button class="chip primary">Add</button></div>
+</form>
+<p class="small mute">Type the exact nickname. Your friend sees it on their dashboard.</p>
+{% if sent %}<p class="small mute">Waiting for: {% for s in sent %}{{ s.name }} (@{{ s.handle }}){% if not forloop.last %}, {% endif %}{% endfor %}. They accept on their dashboard or with their agent.</p>{% endif %}
+{# M11a (T171): Facebook import. Live only with MIFGASH_FB_APP_ID set #}
+{% if fb_url %}<a class="chip fb-import" id="fb-import" href="{{ fb_url }}">Import from Facebook</a>
+{% else %}<button type="button" class="chip fb-import" id="fb-import" disabled aria-disabled="true">Facebook import soon</button>{% endif %}
+</div>
+{% if invite_url %}{% include "planner/_dash_invite.html" %}{% endif %}

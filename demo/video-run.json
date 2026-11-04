@@ -1,0 +1,78 @@
+{
+ "plan_id": 55,
+ "calendar_url": "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Evening+out+with+Maria&dates=20261105T193000%2F20261105T210000&ctz=America%2FLos_Angeles&location=The+Stinking+Rose%2C+325+Columbus+Ave%2C+San+Francisco&details=Map%3A+https%3A%2F%2Fmaps.google.com%2F%3Fq%3D325%2520Columbus%2520Ave%252C%2520San%2520Francisco%0AParking%3A+Street+parking+is+hard%3B+the+paid+North+Beach+Garage+at+735+Vallejo+St%0APlanned+by+Mifgash.",
+ "ics_url": "https://mifgash.sveder.com/outing/55/invite-678f809140e6d6e589e7.ics?for=99",
+ "calendar_short": "https://mifgash.sveder.com/c/55-99-349299d414",
+ "outing": {
+  "plan_id": 55,
+  "role": "owner",
+  "status": "final",
+  "kind": "evening",
+  "date": "2026-11-05",
+  "part": "evening",
+  "area": "North Beach",
+  "place": {
+   "id": 34,
+   "name": "The Stinking Rose",
+   "address": "325 Columbus Ave, San Francisco",
+   "area": "North Beach",
+   "tags": [
+    "dinner",
+    "group",
+    "italian",
+    "garlic"
+   ]
+  },
+  "address": "325 Columbus Ave, San Francisco",
+  "who": [
+   "Maria"
+  ],
+  "group_size": null,
+  "time": "19:30",
+  "proposed_time": null,
+  "proposed_place": null,
+  "proposed_by": null,
+  "ics_url": "https://mifgash.sveder.com/outing/55/invite-678f809140e6d6e589e7.ics?for=99",
+  "google_calendar_url": "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Evening+out+with+Maria&dates=20261105T193000%2F20261105T210000&ctz=America%2FLos_Angeles&location=The+Stinking+Rose%2C+325+Columbus+Ave%2C+San+Francisco&details=Map%3A+https%3A%2F%2Fmaps.google.com%2F%3Fq%3D325%2520Columbus%2520Ave%252C%2520San%2520Francisco%0AParking%3A+Street+parking+is+hard%3B+the+paid+North+Beach+Garage+at+735+Vallejo+St%0APlanned+by+Mifgash.",
+  "google_calendar_short": "https://mifgash.sveder.com/c/55-99-349299d414",
+  "ics_short": "https://mifgash.sveder.com/c/55-99-349299d414.ics"
+ },
+ "lena_plan": 59,
+ "handles": [
+  "zz_chris",
+  "zz_sam",
+  "zz_maria",
+  "zz_lena"
+ ],
+ "lines": [
+  "  agent: [zz_chris] POST signup -> @zz_chris",
+  "  agent: [zz_sam] POST signup -> @zz_sam",
+  "  agent: [zz_chris] POST friends zz_sam -> requested",
+  "  agent: [zz_sam] POST friends zz_chris -> friends",
+  "  agent: [zz_maria] POST signup -> @zz_maria",
+  "  agent: [zz_chris] POST friends zz_maria -> requested",
+  "  agent: [zz_maria] POST friends zz_chris -> friends",
+  "  agent: [zz_lena] POST signup -> @zz_lena",
+  "  agent: [zz_chris] POST friends zz_lena -> requested",
+  "  agent: [zz_lena] POST friends zz_chris -> friends",
+  "[  3.0s] signed up Chris, Sam, Maria and Lena; all are friends of Chris",
+  "  agent: [zz_chris] POST availability 'I am free Thursday evening for dinner near North Beach' -> open (id 55)",
+  "[  5.4s] Chris: 'I am free Thursday evening for dinner near North Beach' -> 2026-11-05 evening North Beach, open (Nobody is open near there yet. Your time stays open, and I will try again when a friend posts a time that fits.)",
+  "  agent: [zz_sam] POST availability 'I am free Thursday evening in the Mission, and I want to stay in the Mission' -> open (id 56)",
+  "[  9.2s] Sam: 'I am free Thursday evening in the Mission, and I want to stay in the Mission' -> 2026-11-05 evening Mission, open (Nobody is open near there yet. Your time stays open, and I will try again when a friend posts a time that fits.)",
+  "  agent: [zz_maria] POST availability 'I am free Thursday evening near Chinatown' -> open (id 57)",
+  "[ 16.2s] Maria: 'I am free Thursday evening near Chinatown' -> 2026-11-05 evening North Beach, open",
+  "[ 16.7s] Sam's agent polled: nothing",
+  "  agent: [zz_maria] proposal 47 (candidate, evening 2026-11-05) -> accept The Stinking Rose (Love Italian dinner in North Beach for an evening out) [meta] -> waiting for the owner",
+  "[ 19.6s] Maria's agent polled: accept -> waiting for the owner",
+  "[ 20.3s] Chris approves Maria -> approved",
+  "[ 21.2s] Chris's agent proposes 19:30 at The Stinking Rose -> proposed",
+  "  agent: [zz_maria] outing 55 proposed 19:30 by Chris -> same time and place -> final",
+  "  agent: [zz_maria] outing 55 final: 2026-11-05 The Stinking Rose 19:30 ics https://mifgash.sveder.com/outing/55/invite-21ae3ef5788e10ff525e.ics?for=101 gcal https://calendar.google.com/calendar/render?action=TEMPLATE&text=Evening+out+with+Chris&dates=20261105T193000%2F20261105T210000&ctz=America%2FLos_Angeles&location=The+Stinking+Rose%2C+325+Columbus+Ave%2C+San+Francisco&details=Map%3A+https%3A%2F%2Fmaps.google.com%2F%3Fq%3D325%2520Columbus%2520Ave%252C%2520San%2520Francisco%0AParking%3A+Street+parking+is+hard%3B+the+paid+North+Beach+Garage+at+735+Vallejo+St%0APlanned+by+Mifgash.",
+  "[ 25.5s] Maria's agent answers -> final 19:30 The Stinking Rose",
+  "  agent: [zz_chris] POST availability 'I am free Saturday for lunch near North Beach' -> open (id 58)",
+  "[ 33.6s] Chris: 'I am free Saturday for lunch near North Beach' -> 2026-11-07 lunch North Beach, open",
+  "  agent: [zz_lena] POST availability 'I am free Saturday for lunch near North Beach' -> open (id 59)",
+  "[ 41.7s] Lena: 'I am free Saturday for lunch near North Beach' -> 2026-11-07 lunch North Beach, open"
+ ]
+}

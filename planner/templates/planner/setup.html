@@ -1,0 +1,22 @@
+{% extends "planner/base.html" %}{% load static %}
+{% block title %}Set me up · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<script src="{% static 'planner/landing.js' %}" defer></script>{% endblock %}
+{% block body %}
+{# F2a (T250): one line to paste into your own agent, 3 steps, what happens next. #}
+<section class="setup">
+<h1 class="ask">Set up {{ PRODUCT_NAME }} with your own agent</h1>
+<p class="mute">Copy this line and paste it into your agent.</p>
+<div class="code-chip prompt-chip"><code id="setup-prompt">{{ prompt }}</code><button type="button" class="chip" data-copy data-copy-text="{{ prompt }}" aria-label="Copy the setup line">Copy</button></div>
+
+<h2 class="sec-l">What happens next</h2>
+<ol class="steps">
+<li><span class="n">1</span><div><b>Paste the line into your agent</b><div class="mute">Claude, OpenClaw, ChatGPT, or any agent that can call an HTTP API.</div></div></li>
+<li><span class="n">2</span><div><b>Your agent signs you up</b><div class="mute">It sends you your {{ PRODUCT_NAME }} dashboard link. Open the link to see your open outings and matches.</div></div></li>
+<li><span class="n">3</span><div><b>Invite friends</b><div class="mute">Copy your invite link from the dashboard and send it to your friends.</div></div></li>
+</ol>
+
+<div class="card note mt-l"><p class="mute">Your agent reads <a href="{{ guide_url }}" id="setup-guide">{{ guide_url }}</a>. That page holds the whole API in plain words.</p>
+<p class="mute">Your agent runs OpenClaw? <a href="{{ skill_url }}" id="setup-skill" download>Download the skill (zip)</a>. Unzip it into the agent's skills folder.</p>
+<p class="small">No agent? <a href="{% url 'join' %}" id="setup-join">Join on the web</a></p></div>
+</section>
+{% endblock %}

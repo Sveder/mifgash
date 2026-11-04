@@ -1,0 +1,13 @@
+{% load static %}<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
+<title>{% block title %}{{ PRODUCT_NAME }}{% endblock %}</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="{% static 'planner/favicon-32.png' %}" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="alternate" type="text/markdown" href="{{ AGENTS_URL }}" title="Guide for AI agents"><meta name="ai-agent-guide" content="{{ AGENTS_URL }}">
+<script src="{% static 'planner/theme.js' %}"></script>
+<link rel="stylesheet" href="{% static 'planner/mifgash.css' %}">{% block head %}{% endblock %}</head><body><div class="wrap{% block wrap %}{% endblock %}">
+<header><a class="brand" href="{% url 'home' %}" aria-label="{{ PRODUCT_NAME }} home">{% include "planner/_mark.html" %}<b>{{ PRODUCT_NAME }}</b></a>
+{% block nav %}<nav><a href="{% url 'join' %}">No agent?</a> <a href="{% url 'home' %}#faq">FAQ</a> <a href="{% url 'dashboard' %}">My dashboard</a> <a href="{% url 'login' %}">Log in</a></nav>{% endblock %}<button type="button" class="theme-btn" data-theme-toggle aria-label="Switch theme"></button></header>
+{% block body %}{% endblock %}
+<footer class="site-foot">Made by <a href="https://sveder.com">Sveder</a> · <a href="{% url 'home' %}#faq">FAQ</a> · <a href="{% url 'privacy' %}">Privacy</a> · <a href="{% url 'login' %}">Log in</a> · <a href="{{ REPO_URL }}" rel="noopener">Source code</a><br><span class="osm-credit">Venue data &copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a></span></footer>
+</div>{% load sl_tags %}{% svederlytics_script %}</body></html>

@@ -1,0 +1,27 @@
+{% extends "planner/base.html" %}
+{% block title %}Join without an agent · {{ PRODUCT_NAME }}{% endblock %}
+{% block body %}
+{# M6a (T175): web signup for a person with no agent. #}
+<section class="human visitor join">
+<h1 class="ask">Join without an agent</h1>
+<p class="mute">No agent? You can use {{ PRODUCT_NAME }} on the web. You say when you are free and answer your friends on your dashboard.</p>
+<form method="post" class="card stack join-form" novalidate>{% csrf_token %}
+<label class="label" for="join-name">Your name</label>
+<input id="join-name" type="text" name="name" required maxlength="40" autocomplete="name" value="{{ form.name }}"{% if errors.name %} aria-invalid="true" aria-describedby="err-name"{% endif %}>
+{% if errors.name %}<p class="err" id="err-name">{{ errors.name }}</p>{% endif %}
+<label class="label" for="join-handle">Handle</label>
+<input id="join-handle" type="text" name="handle" required minlength="2" maxlength="32" pattern="@?[A-Za-z0-9_]{2,32}" autocapitalize="none" autocomplete="username" spellcheck="false" value="{{ form.handle }}" aria-describedby="hint-handle{% if errors.handle %} err-handle{% endif %}"{% if errors.handle %} aria-invalid="true"{% endif %}>
+<p class="small mute" id="hint-handle">Friends find you by this name. 2 to 32 characters: letters, digits and underscore. We store it in lower case.</p>
+{% if errors.handle %}<p class="err" id="err-handle">{{ errors.handle }}</p>{% endif %}
+<label class="label" for="join-email">Email</label>
+<input id="join-email" type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com" value="{{ form.email }}" aria-describedby="hint-email{% if errors.email %} err-email{% endif %}"{% if errors.email %} aria-invalid="true"{% endif %}>
+<p class="small mute" id="hint-email">You need it to log in again. We use it only to send you a link to your dashboard. We store it encrypted.</p>
+{% if errors.email %}<p class="err" id="err-email">{{ errors.email }}</p>{% endif %}
+<label class="label" for="join-city">Main city <span class="mute">(optional)</span></label>
+<input id="join-city" type="text" name="city" maxlength="40" autocomplete="address-level2" placeholder="San Francisco" value="{{ form.city }}">
+<p class="small mute">Your city, never your address. You can name a place each time you post a free time.</p>
+<button class="hbtn primary mt-l">Join and open my dashboard</button>
+</form>
+<p class="small mute mt-l">You have an agent? Tell it: “Sign me up to {{ PRODUCT_NAME }}.” <a href="/agents.md">agents.md</a> tells any agent how.</p>
+</section>
+{% endblock %}

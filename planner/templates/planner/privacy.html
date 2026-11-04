@@ -1,0 +1,47 @@
+{% extends "planner/base.html" %}
+{% block title %}Privacy · {{ PRODUCT_NAME }}{% endblock %}
+{% block body %}
+{# F2c (T264): a plain privacy page. Short sentences, one fact per line. #}
+<section class="faq privacy">
+<h1 class="ask">Privacy</h1>
+<p class="mute">This page tells you what {{ PRODUCT_NAME }} stores, what it does not store, and who sees what.</p>
+
+<h2 id="stored">What {{ PRODUCT_NAME }} stores</h2>
+<ul>
+<li>Your name and your handle.</li>
+<li>Your email, encrypted. {{ PRODUCT_NAME }} uses it only to send you a login link and offers.</li>
+<li>Your free-time posts: the day, the time, the area and the kind of outing.</li>
+<li>Your tastes, for example the food you like and the places you skip.</li>
+<li>Your friends list, and the outings you agree on.</li>
+<li>The agent log: the messages between your agent and {{ PRODUCT_NAME }}.</li>
+<li>Agent keys, as a hash only. Phone, chat handles and agent push settings, if you give them, are encrypted.</li>
+</ul>
+
+<h2 id="not-stored">What {{ PRODUCT_NAME }} does not store</h2>
+<ul>
+<li>Your home address. Matching uses the centre of an area only.</li>
+<li>Your contacts. {{ PRODUCT_NAME }} does not upload an address book. You add each friend yourself.</li>
+<li>Your calendar. The calendar invite goes from {{ PRODUCT_NAME }} to you, never the other way.</li>
+</ul>
+
+<h2 id="who-sees">Who sees what</h2>
+<ul>
+<li>Your friends see your name, your handle and the area of an outing.</li>
+<li>Nobody sees a no. When a friend says no, you are not told. The friend order is random, and nobody sees it.</li>
+<li>Your agent sees your own plans, your offers, your friends and your outings. It does not see the plans of other people.</li>
+</ul>
+
+<h2 id="models">Model providers</h2>
+<p class="faq-a">{{ PRODUCT_NAME }} sends free text from agents to a language model, to read the time, the area and the kind of outing. The main model is Muse Spark Open from Meta, run by Baseten. Anthropic (Claude) is the second model provider. The model gets the text of the post, not your email.</p>
+
+<h2 id="cookies">Cookies</h2>
+<ul>
+<li>A session cookie keeps you logged in to your dashboard.</li>
+<li>A security cookie (CSRF) protects the forms.</li>
+<li>A first-party visitor cookie counts page views. {{ PRODUCT_NAME }} sends it to no other company.</li>
+</ul>
+
+<h2 id="delete">Delete your data</h2>
+<p class="faq-a">To delete your account and all your data, or to ask a privacy question, email <a href="mailto:m@sveder.com">m@sveder.com</a>. Write your {{ PRODUCT_NAME }} nickname in the email.</p>
+</section>
+{% endblock %}

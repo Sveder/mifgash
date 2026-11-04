@@ -1,0 +1,50 @@
+{% extends "svederlytics/base.html" %}{% load sl_tags %}
+{% block head %}<form class="range" method="get">
+{% for v, l in presets %}<a href="?r={{ v }}" class="{% if preset == v %}on{% endif %}">{{ l }}</a>{% endfor %}
+<input type="date" name="from" value="{{ start|date:'Y-m-d' }}"> <input type="date" name="to" value="{{ end|date:'Y-m-d' }}"> <button>Apply</button>
+</form>{% endblock %}
+{% block body %}
+<p class="mute" style="margin:0 0 12px">{{ start|date:"d/m/Y" }} to {{ end|date:"d/m/Y" }}. Change is against the {{ days|length }} day{{ days|length|pluralize }} before. Bots left out: {{ bots }} sessions.</p>
+<div class="tiles">{% for t in tiles %}<div class="tile"><div class="l">{{ t.label }}</div>
+<div class="v">{% if t.unit == "s" %}{{ t.value|dur }}{% else %}{{ t.value }}{{ t.unit }}{% endif %}</div>
+<div class="d {% if t.delta is not None %}{% if t.delta > 0 %}{% if t.lower_better %}down{% else %}up{% endif %}{% elif t.delta < 0 %}{% if t.lower_better %}up{% else %}down{% endif %}{% endif %}{% endif %}">
+{% if t.delta is None %}no data before{% else %}{% if t.delta > 0 %}+{% endif %}{{ t.delta }}% vs {% if t.unit == "s" %}{{ t.prev|dur }}{% else %}{{ t.prev }}{{ t.unit }}{% endif %}{% endif %}</div></div>{% endfor %}</div>
+
+<div class="card"><h2>Daily: <span style="color:#7b74e0">page views</span> and <span style="color:#4fb3a9">visitors</span></h2>
+<svg viewBox="0 0 {{ chart.w }} {{ chart.h|add:18 }}" width="100%" preserveAspectRatio="none" style="max-height:220px">
+{% for b in chart.bars %}<rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="2" fill="#7b74e0" opacity=".75"><title>{{ b.d.day|date:"D d/m" }}: {{ b.d.pageviews }} page views, {{ b.d.visitors }} visitors, {{ b.d.sessions }} sessions</title></rect>{% endfor %}
+<polyline points="{{ chart.line }}" fill="none" stroke="#4fb3a9" stroke-width="2"/>
+{% for l in chart.labels %}<text x="{{ l.x }}" y="{{ chart.h|add:14 }}" text-anchor="middle">{{ l.t }}</text>{% endfor %}
+</svg></div>
+
+<div class="card"><h2><span class="live"></span>Live now ({{ live|length }})</h2>{% if live %}
+<table class="sort"><thead><tr><th>Visitor</th><th>Page now</th><th>Country</th><th>Device</th><th>From</th><th class="n">Pages</th><th class="n">On site</th></tr></thead><tbody>
+{% for s in live %}<tr><td><a href="{% url 'svederlytics:visitor' s.visitor_id %}">{% if s.visitor.user_id %}<span class="pill u">{{ s.visitor.user_id }}</span>{% else %}{{ s.visitor.vid|slice:":8" }}{% endif %}</a></td><td class="k"><a href="{% url 'svederlytics:session' s.pk %}">{{ s.current_path }}</a></td><td>{{ s.country|flag }} {{ s.country }}</td><td>{{ s.device }} / {{ s.browser }}</td><td>{{ s.referrer|default:"(direct)" }}</td><td class="n">{{ s.pageviews }}</td><td class="n" data-v="{{ s.duration_s }}">{{ s.duration_s|dur }}</td></tr>{% endfor %}
+</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td></td><td class="n">{{ live|total:"pageviews" }}</td><td></td></tr></tfoot></table>
+{% else %}<div class="empty">Nobody on the site in the last minutes.</div>{% endif %}</div>
+
+<div class="grid">
+<div class="card"><h2>Top pages</h2>{% if b.pages %}<table class="sort"><thead><tr><th>Path</th><th class="n">Views</th><th class="n">Visitors</th><th class="n">Avg time</th></tr></thead><tbody>
+{% with top=b.pages.0.views %}{% for r in b.pages %}<tr><td class="k bar"><i style="width:{% widthratio r.views top 100 %}%"></i><span>{{ r.key }}</span></td><td class="n">{{ r.views }}</td><td class="n">{{ r.visitors }}</td><td class="n" data-v="{{ r.avg_time_s }}">{{ r.avg_time_s|dur }}</td></tr>{% endfor %}{% endwith %}
+</tbody><tfoot><tr><td>Total ({{ b.pages|length }})</td><td class="n">{{ b.pages|total:"views" }}</td><td class="n mute">-</td><td></td></tr></tfoot></table>{% else %}<div class="empty">No data in this range.</div>{% endif %}</div>
+<div class="card"><h2>Events</h2>{% if b.events %}<table class="sort"><thead><tr><th>Event</th><th class="n">Count</th><th class="n">Visitors</th></tr></thead><tbody>
+{% with top=b.events.0.count %}{% for r in b.events %}<tr><td class="k bar"><i style="width:{% widthratio r.count top 100 %}%"></i><span>{{ r.key }}</span></td><td class="n">{{ r.count }}</td><td class="n">{{ r.visitors }}</td></tr>{% endfor %}{% endwith %}
+</tbody><tfoot><tr><td>Total ({{ b.events|length }})</td><td class="n">{{ b.events|total:"count" }}</td><td class="n mute">-</td></tr></tfoot></table>{% else %}<div class="empty">No events. Call svederTrack('name') or add data-sl="name" to a button.</div>{% endif %}</div>
+{% include "svederlytics/_group.html" with title="Referrers" col="Site" rows=b.referrers %}
+{% include "svederlytics/_group.html" with title="Entry pages" col="Path" rows=b.entries %}
+{% include "svederlytics/_group.html" with title="Campaigns (utm)" col="Source / medium / campaign" rows=b.campaigns %}
+{% include "svederlytics/_group.html" with title="Countries" col="Country" rows=b.countries flags=1 %}
+{% include "svederlytics/_group.html" with title="Devices" col="Device" rows=b.devices %}
+{% include "svederlytics/_group.html" with title="Browsers" col="Browser" rows=b.browsers %}
+{% include "svederlytics/_group.html" with title="Operating systems" col="OS" rows=b.os %}
+</div>
+
+<div style="margin-top:14px">
+<div class="card"><h2>Visitors in this range</h2>{% if visitors %}<table class="sort"><thead><tr><th>Visitor</th><th>Type</th><th>First seen</th><th class="n">Sessions here</th><th class="n">Sessions ever</th><th class="n">Pages</th><th class="n">Events</th></tr></thead><tbody>
+{% for v in visitors %}<tr><td><a href="{% url 'svederlytics:visitor' v.id %}">{% if v.user %}<span class="pill u">{{ v.label }}</span>{% else %}{{ v.label }}{% endif %}</a></td><td>{% if v.returning %}returning{% else %}<span class="mute">new</span>{% endif %}</td><td data-v="{{ v.first_seen|date:'U' }}">{{ v.first_seen|date:"d/m/Y" }}</td><td class="n">{{ v.sessions }}</td><td class="n">{{ v.total_sessions }}</td><td class="n">{{ v.pageviews }}</td><td class="n">{{ v.events }}</td></tr>{% endfor %}
+</tbody><tfoot><tr><td>Total ({{ visitors|length }})</td><td></td><td></td><td class="n">{{ visitors|total:"sessions" }}</td><td class="n mute">-</td><td class="n">{{ visitors|total:"pageviews" }}</td><td class="n">{{ visitors|total:"events" }}</td></tr></tfoot></table>{% else %}<div class="empty">No visitors in this range.</div>{% endif %}</div>
+<div class="card"><h2>Recent sessions</h2>{% if recent %}<table class="sort"><thead><tr><th>Start</th><th>Visitor</th><th>Entry</th><th>From</th><th class="n">Pages</th><th class="n">Events</th><th class="n">Time</th></tr></thead><tbody>
+{% for s in recent %}<tr><td data-v="{{ s.started|date:'U' }}"><a href="{% url 'svederlytics:session' s.pk %}">{{ s.started|date:"d/m H:i" }}</a></td><td>{% if s.visitor.user_id %}<span class="pill u">{{ s.visitor.user_id }}</span>{% else %}{{ s.visitor.vid|slice:":8" }}{% endif %}</td><td class="k">{{ s.entry_path }}</td><td>{{ s.referrer|default:"(direct)" }}</td><td class="n">{{ s.pageviews }}</td><td class="n">{{ s.events }}</td><td class="n" data-v="{{ s.duration_s }}">{{ s.duration_s|dur }}</td></tr>{% endfor %}
+</tbody><tfoot><tr><td>Total ({{ recent|length }})</td><td></td><td></td><td></td><td class="n">{{ recent|total:"pageviews" }}</td><td class="n">{{ recent|total:"events" }}</td><td></td></tr></tfoot></table>{% else %}<div class="empty">No sessions in this range.</div>{% endif %}</div>
+</div>
+{% endblock %}

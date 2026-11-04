@@ -1,0 +1,71 @@
+{% extends "planner/base.html" %}
+{% load static %}
+{% block wrap %} wide dash{% endblock %}
+{% block title %}{{ PRODUCT_NAME }} · {{ p.name }}{% endblock %}
+{% block body %}
+<div class="dash-head"><h2>{% if sandbox %}Your demo dashboard{% else %}Hi <span class="handle">@{{ p.handle }}</span> <button type="button" class="chip" id="handle-copy" data-handle="@{{ p.handle }}" aria-label="Copy your handle">Copy</button>{% endif %}</h2><a class="mute" href="{% url 'dashboard_logout' %}">Log out</a></div>
+{% if not sandbox %}<p class="small mute dash-name">{{ p.name }}</p>{# F3a (T259): the handle is the name friends use, so it leads; the name is a small line #}
+<p class="mute">{% if free %}Post when you are free. Your friends answer here or with their agents.{% else %}Your agent plans the outings. This page shows what it did.{% endif %}</p>{% endif %}{# T218: the sandbox banner explains the session #}
+{% if not sandbox and not free %}{% if note %}<p class="status-line ok" id="dash-note">{{ note }}</p>{% endif %}{% if error %}<p class="err">{{ error }}</p>{% endif %}{% endif %}
+{% if needs_email %}{# F3a (T259) #}
+<form method="post" action="{% url 'dashboard_email' %}" class="card stack join-form" id="email-card">{% csrf_token %}
+<b>Add your email so you can log in again</b>
+<p class="small mute">Without an email, you cannot log in again when you lose your {{ PRODUCT_NAME }} dashboard link. We use the email only to send you a new link. We store it encrypted.</p>
+<label class="label" for="email-box">Email</label>
+<input id="email-box" type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+<button class="hbtn primary">Save my email</button>
+</form>
+{% endif %}
+
+{% if sandbox %}{# M7a (T178): the quick demo #}
+<div class="card stack sandbox-banner" id="sandbox-banner" role="status"><b>Demo session. It ends in {{ sandbox.hours }} h.</b>
+<p class="small mute">Maria, Sam and Lena are demo friends, each with an own agent. Nothing here reaches a real person.</p></div>
+<h3 class="sec">Tell your agent</h3>
+<form method="post" action="{% url 'dashboard_free' %}" class="card join-form" id="sandbox-form">{% csrf_token %}
+<label class="label" for="sandbox-text">What you say to your agent</label>
+<input id="sandbox-text" type="text" name="text" maxlength="500" value="{{ sandbox.prefill }}" autocomplete="off">
+<p class="small mute">Or try a group: <button type="button" class="linkbtn" id="sandbox-group" data-text="{{ sandbox.group }}">{{ sandbox.group }}</button></p>
+<button class="hbtn primary mt-l">Send to my agent</button>
+</form>
+{% if note %}<p class="status-line ok" id="dash-note">{{ note }}</p>{% endif %}
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+{% endif %}
+{% if free %}{# M6b (T176): a person with no agent posts free times and adds friends here #}
+{% if note %}<p class="status-line ok" id="dash-note">{{ note }}</p>{% endif %}
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+{% endif %}
+{# F5a (T254): tabs Upcoming / Past meetups / Activity. The hash picks the tab (dashboard.js). At 960 px and up the page is 2 columns: the left shows Upcoming or Past, the right always shows Activity. #}
+<nav class="tabs" role="tablist" aria-label="Dashboard">
+<a class="tab" role="tab" data-tab="upcoming" href="#upcoming" aria-selected="true">Upcoming</a>
+<a class="tab" role="tab" data-tab="past" href="#past" aria-selected="false">Past meetups{% if past %} <span class="count">{{ past|length }}</span>{% endif %}</a>
+<a class="tab tab-activity" role="tab" data-tab="activity" href="#activity" aria-selected="false">Activity</a>
+</nav>
+<div id="dash-live" class="dash-grid"{% if sandbox.poll %} data-poll="{{ sandbox.poll }}"{% endif %}>{# M7b (T179): dashboard.js swaps this block when the plan moves #}
+<section class="tab-panel dash-main" id="upcoming" data-panel="upcoming" role="tabpanel">
+{# M6e (T201): with an ask or a match waiting, the cards come first and the forms go under them #}
+{% if busy %}
+{% include "planner/_dash_asks.html" %}
+{% include "planner/_dash_matches.html" %}
+{% include "planner/_dash_open.html" %}
+{% if free %}{% include "planner/_dash_forms.html" %}{% endif %}
+{% else %}
+{% if free %}{% include "planner/_dash_forms.html" %}{% endif %}
+{% include "planner/_dash_open.html" %}
+{% include "planner/_dash_asks.html" %}
+{% include "planner/_dash_matches.html" %}
+{% endif %}
+{% if invite_url and not free %}{% include "planner/_dash_invite.html" %}{% endif %}{# a person with no agent gets it under Add a friend #}
+</section>
+<section class="tab-panel dash-main" id="past" data-panel="past" role="tabpanel">
+<h3 class="sec">Past meetups</h3>
+{% for m in past %}{% include "planner/_ticket.html" %}
+{% empty %}<p class="mute">No past meetups yet. A meetup moves here the day after it happens.</p>{% endfor %}
+</section>
+<section class="tab-panel dash-side" id="activity" data-panel="activity" role="tabpanel">
+<h3 class="sec">{% if free %}Activity{% else %}Agent log{% endif %}</h3>
+<div class="log">{% for r in rows %}<div class="l"><span class="mute">{{ r.t }}</span> <span class="who">{{ r.who }}</span>{% if r.sent %} <span class="tag">sent to your agent</span>{% endif %}<br>{{ r.summary }}{% if r.model %} <span class="model">{{ r.model }}</span>{% endif %}</div>
+{% empty %}<div class="l mute">{% if free %}Nothing yet. Post a free time.{% else %}Your agent has not done anything yet.{% endif %}</div>{% endfor %}</div>
+</section>
+</div>
+<script src="{% static 'planner/dashboard.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "planner/base.html" %}
+{% block title %}My dashboard · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{% block body %}
+{# M5 (T165): /d/ for a visitor with no session. #}
+<section class="human visitor">
+<h1 class="ask">My dashboard</h1>
+<div class="card stack" id="agent-link"><b>Your agent gives you the link</b>
+<p class="mute">Your dashboard opens from a one-time link. Ask your agent:</p>
+<div class="say-line">“Send me my Mifgash dashboard link.”</div>
+<p class="small mute">No agent yet? <a href="/agents.md">agents.md</a> tells any agent how to sign you up.</p></div>
+
+<div class="card stack mt-l" id="try-demo"><b>Try the demo</b>
+<p class="mute">See two agents plan a lunch, with a demo friend, in under a minute.</p>
+<form method="post" action="{% url 'try_demo' %}">{% csrf_token %}<button class="hbtn primary">Try the demo</button></form></div>
+
+<div class="card stack mt-l" id="email-link"><b>Get a link by email</b>
+<p class="mute">Your agent saved your email? Write it here and we send you a link.</p>
+<form method="post" class="email-form">{% csrf_token %}
+<label class="label" for="vis-email">Email</label>
+<input id="vis-email" type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+<button class="hbtn primary">Send me a link</button>
+</form>
+<p class="small mute">Or use the <a href="{% url 'login' %}">Log in</a> page.</p>
+{% if email_answer %}<p class="status-line" role="status">{{ email_answer }}</p>{% endif %}
+</div>
+</section>
+{% endblock %}

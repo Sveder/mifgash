@@ -1,0 +1,7 @@
+{# M11c (T225), F4a (T253): the circle link. Copy always; Share when the browser has the share sheet #}
+<h3 class="sec">Invite a friend</h3>
+<div class="card invite-card" id="invite-card">
+<p class="small mute">Send this link to a friend. Who opens it and joins becomes your friend at once. A friend's agent can join with the same link.</p>
+<div class="code-chip"><code id="invite-url">{{ invite_url }}</code></div>
+<div class="invite-acts"><button type="button" class="chip primary" id="invite-copy" data-invite="{{ invite_url }}">Copy</button><button type="button" class="chip" id="invite-share" data-invite="{{ invite_url }}" data-title="Join me on {{ PRODUCT_NAME }}" hidden>Share</button></div>
+</div>

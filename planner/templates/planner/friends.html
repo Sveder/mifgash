@@ -1,0 +1,10 @@
+{% extends "planner/base.html" %}
+{% block body %}
+<h2>Demo world</h2>
+<p class="mute">Invented people. Real public places. {{ me.name }}'s open-times page for friends without an agent: <a href="{% url 'open_page' me.token %}">/open/…</a></p>
+{% for p in people %}<div class="card"><h3>{{ p.name }}{% if p.is_owner %} (owner){% endif %} <span class="tag">{{ p.has_agent|yesno:"agent,no agent" }}</span></h3>
+<div class="mute">Home {{ p.home_area.name }}{% if p.work_area %} · work {{ p.work_area.name }}{% endif %} · up to {{ p.max_km }} km{% if p.one_on_one_only %} · one on one only{% endif %}{% if p.kids_ages %} · kids {{ p.kids_ages|join:", " }}{% endif %}</div>
+<div>{% for k in p.likes %}<span class="tag">{{ k }}</span>{% endfor %}{% for k in p.dislikes %}<span class="tag">no {{ k }}</span>{% endfor %}</div>
+<div class="mute">Open: {% for s in p.slots.all %}{{ s }}{% if s.area %} @ {{ s.area.name }}{% endif %}{% if not forloop.last %}; {% endif %}{% endfor %}</div>
+<a href="{% url 'friend' p.pk %}">{{ p.has_agent|yesno:"Agent inbox,Messages" }}</a></div>{% endfor %}
+{% endblock %}

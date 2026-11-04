@@ -1,0 +1,21 @@
+{% extends "planner/base.html" %}
+{% block title %}Ops login · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{% block nav %}{% endblock %}
+{% block body %}
+{# F8c (T262): staff login for /ops/. #}
+<section class="human visitor">
+<h1 class="ask">Staff login</h1>
+<div class="card stack">
+<form method="post" class="email-form">{% csrf_token %}
+{% if form.errors %}<p class="status-line" role="alert">The user name or the password is wrong.</p>{% endif %}
+<label class="label" for="id_username">User name</label>
+<input id="id_username" name="username" required autocomplete="username" value="{{ form.username.value|default:'' }}">
+<label class="label" for="id_password">Password</label>
+<input id="id_password" type="password" name="password" required autocomplete="current-password">
+<input type="hidden" name="next" value="{{ next|default:'/ops/' }}">
+<button class="hbtn primary">Log in</button>
+</form>
+</div>
+</section>
+{% endblock %}

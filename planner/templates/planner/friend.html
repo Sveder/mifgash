@@ -1,0 +1,7 @@
+{% extends "planner/base.html" %}
+{% block body %}
+<h2>{{ p.name }}'s {{ p.has_agent|yesno:"agent,messages" }}</h2>
+<p class="mute">Only the messages {{ p.name }} sent or got. {{ p.name }} never sees who else was asked.</p>
+{% for r in rows %}<div class="card"><div class="mute">{{ r.t }} · {{ r.from }} → {{ r.to }} · <b>{{ r.type }}</b></div><p>{{ r.summary }}</p>
+{% if r.json.link %}<a class="chip" href="{{ r.json.link }}">Open the link</a>{% endif %}</div>{% empty %}<p>Nothing yet.</p>{% endfor %}
+{% endblock %}

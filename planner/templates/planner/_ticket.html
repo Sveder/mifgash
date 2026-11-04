@@ -1,0 +1,31 @@
+{# One outing ticket (T120); the human page passes human_page=True (no dashboard links, T121): the dashboard Matches card and /outing/<uid>/ both include this with m = views.match_row(). One primary button: Add to calendar when set, else Agree or Set time. #}
+<article class="card ticket{% if m.plan.status != 'final' %} pending{% endif %}" id="outing-{{ m.plan.pk }}">
+<div class="date num" aria-label="{{ m.when }}"><span class="w">{{ m.date.w }}</span><span class="d">{{ m.date.d }}</span><span class="mo">{{ m.date.mo }}</span><span class="t">{{ m.date.t }}</span></div>
+<div class="body">
+<span class="status {{ m.status_cls }}">{{ m.status_word }}</span>
+<h3>{{ m.plan.title }}{% if m.with %} with {% for n in m.with %}{{ n }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</h3>
+<div class="mute">{{ m.when }}{% if m.group %} · Group dinner, {{ m.group }} people{% endif %}</div>
+<ul class="facts">
+<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span><b>{{ m.place.name|default:m.plan.area.name }}</b><br>{{ m.place.address|default:m.plan.area.name }}{% if m.place.note %} · {{ m.place.note }}{% endif %}</span></li>
+{% if m.calendar %}<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M10 16V8h3a2.5 2.5 0 0 1 0 5h-3"/></svg><span>Parking: {{ m.place.parking|default:"Street parking" }}</span></li>{% endif %}
+{% if m.hint %}<li class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Conversation hint: {{ m.hint }}</span></li>{% endif %}
+</ul>
+{% if m.agree %}<form method="post" action="{% if m.action %}{{ m.action }}{% else %}{% url 'dashboard_finalize' m.plan.pk %}{% endif %}" class="agree">{% csrf_token %}
+<p class="proposed"><b>{{ m.proposed_by }}</b> proposes <b>{{ m.proposed }}</b>.</p>
+<input type="hidden" name="time" value="{{ m.agree.time }}"><input type="hidden" name="activity_id" value="{{ m.agree.place }}">
+<div class="chips"><button class="chip primary">Agree</button></div></form>
+{% elif m.proposed %}<p class="proposed">{% if m.proposed_by == "you" %}You proposed{% else %}<b>{{ m.proposed_by }}</b> proposes{% endif %} <b>{{ m.proposed }}</b>.{% if m.you_agreed and m.waiting %} <span class="mute">Waiting for {% for n in m.waiting %}{{ n }}{% if not forloop.last %}, {% endif %}{% endfor %}.</span>{% endif %}</p>{% endif %}
+{% if m.places %}<form method="post" action="{% if m.action %}{{ m.action }}{% else %}{% url 'dashboard_finalize' m.plan.pk %}{% endif %}" class="fin">{% csrf_token %}
+<div class="mute">{% if m.agree %}Or pick another time{% elif m.proposed %}Change the time{% else %}Set the exact time{% endif %}</div>
+{% if m.places|length > 1 %}<select class="fin-place" name="activity_id" aria-label="Place">{% for a in m.places %}<option value="{{ a.pk }}"{% if a.pk == m.pick %} selected{% endif %}>{{ a.name }}</option>{% endfor %}</select>
+{% else %}<input type="hidden" name="activity_id" value="{{ m.places.0.pk }}">{% endif %}
+<div class="fin-row"><select class="fin-time num" name="time" required aria-label="Time">{% for t in m.times %}<option value="{{ t }}"{% if t == m.default_time %} selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+<button class="chip{% if not m.agree %} primary{% endif %}">{% if m.agree %}Propose{% else %}Set time{% endif %}</button></div></form>{% endif %}
+{% if m.change %}<form method="post" action="{% if m.action %}{{ m.action }}{% else %}{% url 'dashboard_finalize' m.plan.pk %}{% endif %}" class="fin change">{% csrf_token %}
+<input type="hidden" name="activity_id" value="{{ m.pick }}">
+<div class="mute">{% if human_page %}Suggest another time{% else %}Change time{% endif %}</div>
+<div class="chips">{% for t in m.change %}<button class="chip num" name="time" value="{{ t }}">{{ t }}</button>{% endfor %}</div>
+<div class="fin-row"><select class="fin-time num" name="other" aria-label="Other time"><option value="" selected>Other</option>{% for t in m.times %}{% if t != m.default_time %}<option value="{{ t }}">{{ t }}</option>{% endif %}{% endfor %}</select>
+<button class="chip" name="go" value="other">Change</button></div></form>{% endif %}
+<div class="chips">{% if m.calendar %}<a class="chip primary" href="{{ m.calendar.ics_url }}">Add to calendar</a><a class="chip" href="{{ m.calendar.google_calendar_url }}" target="_blank" rel="noopener">Google Calendar</a>{% endif %}<a class="chip" href="https://www.google.com/maps/search/?api=1&query={{ m.place.address|default:m.plan.area.name|urlencode }}" target="_blank" rel="noopener">Map</a>{% if human_page %}{% elif outing_page %}<a class="chip quiet" href="{% url 'plan_log' m.plan.uid %}">How the agents set it up</a>{% else %}<a class="chip quiet" href="{% url 'outing' m.plan.uid %}">Outing page</a>{% endif %}</div>
+</div></article>

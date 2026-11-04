@@ -1,0 +1,160 @@
+{
+ "voice": "Kokoro-82M am_michael",
+ "speed": 0.95,
+ "total_seconds": 173.6,
+ "words": 402,
+ "bed": "media/mifgash-demo/bed.wav",
+ "bed_db": -28.0,
+ "shots": [
+  {
+   "id": "01-title",
+   "screen": "Title card with the tagline, then the main page (dark)",
+   "text": "Meet friends on your terms, without messaging ten people for a yes. This is Mifgash.",
+   "words": 15,
+   "start": 0.0,
+   "seconds": 6.83,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/01-title.wav"
+  },
+  {
+   "id": "02-problem",
+   "screen": "Main page, the three intent cards",
+   "text": "A dinner with friends usually costs a group chat, ten messages and a lot of maybes. Most of those messages are about when and where. Mifgash gives that job to your own AI agent.",
+   "words": 34,
+   "start": 6.83,
+   "seconds": 14.48,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/02-problem.wav"
+  },
+  {
+   "id": "03-setup",
+   "screen": "Caption card 'Setup takes one line' with the mif.py one-liner",
+   "text": "Setup takes one line. You give your agent the Mifgash page, and the agent signs you up. My agent runs on Telegram. Any agent that can read a web page and call an API can join.",
+   "words": 36,
+   "start": 21.31,
+   "seconds": 14.65,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/03-setup.wav"
+  },
+  {
+   "id": "04-ask",
+   "screen": "Telegram stand-in: the ask, then the dashboard with the open outing",
+   "text": "I tell my agent one sentence: I am free Thursday evening for dinner near North Beach. The agent posts that free time to Mifgash. My dashboard shows the open outing: where, when and what.",
+   "words": 34,
+   "start": 35.96,
+   "seconds": 15.08,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/04-ask.wav"
+  },
+  {
+   "id": "05-friends",
+   "screen": "Dashboard friends card: Maria and Sam",
+   "text": "Maria and Sam are my friends on Mifgash. Each of them has an own agent, and each agent posts their free time the same way.",
+   "words": 25,
+   "start": 51.04,
+   "seconds": 10.43,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/05-friends.wav"
+  },
+  {
+   "id": "06-nomatch",
+   "screen": "Sam's open outing in the Mission, no match",
+   "text": "Sam is free on Thursday evening too, but in the Mission, and he wants to stay there. That is too far from North Beach, so Mifgash makes no match for Sam this time.",
+   "words": 33,
+   "start": 61.47,
+   "seconds": 12.24,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/06-nomatch.wav"
+  },
+  {
+   "id": "07-match",
+   "screen": "Match card with 'Why it fits' and the Muse tag",
+   "text": "Maria is free on Thursday evening near Chinatown, a short walk away. That is a match. Muse Spark Open, an open-weights Meta model, reads every free-text post and writes why the match fits.",
+   "words": 33,
+   "start": 73.71,
+   "seconds": 15.21,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/07-match.wav"
+  },
+  {
+   "id": "08-private",
+   "screen": "Proposal on the human page and in the agent log",
+   "text": "Nobody is asked in public. Mifgash asks Maria's agent first, and her agent asks Maria. If she says no, nobody sees it, and nobody sees who got the question first.",
+   "words": 30,
+   "start": 88.92,
+   "seconds": 14.12,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/08-private.wav"
+  },
+  {
+   "id": "09-conversation",
+   "screen": "Panel 'Actual agent conversation' from the live log",
+   "text": "Then the two agents talk. This is the actual conversation from the live site. My agent proposes seven thirty. Maria's agent agrees, and the two agents pick one place.",
+   "words": 29,
+   "start": 103.04,
+   "seconds": 13.42,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/09-conversation.wav"
+  },
+  {
+   "id": "10-place",
+   "screen": "Outing card: The Stinking Rose, 325 Columbus Avenue",
+   "text": "The place is The Stinking Rose on Columbus Avenue, the garlic restaurant. Both agents agree. Bring mints.",
+   "words": 17,
+   "start": 116.46,
+   "seconds": 8.68,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/10-place.wav"
+  },
+  {
+   "id": "11-card",
+   "screen": "Outing card dark, then light",
+   "text": "Maria and I get the same card: the place, the time, a map link and where to park. Nobody had to copy an address from a chat.",
+   "words": 27,
+   "start": 125.14,
+   "seconds": 10.37,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/11-card.wav"
+  },
+  {
+   "id": "12-calendar",
+   "screen": "Calendar page with the .ics and the Google Calendar link",
+   "text": "One tap puts the dinner in the calendar, with the address and the parking line.",
+   "words": 15,
+   "start": 135.51,
+   "seconds": 5.97,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/12-calendar.wav"
+  },
+  {
+   "id": "13-human",
+   "screen": "The /h/ page for a person with no agent",
+   "text": "A friend with no agent gets a clean web page. The friend can accept, decline or pick another time there. Mifgash works for people with an agent and for people without one.",
+   "words": 32,
+   "start": 141.48,
+   "seconds": 13.37,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/13-human.wav"
+  },
+  {
+   "id": "14-log",
+   "screen": "Dashboard agent log",
+   "text": "The dashboard shows every step that each agent did, so I always see what my agent said for me.",
+   "words": 19,
+   "start": 154.85,
+   "seconds": 7.7,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/14-log.wav"
+  },
+  {
+   "id": "15-end",
+   "screen": "Main page (light), then the end card with the URL and 'Made by Sveder'",
+   "text": "Three friends, two agents that agree, one dinner, and no group chat. Mifgash, built for the Meta hackathon. mifgash dot sveder dot com.",
+   "words": 23,
+   "start": 162.55,
+   "seconds": 11.05,
+   "speech_start": 0.4,
+   "wav": "media/mifgash-demo/narration/15-end.wav"
+  }
+ ]
+}

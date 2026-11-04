@@ -1,0 +1,17 @@
+{% extends "planner/base.html" %}
+{% block title %}Open my dashboard · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{# T84: a person who is not logged in sees only the name in the header. #}
+{% block nav %}{% endblock %}
+{% block body %}
+<section class="human">
+<div class="card stack">
+<div class="hi"><span class="av you" aria-hidden="true">{{ first|slice:":1"|upper }}</span><h2 class="ask">Hi {{ first }}</h2></div>
+<p>Your agent sent you this link. It opens your {{ PRODUCT_NAME }} dashboard on this device.</p>
+</div>
+<form method="post" class="mt-l">{% csrf_token %}
+<button class="hbtn primary">Open my {{ PRODUCT_NAME }} dashboard</button>
+</form>
+<p class="mute">The link works one time. Ask your agent for a new one when you need it.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "planner/base.html" %}
+{% block title %}Log in · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{% block body %}
+{# F3b (T261): log in again by email. #}
+<section class="human visitor">
+<h1 class="ask">Log in</h1>
+<div class="card stack" id="login-email"><b>Get your {{ PRODUCT_NAME }} dashboard link by email</b>
+<p class="mute">Write the email that is on your {{ PRODUCT_NAME }} account. We send you a link. The link works one time, for 30 minutes.</p>
+<form method="post" class="email-form">{% csrf_token %}
+<label class="label" for="login-email-input">Email</label>
+<input id="login-email-input" type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com" value="{{ email }}">
+<button class="hbtn primary">Send me a link</button>
+</form>
+{% if answer %}<p class="status-line" role="status">{{ answer }}</p>{% endif %}
+{% if debug_link %}<p class="small mute" id="debug-link">Debug (no mail route): <a href="{{ debug_link }}">{{ debug_link }}</a></p>{% endif %}
+</div>
+<p class="small mute mt-l">You have an agent? Ask it: “Send me my {{ PRODUCT_NAME }} dashboard link.” No account yet? <a href="{% url 'join' %}">Join</a>.</p>
+</section>
+{% endblock %}

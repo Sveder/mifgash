@@ -1,0 +1,108 @@
+{
+ "plan_id": 55,
+ "status": "final",
+ "proposed_time": "19:30",
+ "stamp": "763-final-19:30-99",
+ "rows": [
+  {
+   "t": "15:22:30",
+   "from": "mifgash:directory",
+   "to": "agent:zz_chris",
+   "type": "final",
+   "summary": "Final: an evening out with Maria, Thu 5/11 19:30, The Stinking Rose, 325 Columbus Ave, San Francisco.",
+   "model": "",
+   "plan_id": 55,
+   "who": "Mifgash \u2192 your agent"
+  },
+  {
+   "t": "15:22:26",
+   "from": "agent:zz_chris",
+   "to": "mifgash:directory",
+   "type": "finalize_set",
+   "summary": "Set: 19:30 at The Stinking Rose. Waiting for Maria.",
+   "model": "Muse Spark Open (Baseten)",
+   "plan_id": 55,
+   "who": "Your agent \u2192 Mifgash"
+  },
+  {
+   "t": "15:22:25",
+   "from": "mifgash:directory",
+   "to": "agent:zz_chris",
+   "type": "confirm",
+   "summary": "You are both in: an evening out with Maria, Thu 5/11, The Stinking Rose. Pick the time next.",
+   "model": "",
+   "plan_id": 55,
+   "who": "Mifgash \u2192 your agent"
+  },
+  {
+   "t": "15:22:25",
+   "from": "agent:zz_chris",
+   "to": "mifgash:directory",
+   "type": "owner_approve",
+   "summary": "You approved Maria.",
+   "model": "",
+   "plan_id": 55,
+   "who": "Your agent \u2192 Mifgash"
+  },
+  {
+   "t": "15:22:24",
+   "from": "mifgash:directory",
+   "to": "agent:zz_chris",
+   "type": "ask_owner",
+   "summary": "Maria said yes. Your call.",
+   "model": "",
+   "plan_id": 55,
+   "who": "Mifgash \u2192 your agent"
+  },
+  {
+   "t": "15:22:24",
+   "from": "agent:zz_maria",
+   "to": "agent:zz_chris",
+   "type": "accept",
+   "summary": "yes, picks The Stinking Rose",
+   "model": "Muse Spark Open (Baseten)",
+   "plan_id": 55,
+   "who": "Maria's agent \u2192 your agent"
+  },
+  {
+   "t": "15:22:17",
+   "from": "agent:zz_chris",
+   "to": "mifgash:directory",
+   "type": "find",
+   "summary": "looking for friends open evening near North Beach: 1 found, random order",
+   "model": "",
+   "plan_id": 55,
+   "who": "Your agent \u2192 Mifgash"
+  },
+  {
+   "t": "15:22:10",
+   "from": "mifgash:directory",
+   "to": "agent:zz_chris",
+   "type": "waiting",
+   "summary": "Nobody is open near there yet. Your time stays open, and I will try again when a friend posts a time that fits.",
+   "model": "",
+   "plan_id": 55,
+   "who": "Mifgash \u2192 your agent"
+  },
+  {
+   "t": "15:22:10",
+   "from": "mifgash:directory",
+   "to": "agent:zz_chris",
+   "type": "read_as",
+   "summary": "Read as: Thu 5/11 evening, near North Beach",
+   "model": "Muse Spark Open (Baseten)",
+   "plan_id": 55,
+   "who": "Mifgash \u2192 your agent"
+  },
+  {
+   "t": "15:22:10",
+   "from": "agent:zz_chris",
+   "to": "mifgash:directory",
+   "type": "availability",
+   "summary": "I am free Thursday evening for dinner near North Beach",
+   "model": "",
+   "plan_id": 55,
+   "who": "Your agent \u2192 Mifgash"
+  }
+ ]
+}

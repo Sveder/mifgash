@@ -1,0 +1,15 @@
+{% extends "svederlytics/base.html" %}{% load sl_tags %}
+{% block title %}Session {{ s.pk }}{% endblock %}
+{% block head %}<div class="range"><a href="{% url 'svederlytics:dashboard' %}">Back to dashboard</a></div>{% endblock %}
+{% block body %}
+<div class="card"><h2>Session {{ s.started|date:"d/m/Y H:i" }}</h2>
+<p>Visitor <a href="{% url 'svederlytics:visitor' s.visitor_id %}">{% if s.visitor.user_id %}<span class="pill u">{{ s.visitor.user_id }}</span>{% else %}{{ s.visitor.vid|slice:":8" }}{% endif %}</a>
+ &middot; first seen {{ s.visitor.first_seen|date:"d/m/Y" }} &middot; {{ s.country|flag }} {{ s.country|default:"country unknown" }} &middot; {{ s.device }} / {{ s.os }} / {{ s.browser }}
+ &middot; from {{ s.referrer|default:"(direct)" }}{% if s.utm_source %} &middot; utm {{ s.utm_source }} / {{ s.utm_medium }} / {{ s.utm_campaign }}{% endif %} &middot; {{ s.duration_s|dur }}{% if s.is_bot %} &middot; <b>bot</b>{% endif %}</p>
+<table class="sort"><thead><tr><th class="n">#</th><th>Time</th><th>Type</th><th>Path</th><th>Details</th><th class="n">Time on page</th></tr></thead><tbody>
+{% for h in hits %}<tr><td class="n">{{ forloop.counter }}</td><td data-v="{{ h.ts|date:'U' }}">{{ h.ts|date:"H:i:s" }}</td><td>{% if h.kind == "event" %}<span class="pill ev">event</span>{% else %}page{% endif %}</td><td class="k">{{ h.path }}</td><td class="k">{% if h.kind == "event" %}<b>{{ h.name }}</b> {% for k, v in h.props.items %}<span class="mute">{{ k }}=</span>{{ v }} {% endfor %}{% elif h.status and h.status != 200 %}status {{ h.status }}{% endif %}</td><td class="n" data-v="{% widthratio h.duration_ms 1000 1 %}">{% if h.duration_ms %}{% widthratio h.duration_ms 1000 1 as secs %}{{ secs|dur }}{% endif %}</td></tr>{% endfor %}
+</tbody><tfoot><tr><td>Total</td><td></td><td></td><td>{{ s.pageviews }} pages, {{ s.events }} events</td><td></td><td class="n">{{ s.duration_s|dur }}</td></tr></tfoot></table></div>
+{% if others %}<div class="card"><h2>Other sessions of this visitor ({{ others|length }})</h2><table class="sort"><thead><tr><th>Start</th><th>Entry</th><th class="n">Pages</th><th class="n">Events</th><th class="n">Time</th></tr></thead><tbody>
+{% for o in others %}<tr><td data-v="{{ o.started|date:'U' }}"><a href="{% url 'svederlytics:session' o.pk %}">{{ o.started|date:"d/m/Y H:i" }}</a></td><td class="k">{{ o.entry_path }}</td><td class="n">{{ o.pageviews }}</td><td class="n">{{ o.events }}</td><td class="n" data-v="{{ o.duration_s }}">{{ o.duration_s|dur }}</td></tr>{% endfor %}
+</tbody><tfoot><tr><td>Total</td><td></td><td class="n">{{ others|total:"pageviews" }}</td><td class="n">{{ others|total:"events" }}</td><td></td></tr></tfoot></table></div>{% endif %}
+{% endblock %}

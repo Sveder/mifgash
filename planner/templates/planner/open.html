@@ -1,0 +1,14 @@
+{% extends "planner/base.html" %}
+{% block body %}
+<section class="human">
+<div class="card stack">
+<div class="hi"><span class="av you" aria-hidden="true">{{ owner.name|slice:":1"|upper }}</span><h2 class="ask">{{ owner.name }} is open for a meet-up</h2></div>
+<p class="mute">Pick a time that fits you. No account. {{ owner.name }}'s assistant confirms at once.</p>
+</div>
+<form method="get" class="pick-me"><label class="label" for="me">Who are you?</label> <select id="me" name="me" onchange="this.form.submit()"><option value="">choose</option>
+{% for h in humans %}<option value="{{ h.pk }}" {% if viewer and viewer.pk == h.pk %}selected{% endif %}>{{ h.name }}</option>{% endfor %}</select></form>
+{% for s in slots %}<div class="card slot{% if s.both %} both{% endif %}"><div><b>{{ s.label }}</b> <span class="mute">· {{ s.kind }} · near {{ s.area.name }}</span><br>
+{% if s.both %}<span class="status set">{{ s.line }}</span><br>{% endif %}<span class="mute">Idea: {{ s.idea.name|default:"-" }}{% if s.idea %} ({{ s.idea.note }}){% endif %}</span></div>
+{% if viewer %}<form method="post">{% csrf_token %}<input type="hidden" name="me" value="{{ viewer.pk }}"><input type="hidden" name="date" value="{{ s.date|date:'Y-m-d' }}"><input type="hidden" name="part" value="{{ s.part }}"><button class="chip primary">I can join</button></form>{% endif %}</div>{% empty %}<p>No open times this week.</p>{% endfor %}
+</section>
+{% endblock %}

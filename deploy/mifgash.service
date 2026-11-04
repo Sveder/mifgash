@@ -1,0 +1,21 @@
+[Unit]
+Description=Mifgash (Meta hackathon) gunicorn
+After=network.target postgresql.service
+
+[Service]
+User=mifgash
+Group=mifgash
+WorkingDirectory=/srv/www/mifgash/app
+EnvironmentFile=/srv/www/mifgash/mifgash.env
+ExecStart=/srv/www/mifgash/venv/bin/gunicorn mifgash_site.wsgi:application --bind 127.0.0.1:8098 --workers 1 --threads 32 --timeout 120 --access-logfile /var/log/mifgash/access.log --error-logfile /var/log/mifgash/error.log --control-socket /run/mifgash/control.sock
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/log/mifgash
+RuntimeDirectory=mifgash
+
+[Install]
+WantedBy=multi-user.target

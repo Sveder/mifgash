@@ -1,0 +1,3 @@
+-r requirements.txt
+# manage.py screens (T123)
+websocket-client>=1.6

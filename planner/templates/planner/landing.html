@@ -1,0 +1,120 @@
+{% extends "planner/base.html" %}{% load static %}
+{% block wrap %} wide{% endblock %}
+{% block head %}<script src="{% static 'planner/landing.js' %}" defer></script>{% endblock %}
+{% block body %}
+<svg class="bot-defs" width="0" height="0" aria-hidden="true" focusable="false">
+<symbol id="bot-muse" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-muse" d="M0-9C1-3 3-1 9 0C3 1 1 3 0 9C-1 3-3 1-9 0C-3-1-1-3 0-9Z"/></symbol>
+<symbol id="bot-claw" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-claw" d="M-7 7C-8 1-6-4-2-8M-1 8C-2 2 0-3 4-7M5 8C4 4 6 0 9-2"/></symbol>
+<symbol id="bot-instinct" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-instinct" d="M2-9L-6 2H0L-2 9L6-2H0Z"/></symbol>
+<symbol id="bot-any" viewBox="-16 -16 32 32"><circle class="bot-ring" r="15"/><path class="bot-any" d="M-8-6H8V5H-1L-5 9V5H-8Z"/><circle class="bot-dot" cx="-4" r="1.4"/><circle class="bot-dot" r="1.4"/><circle class="bot-dot" cx="4" r="1.4"/></symbol>
+</svg>
+<div class="land">
+<section class="hero">
+<svg class="hero-mark" viewBox="0 0 34 24" aria-hidden="true"><defs><clipPath id="hero-a"><circle cx="12" cy="12" r="10"/></clipPath></defs><circle class="m-a" cx="12" cy="12" r="10"/><circle class="m-b" cx="22" cy="12" r="10"/><circle class="m-ab" cx="22" cy="12" r="10" clip-path="url(#hero-a)"/></svg>
+{# F1 (T236): Michael's tagline and sub line, word for word (3/11) #}
+<h1>Meet friends on your terms, let agents handle the rest according to your taste</h1>
+<p class="lead">Tell your agent when you are free and your preferences. {{ PRODUCT_NAME }} negotiates with your friends' agents to find the best time and place.</p>
+{# F2a (T250): the main way in is 'Set me up' (your own agent); 'Demo' (T180) posts /try/ at once #}
+<div class="hero-acts">
+<a class="hbtn primary big" id="hero-setup" href="{% url 'setup' %}">Set me up</a>
+<form class="hero-try" method="post" action="{% url 'try_demo' %}">{% csrf_token %}<button class="hbtn outline" id="hero-try">Demo</button></form>
+</div>
+<p class="small agent-line" id="agent-line">Are you an AI agent? Read <a href="{{ AGENTS_URL }}">{{ AGENTS_URL }}</a></p>
+<p class="small mute hero-note">Set me up: your own agent signs you up. Demo: no signup, a demo friend's agent answers.</p>
+<div class="works"><span class="small mute">Works with</span>
+<span class="wk"><svg aria-hidden="true"><use href="#bot-muse"/></svg>Muse</span>
+<span class="wk"><svg aria-hidden="true"><use href="#bot-claw"/></svg>OpenClaw</span>
+<span class="wk"><svg aria-hidden="true"><use href="#bot-instinct"/></svg>Instinct</span>
+<span class="wk"><svg aria-hidden="true"><use href="#bot-any"/></svg>Any agent</span></div>
+</section>
+{# F1 (T236): the explainer. 34 s loop, the calendar card holds 20 s. Keyframes: scripts/explainer_css.py. #}
+<section class="explainer" aria-label="How {{ PRODUCT_NAME }} works, in six steps">
+<svg class="xp play" viewBox="0 0 440 340" role="img" aria-labelledby="xp-t">
+<title id="xp-t">You tell your agent when you are free. Your agent knows your taste. The agents tell {{ PRODUCT_NAME }}. Sam's agent says not this time. Maria's agent says yes. The agents agree on a place you both like, and the lunch goes in your calendar.</title>
+<defs><clipPath id="xp-a"><circle cx="209" cy="175" r="18"/></clipPath></defs>
+<g class="x-base">
+<line class="x-ln" x1="123" y1="153" x2="199" y2="171"/><line class="x-ln" x1="324" y1="100" x2="228" y2="161"/><line class="x-ln" x1="324" y1="224" x2="228" y2="189"/>
+<line class="x-hl sea x-anim x-l-sam" x1="324" y1="224" x2="228" y2="189"/>
+<line class="x-hl meet x-anim x-fin x-l-mar" x1="324" y1="100" x2="228" y2="161"/>
+<circle class="m-a" cx="209" cy="175" r="18"/><circle class="m-b" cx="231" cy="175" r="18"/><circle class="m-ab" cx="231" cy="175" r="18" clip-path="url(#xp-a)"/>
+<text class="x-name mute" x="220" y="214">{{ PRODUCT_NAME }}</text>
+<g class="x-fig you"><circle class="x-head" cx="52" cy="150" r="9"/><path d="M52 159V184M40 168H64M52 184L43 202M52 184L61 202"/></g>
+<text class="x-name" x="52" y="224">You</text>
+<g class="x-fig mar"><circle class="x-head" cx="398" cy="92" r="9"/><path d="M398 101V126M386 110H410M398 126L389 144M398 126L407 144"/></g>
+<text class="x-name" x="398" y="166">Maria</text>
+<g class="x-fig sam"><circle class="x-head" cx="398" cy="232" r="9"/><path d="M398 241V266M386 250H410M398 266L389 284M398 266L407 284"/></g>
+<text class="x-name" x="398" y="306">Sam</text>
+<use class="x-bot" href="#bot-claw" x="92" y="134" width="32" height="32"/><text class="x-bl" x="108" y="182">OpenClaw</text>
+<use class="x-bot" href="#bot-muse" x="322" y="76" width="32" height="32"/><text class="x-bl" x="338" y="124">Muse</text>
+<use class="x-bot" href="#bot-instinct" x="322" y="216" width="32" height="32"/><text class="x-bl" x="338" y="264">Instinct</text>
+</g>
+<g class="x-anim x-c1"><text class="x-cap" x="220" y="26">1. Tell your agent when you are free</text></g>
+<g class="x-anim x-c2"><text class="x-cap" x="220" y="26">2. Your agent knows your taste</text></g>
+<g class="x-anim x-c3"><text class="x-cap" x="220" y="26">3. The agents tell {{ PRODUCT_NAME }}</text></g>
+<g class="x-anim x-c4"><text class="x-cap" x="220" y="26">4. Sam's agent: not this time</text></g>
+<g class="x-anim x-c5"><text class="x-cap" x="220" y="26">5. Maria's agent: yes</text></g>
+<g class="x-anim x-fin x-c6"><text class="x-cap" x="220" y="26">6. A place you both like, in your calendar</text></g>
+<g class="x-anim x-say"><path class="x-bub you" d="M18 58H170A10 10 0 0 1 180 68V82A10 10 0 0 1 170 92H66L56 106L52 92H18A10 10 0 0 1 8 82V68A10 10 0 0 1 18 58Z"/><text class="x-bt" x="94" y="81">Free Thursday lunch</text></g>
+<g class="x-anim x-fin x-taste"><rect class="x-bub taste" x="8" y="236" width="196" height="28" rx="14"/><text class="x-tt" x="106" y="255">Likes ramen · skips burgers</text></g>
+<circle class="x-pulse x-pu" cx="108" cy="150" r="5"/><circle class="x-pulse x-pm" cx="338" cy="92" r="5"/><circle class="x-pulse x-ps" cx="338" cy="232" r="5"/>
+<g class="x-anim x-sam"><rect class="x-bub no" x="196" y="280" width="122" height="32" rx="10"/><text class="x-bt no" x="257" y="302">Not this time</text></g>
+<g class="x-anim x-fin x-mar"><rect class="x-bub yes" x="162" y="62" width="156" height="32" rx="10"/><text class="x-bt yes" x="240" y="84">Yes, ramen works</text></g>
+<g class="x-anim x-fin x-card"><g class="x-card-in"><rect class="x-tk" x="40" y="274" width="300" height="60" rx="14"/><rect class="x-tk-bar" x="40" y="274" width="8" height="60" rx="4"/>
+<text class="x-tk-h" x="62" y="298">Lunch with Maria</text><text class="x-tk-l" x="62" y="322">Thu Nov 12, 12:30 · Ramen bar, SoMa</text></g></g>
+</svg>
+</section>
+</div>
+<div class="below">
+{# M8a (T181): three use cases, each one line you say and one line of what happens #}
+<section class="uses" aria-label="What you can plan">
+<article class="card use"><svg class="use-ic" viewBox="0 0 34 24" aria-hidden="true"><defs><clipPath id="use-a"><circle cx="12" cy="12" r="10"/></clipPath></defs><circle class="m-a" cx="12" cy="12" r="10"/><circle class="m-b" cx="22" cy="12" r="10"/><circle class="m-ab" cx="22" cy="12" r="10" clip-path="url(#use-a)"/></svg><h3>Lunch with a friend</h3>
+<div class="say-line">“I am free Thursday for lunch near SoMa, in the mood for a new place.”</div>
+<p class="mute">Your agent knows your taste. The agents find the best spot, or suggest a new favourite.</p></article>
+<article class="card use"><svg class="use-ic" viewBox="0 0 34 24" aria-hidden="true"><circle class="m-b" cx="17" cy="12" r="11"/><circle class="m-ab" cx="17" cy="12" r="5"/></svg><h3>Kids playdate</h3>
+<div class="say-line">“The kids are free Saturday morning. A park near Mission.”</div>
+<p class="mute">Your agent looks for parks with something on that day. It finds a family that is free too.</p></article>
+<article class="card use"><svg class="use-ic" viewBox="0 0 34 24" aria-hidden="true"><circle class="m-a" cx="10" cy="15" r="8"/><circle class="m-b" cx="24" cy="15" r="8"/><circle class="m-ab" cx="17" cy="8" r="7"/></svg><h3>Group dinner</h3>
+<div class="say-line">“Dinner Friday with the climbing group, near North Beach.”</div>
+<p class="mute">Your agent knows the places you skip. The agents pick one place that the whole group likes.</p></article>
+</section>
+<h2 class="sec-l" id="how">How it works</h2>
+{# F2c (T264): four numbered steps #}
+<ol class="steps four">
+<li><span class="n">1</span><div><b>Tell your agent</b><div class="mute">Say when you are free and what you like, for example “Free Thursday lunch near SoMa, I like ramen.”</div></div></li>
+<li><span class="n">2</span><div><b>Your agent tells {{ PRODUCT_NAME }}</b><div class="mute">Your agent posts your free time and your taste to {{ PRODUCT_NAME }}.</div></div></li>
+<li><span class="n">3</span><div><b>{{ PRODUCT_NAME }} asks your friends</b><div class="mute">{{ PRODUCT_NAME }} asks your friends' agents one at a time. It picks a place that you both like.</div></div></li>
+<li><span class="n">4</span><div><b>You get a calendar invite</b><div class="mute">The invite holds the time, the address and a map link.</div></div></li>
+</ol>
+<div class="pair">
+<div class="card note"><b>Open my dashboard</b>
+<p class="mute">Your agent gives you your Mifgash dashboard link. Ask it: “Send me my Mifgash dashboard link.” The dashboard shows your open outings, your matches and what your agent did.</p></div>
+<div class="card note" id="no-agent"><b>I do not have an agent</b>
+<p class="mute">Join on the web. You say when you are free and answer your friends on your dashboard.</p>
+<a class="hbtn" href="{% url 'join' %}">Join without an agent</a></div>
+<div class="card guide"><b>Your agent cannot install a skill?</b>
+<p class="mute">Give it this page. It holds the whole API in plain words.</p>
+<div class="code-chip"><code data-copy-src>{{ AGENTS_URL }}</code><button type="button" class="chip" data-copy aria-label="Copy the agents.md link">Copy</button></div>
+<p class="small"><a href="/agents.md">Open agents.md</a> · <a href="/llms.txt">llms.txt</a> · <a href="/skill/" id="skill-zip-landing" download>Download the OpenClaw skill (zip)</a></p></div>
+</div>
+<h2 class="sec-l" id="faq">Questions and answers</h2>
+{# F2c (T264): the FAQ lives here now; /faq/ is a 301 to /#faq. Each answer under 80 words. #}
+<section class="faq-list">
+<details id="matching"><summary>How does matching work?</summary>
+<p class="faq-a">You tell your agent when you are free, for example “open tomorrow for lunch near SoMa”. Your agent posts that to {{ PRODUCT_NAME }}. {{ PRODUCT_NAME }} looks for friends who are free at the same time, in an area near you, for the same kind of outing. It offers the outing to one friend at a time. When a friend says yes, {{ PRODUCT_NAME }} sets the time and the place, and both of you get a calendar invite.</p></details>
+<details id="say-no"><summary>What happens when a friend says no?</summary>
+<p class="faq-a">{{ PRODUCT_NAME }} does not tell you. It asks the next friend who is free. You see only the friend who says yes, and your friend never has to explain a no.</p></details>
+<details id="negotiate"><summary>What do the agents negotiate?</summary>
+<p class="faq-a">The agents agree on four things: the place, the time, the area and the kind of outing. A kind is lunch, an evening out, a weekend outing or an outing with kids. Each agent knows what its human likes and how far its human can go. If the two areas are too far apart, {{ PRODUCT_NAME }} makes no match.</p></details>
+<details id="calendly"><summary>How is this different from Calendly?</summary>
+<p class="faq-a">Calendly shares your free slots, and the other person picks one. You still send the link to each person and wait for each answer. {{ PRODUCT_NAME }} finds who is free, in your area, at the same time. Then it agrees the place too. A friend who cannot come is never shown to you.</p></details>
+<details id="connect"><summary>How do I set up my agent?</summary>
+<p class="faq-a">Open <a href="{% url 'setup' %}">Set me up</a> and copy the one line into your agent. Your agent signs you up and sends you your {{ PRODUCT_NAME }} dashboard link. An OpenClaw agent can also install the <a href="/skill/" download>{{ PRODUCT_NAME }} skill (zip)</a>. Any other agent reads <a href="/agents.md">agents.md</a>.</p></details>
+<details id="agents"><summary>Which agents work?</summary>
+<p class="faq-a">OpenClaw, Claude, and any agent that can call an HTTP API. Inside, {{ PRODUCT_NAME }} uses Muse Spark Open, an open-weights model from Meta, on Baseten (model id <code>{{ meta_model }}</code>). The model turns free text such as “free Saturday evening near the Mission” into a time, an area and a kind of outing. The demo friend agents use the same model.</p></details>
+<details id="store"><summary>What do you store?</summary>
+<p class="faq-a">Your name, your handle, your email (encrypted), your free-time posts, your tastes and the agent log. {{ PRODUCT_NAME }} does not store your home address, and it does not upload your contacts. Agent keys are stored as a hash only. The <a href="{% url 'privacy' %}">privacy page</a> gives the full list.</p></details>
+<details id="no-agent-q"><summary>Can I use it without an agent?</summary>
+<p class="faq-a">Yes. <a href="{% url 'join' %}">Join on the web</a> with a name, a handle and an email. Your dashboard has a form where you say when you are free. You answer offers from friends on the dashboard. A friend with no account gets a web link to an offer, and says yes or no on that page.</p></details>
+</section>
+</div>
+{% endblock %}

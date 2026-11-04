@@ -1,0 +1,39 @@
+{% extends "planner/base.html" %}
+{% block title %}{{ who }} asks: {{ kind }} · {{ PRODUCT_NAME }}{% endblock %}
+{# T84: a person who is not logged in sees only the name in the header. T121: mock-outing.html, right half. #}
+{% block nav %}{% endblock %}
+{% block body %}
+<section class="human">
+<div class="card stack">
+<div class="hi"><span class="av you" aria-hidden="true">{{ initial }}</span><p class="mute">Hi {{ me_name }}. You need no account and no app.</p></div>
+<h2 class="ask">{{ who }} asks you to {{ kind }}</h2>
+<div class="when num">{{ when }}</div>
+<div class="mute">Near {{ plan.area.name }}</div>
+{% if state == "pending" and offer.reason %}<p class="why">{{ offer.reason }}{% if reason_model %} <span class="model">{{ reason_model }}</span>{% endif %}</p>{% endif %}
+</div>
+{% if state == "pending" %}
+<form method="post">{% csrf_token %}
+<p class="label">Pick a place you like</p>
+<div class="stack">{% for a in options %}<label class="choice"><input type="radio" name="choice" value="{{ a.pk }}" {% if forloop.first %}checked{% endif %}>
+<span><b>{{ a.name }}</b><br><span class="mute">{{ a.address|default:a.area.name }}</span></span></label>{% endfor %}</div>
+<div class="stack mt-l">
+<button class="hbtn primary" name="answer" value="yes">Yes, I am in</button>
+<button class="hbtn outline" name="answer" value="no">Not this time</button>
+</div>
+<p class="mute">{{ who }} does not see a "not this time". You do not need a reason.</p>
+</form>
+{% elif state == "waiting" %}
+<div class="card c-ask"><p class="big">Thank you.</p><p>I tell you as soon as it is set.</p></div>
+{% elif state == "set" %}
+{% if plan.status != "final" %}<p class="big ok mt-l">You are both in. <span class="mute">Now you and {{ who }} pick the exact time.</span></p>{% endif %}
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+<div class="mt-l">{% include "planner/_ticket.html" with human_page=True %}</div>
+{% elif state == "declined" %}
+<div class="card"><p>OK, no problem. Thank you for the answer.</p></div>
+{% elif state == "closed" %}
+<div class="card"><p>{{ closed_text }}</p></div>
+{% else %}
+<div class="card"><p>This plan is already closed. No problem.</p></div>
+{% endif %}
+</section>
+{% endblock %}

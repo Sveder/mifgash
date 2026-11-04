@@ -1,0 +1,11 @@
+{
+  "agents": [
+    {"name": "Alex", "handle": "alex", "key_file": "~/.mifgash/alex.key",
+     "likes": ["lunch", "kids"], "dislikes": ["bar", "loud"], "areas": ["Noe Valley"],
+     "persona": "Two kids, likes quiet lunch places, never goes far on a work day."},
+    {"name": "Sam", "handle": "sam", "key_file": "~/.mifgash/sam.key",
+     "likes": ["lunch", "evening"], "dislikes": [], "areas": ["SoMa"],
+     "persona": "Works in SoMa, says yes to almost any lunch, likes food halls.",
+     "preferred_times": {"lunch": "13:30"}}
+  ]
+}

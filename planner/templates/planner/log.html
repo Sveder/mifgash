@@ -1,0 +1,17 @@
+{% extends "planner/base.html" %}
+{% block body %}
+{% if viewer %}{# F5a (T254): a dashboard person sees the same activity rows as the dashboard, in words #}
+<h2>{{ plan.title }}: activity</h2>
+<p class="mute">The steps your agent and Mifgash took for this outing.</p>
+<div class="log">{% for r in rows %}<div class="l"><span class="mute">{{ r.t }}</span> <span class="who">{{ r.who }}</span>{% if r.sent %} <span class="tag">sent to your agent</span>{% endif %}<br>{{ r.summary }}{% if r.model %} <span class="model">{{ r.model }}</span>{% endif %}</div>
+{% empty %}<div class="l mute">Nothing yet.</div>{% endfor %}</div>
+<p><a href="{% url 'dashboard' %}#activity">Back to the dashboard</a></p>
+{% else %}
+<h2>{{ plan.title|default:'Plan' }}: agent log</h2>
+<p class="mute">Operator view. Status {{ plan.status }}. Order seed {{ plan.seed }}. Backend for the words: {{ plan.llm_backend|default:"-" }}.</p>
+<table><tr><th>#</th><th>Friend</th><th>Agent</th><th>Status</th></tr>
+{% for o in offers %}<tr><td>{{ o.order }}</td><td>{{ o.person.name }}</td><td>{{ o.person.has_agent|yesno:"yes,no (link)" }}</td><td>{{ o.get_status_display }}</td></tr>{% endfor %}</table>
+{% for r in rows %}<div class="card"><div class="mute">{{ r.t }} · {{ r.from }} → {{ r.to }} · <b>{{ r.type }}</b></div><pre>{{ r.json|pprint }}</pre></div>{% endfor %}
+<p><a href="{% url 'plan' plan.uid %}">Back to the plan</a></p>
+{% endif %}
+{% endblock %}

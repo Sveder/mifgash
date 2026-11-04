@@ -1,0 +1,20 @@
+{% if asks or requests %}<h3 class="sec">Asks for you</h3>
+{% for a in asks %}<div class="card ask c-ask" id="ask-{{ a.offer.pk }}"><div class="mute">{{ a.who }} asks you</div>
+<div class="big">{{ a.kind|capfirst }} · {{ a.when }}</div>
+<div class="mute">near {{ a.offer.plan.area.name }}</div>
+{% if a.offer.reason %}<p class="why">{{ a.offer.reason }}{% if a.reason_model %} <span class="model">{{ a.reason_model }}</span>{% endif %}</p>{% endif %}
+<form method="post" action="{% url 'dashboard_answer' a.offer.pk %}">{% csrf_token %}
+{% if free %}<p class="label">Pick a place you like</p><div class="stack">{% endif %}
+{% for o in a.options %}<label class="{% if free %}choice{% else %}card place{% endif %}"><input type="radio" name="choice" value="{{ o.pk }}" {% if forloop.first %}checked{% endif %}>
+<span><b>{{ o.name }}</b><br><span class="mute">{{ o.address|default:o.area.name }}</span></span></label>{% endfor %}
+{% if free %}</div>{% endif %}
+{% if free %}{# M6c (T177): a person with no agent gets the same choices and words as the /h/ page #}
+<div class="stack mt-l"><button class="hbtn primary" name="answer" value="accept">Yes, I am in</button>
+<button class="hbtn outline" name="answer" value="decline">Not this time</button></div>
+<p class="mute">{{ a.who }} does not see a "not this time". You do not need a reason.</p>
+{% else %}<div class="chips"><button class="chip primary" name="answer" value="accept">Accept</button><button class="chip" name="answer" value="decline">Not this time</button></div>
+<p class="mute">"Not this time" stays private. {{ a.who }} does not see it.</p>{% endif %}</form></div>{% endfor %}
+{% for f in requests %}<div class="card"><div class="mute">Friend request</div>
+<p><b>{{ f.name }}</b> (@{{ f.handle }}) wants to be friends on {{ PRODUCT_NAME }}.</p>
+<form method="post" action="{% url 'dashboard_friend_accept' f.pk %}" class="chips">{% csrf_token %}
+<button class="chip primary">Accept</button></form></div>{% endfor %}{% endif %}

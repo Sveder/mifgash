@@ -1,0 +1,48 @@
+{% extends "planner/base.html" %}
+{% block title %}Ops · {{ PRODUCT_NAME }}{% endblock %}
+{% block wrap %} ops-wrap{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">
+<style>
+.ops-wrap{max-width:1400px}
+.ops-search{display:flex;gap:.5rem;margin:.5rem 0 1rem}.ops-search input{flex:1}
+.ops h2{margin:1.5rem 0 .4rem;font-size:1.1rem}
+.ops .tbl{overflow-x:auto}
+.ops table{border-collapse:collapse;width:100%;font-size:.85rem}
+.ops th,.ops td{text-align:left;padding:.3rem .5rem;border-bottom:1px solid color-mix(in srgb,currentColor 15%,transparent);vertical-align:top;white-space:nowrap}
+.ops td.wrap{white-space:normal;min-width:20rem}
+.ops th{position:sticky;top:0;font-weight:600;opacity:.8}
+.ops .n{opacity:.6;font-weight:400}
+</style>{% endblock %}
+{% block nav %}<nav><a href="/ops/admin/">Admin</a> <a href="/_sl/dashboard/">Analytics</a> <form method="post" action="/ops/admin/logout/" style="display:inline">{% csrf_token %}<button class="linkbtn">Log out</button></form></nav>{% endblock %}
+{% block body %}
+{# F8c (T262): read-only staff ops page. #}
+<section class="ops">
+<h1>Ops</h1>
+<form class="ops-search" method="get"><input type="search" name="q" value="{{ q }}" placeholder="Search handle, name, status, kind, area, plan id, log text" aria-label="Search"><button class="hbtn">Search</button>{% if q %}<a class="hbtn" href="/ops/">Clear</a>{% endif %}</form>
+
+<h2 id="people">People <span class="n">({{ people|length }}{% if people|length == rows %}+{% endif %})</span></h2>
+<div class="tbl"><table><tr><th>id</th><th>handle</th><th>name</th><th>agent</th><th>email</th><th>city</th><th>keys</th><th>last poll</th><th>first link</th></tr>
+{% for p in people %}<tr><td>{{ p.pk }}</td><td>@{{ p.handle }}</td><td>{{ p.name }}</td><td>{{ p.has_agent|yesno:"yes,no" }}</td><td>{{ p.email_masked }}</td><td>{{ p.city }}</td><td>{{ p.keys }}</td><td>{{ p.last_polled_at|date:"d/m H:i"|default:"-" }}</td><td>{{ p.first_seen|date:"d/m/Y H:i"|default:"-" }}</td></tr>
+{% empty %}<tr><td colspan="9" class="n">No people.</td></tr>{% endfor %}</table></div>
+
+<h2 id="plans">Plans <span class="n">({{ plans|length }}{% if plans|length == rows %}+{% endif %})</span></h2>
+<div class="tbl"><table><tr><th>id</th><th>uid</th><th>owner</th><th>kind</th><th>date</th><th>part</th><th>area</th><th>status</th><th>created</th></tr>
+{% for p in plans %}<tr><td>{{ p.pk }}</td><td><a href="/plan/{{ p.uid }}/log/">{{ p.uid|stringformat:"s"|slice:":8" }}</a></td><td>@{{ p.owner.handle }}</td><td>{{ p.kind }}</td><td>{{ p.date|date:"D d/m" }}</td><td>{{ p.part }}</td><td>{{ p.area.name }}</td><td>{{ p.status }}</td><td>{{ p.created|date:"d/m H:i" }}</td></tr>
+{% empty %}<tr><td colspan="9" class="n">No plans.</td></tr>{% endfor %}</table></div>
+
+<h2 id="offers">Offers <span class="n">({{ offers|length }}{% if offers|length == rows %}+{% endif %})</span></h2>
+<div class="tbl"><table><tr><th>id</th><th>plan</th><th>person</th><th>order</th><th>status</th><th>sent</th><th>expires</th><th>answered</th></tr>
+{% for o in offers %}<tr><td>{{ o.pk }}</td><td>#{{ o.plan_id }} @{{ o.plan.owner.handle }}</td><td>@{{ o.person.handle }}</td><td>{{ o.order }}</td><td>{{ o.status }}</td><td>{{ o.sent_at|date:"d/m H:i"|default:"-" }}</td><td>{{ o.expires_at|date:"d/m H:i"|default:"-" }}</td><td>{{ o.answered_at|date:"d/m H:i"|default:"-" }}</td></tr>
+{% empty %}<tr><td colspan="8" class="n">No offers.</td></tr>{% endfor %}</table></div>
+
+<h2 id="outings">Outings <span class="n">({{ outings|length }})</span></h2>
+<div class="tbl"><table><tr><th>plan</th><th>owner</th><th>date</th><th>time</th><th>place</th><th>area</th></tr>
+{% for p in outings %}<tr><td><a href="/outing/{{ p.uid }}/">#{{ p.pk }}</a></td><td>@{{ p.owner.handle }}</td><td>{{ p.date|date:"D d/m/Y" }}</td><td>{{ p.exact_time|time:"H:i"|default:"-" }}</td><td>{{ p.chosen.name|default:"-" }}</td><td>{{ p.area.name }}</td></tr>
+{% empty %}<tr><td colspan="6" class="n">No final outings.</td></tr>{% endfor %}</table></div>
+
+<h2 id="log">Log <span class="n">(last {{ log|length }})</span></h2>
+<div class="tbl"><table><tr><th>time</th><th>plan</th><th>sender</th><th>receiver</th><th>type</th><th>payload</th></tr>
+{% for m in log %}<tr><td>{{ m.created|date:"d/m H:i:s" }}</td><td>{{ m.plan_id|default:"-" }}</td><td>{{ m.sender }}</td><td>{{ m.receiver }}</td><td>{{ m.type }}</td><td class="wrap">{{ m.line }}</td></tr>
+{% empty %}<tr><td colspan="6" class="n">No log rows.</td></tr>{% endfor %}</table></div>
+</section>
+{% endblock %}

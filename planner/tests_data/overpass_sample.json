@@ -1,0 +1,177 @@
+{
+ "version": 0.6,
+ "note": "Trimmed sample of an Overpass answer for SoMa, (c) OpenStreetMap contributors, ODbL",
+ "elements": [
+  {
+   "type": "node",
+   "id": 432817745,
+   "lat": 37.7830473,
+   "lon": -122.420622,
+   "tags": {
+    "addr:housenumber": "800",
+    "addr:street": "Van Ness Avenue",
+    "amenity": "restaurant",
+    "cuisine": "sushi",
+    "name": "Ike's Kitchen",
+    "opening_hours": "Mo-Th 11:00-14:30,17:00-21:30; Fr,Sa 11:00-14:30,17:00-22:30; Su 17:00-21:00",
+    "outdoor_seating": "no",
+    "website": "https://www.ikeskitchensf.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 621793525,
+   "lat": 37.7877422,
+   "lon": -122.4119192,
+   "tags": {
+    "addr:housenumber": "605",
+    "addr:street": "Post Street",
+    "amenity": "restaurant",
+    "cuisine": "sushi",
+    "name": "Sakana",
+    "opening_hours": "Tu-Sa 17:30-22:00; Su,Mo off",
+    "website": "https://sakanasf.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 317081652,
+   "lat": 37.7854639,
+   "lon": -122.4071525,
+   "tags": {
+    "addr:housenumber": "63",
+    "addr:street": "Ellis Street",
+    "amenity": "restaurant",
+    "cuisine": "steak;seafood",
+    "name": "John's Grill Live Jazz",
+    "outdoor_seating": "yes",
+    "website": "https://www.johnsgrill.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 319020714,
+   "lat": 37.7664478,
+   "lon": -122.4222039,
+   "tags": {
+    "addr:housenumber": "400",
+    "addr:street": "Valencia Street",
+    "amenity": "restaurant",
+    "cuisine": "pizza",
+    "name": "Little Star Pizza",
+    "opening_hours": "Su-Th 11:30-21:30; Fr,Sa 11:30-22:30",
+    "website": "http://www.littlestarpizza.com"
+   }
+  },
+  {
+   "type": "node",
+   "id": 370194862,
+   "lat": 37.7790091,
+   "lon": -122.4109149,
+   "tags": {
+    "addr:housenumber": "1111",
+    "addr:street": "Mission Street",
+    "amenity": "restaurant",
+    "cuisine": "chinese",
+    "name": "Teo Restaurant & Bar",
+    "opening_hours": "Mo-Th 16:00-21:30; Fr 11:30-14:00,17:00-21:30; Sa-Su 12:00-15:00,17:00-21:30"
+   }
+  },
+  {
+   "type": "node",
+   "id": 317124812,
+   "lat": 37.7795947,
+   "lon": -122.3951729,
+   "tags": {
+    "amenity": "cafe",
+    "name": "Brickhouse Cafe and Bar",
+    "opening_hours": "Tu-Fr 11:00-22:00; Sa 10:00-20:00; Su 10:00-16:00",
+    "outdoor_seating": "yes"
+   }
+  },
+  {
+   "type": "node",
+   "id": 335444374,
+   "lat": 37.7908279,
+   "lon": -122.4025161,
+   "tags": {
+    "addr:housenumber": "155",
+    "addr:street": "Montgomery Street",
+    "amenity": "cafe",
+    "cuisine": "coffee_shop",
+    "name": "Peet's Coffee",
+    "opening_hours": "Mo-Fr 05:30-17:00; Sa-Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 61675193,
+   "lat": 37.7721282,
+   "lon": -122.4227728,
+   "tags": {
+    "addr:housenumber": "4",
+    "addr:street": "Valencia Street",
+    "amenity": "bar",
+    "name": "Martuni's",
+    "outdoor_seating": "no"
+   }
+  },
+  {
+   "type": "node",
+   "id": 61692712,
+   "lat": 37.7940403,
+   "lon": -122.4015526,
+   "tags": {
+    "addr:housenumber": "500",
+    "addr:street": "Sacramento Street",
+    "amenity": "pub",
+    "name": "Irish Times",
+    "outdoor_seating": "yes"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4,
+   "lat": 37.779,
+   "lon": -122.405,
+   "tags": {
+    "amenity": "pub",
+    "name": "Sample Corner Pub",
+    "addr:housenumber": "1",
+    "addr:street": "Sample Street"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1,
+   "center": {
+    "lat": 37.781,
+    "lon": -122.402
+   },
+   "tags": {
+    "leisure": "park",
+    "name": "Sample Square Park"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2,
+   "lat": 37.7759,
+   "lon": -122.4245,
+   "tags": {
+    "amenity": "restaurant",
+    "name": "Hayes Sample Bistro",
+    "cuisine": "french"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3,
+   "lat": 37.7785,
+   "lon": -122.4056,
+   "tags": {
+    "amenity": "cafe"
+   }
+  }
+ ]
+}

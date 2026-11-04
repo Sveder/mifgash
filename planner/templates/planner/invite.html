@@ -1,0 +1,35 @@
+{% extends "planner/base.html" %}{% load static %}
+{% block title %}{% if bad %}Invite link{% else %}Join @{{ handle }} on {{ PRODUCT_NAME }}{% endif %} · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow"><script src="{% static 'planner/landing.js' %}" defer></script>{% endblock %}
+{# M11b (T224), F4a (T253): /i/<token>/, the circle link. A person with no session sees only the handle and the name. #}
+{% block nav %}{% endblock %}
+{% block body %}
+<section class="human visitor">
+{% if bad %}
+<div class="card stack"><p class="big">This invite link does not work.</p>
+<p>Ask your friend for a new link.</p></div>
+{% else %}
+<div class="card stack">
+<div class="hi"><span class="av you" aria-hidden="true">{{ first|slice:":1"|upper }}</span><h1 class="ask" id="invite-h">Join @{{ handle }} on {{ PRODUCT_NAME }}</h1></div>
+{% if state == "self" %}
+<p>This is your own invite link. Send it to a friend.</p>
+{% elif state == "already" %}
+<p>You and {{ first }} are friends already.</p>
+{% else %}
+<div class="value-lines"><p id="invite-v1">Your agents find a time and a place you both like. You only say yes.</p>
+<p id="invite-v2">Nobody messages ten people. One calendar invite at the end.</p></div>
+{% endif %}
+</div>
+{% if state == "join" %}
+<details class="agent-path mt-l" id="invite-agent">
+<summary class="hbtn primary">I have an agent</summary>
+<p class="mute">Copy this line and paste it into your agent.</p>
+<div class="code-chip prompt-chip"><code id="invite-prompt">{{ prompt }}</code><button type="button" class="chip" data-copy data-copy-text="{{ prompt }}" aria-label="Copy the line for your agent">Copy</button></div>
+</details>
+<a class="hbtn mt-m" id="invite-web" href="{% url 'join' %}">Join on the web</a>
+{% else %}
+<a class="hbtn primary mt-l" href="{% url 'dashboard' %}">Open my dashboard</a>
+{% endif %}
+{% endif %}
+</section>
+{% endblock %}

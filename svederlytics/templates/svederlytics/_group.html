@@ -1,0 +1,5 @@
+{% load sl_tags %}<div class="card"><h2>{{ title }}</h2>{% if rows %}
+<table class="sort"><thead><tr><th>{{ col }}</th><th class="n">Sessions</th><th class="n">Visitors</th></tr></thead><tbody>
+{% with top=rows.0.sessions %}{% for r in rows %}<tr><td class="k bar"><i style="width:{% widthratio r.sessions top 100 %}%"></i><span>{% if flags %}{{ r.key|flag }} {% endif %}{{ r.key }}</span></td><td class="n">{{ r.sessions }}</td><td class="n">{{ r.visitors }}</td></tr>{% endfor %}{% endwith %}
+</tbody><tfoot><tr><td>Total ({{ rows|length }})</td><td class="n">{{ rows|total:"sessions" }}</td><td class="n mute">-</td></tr></tfoot></table>
+{% else %}<div class="empty">No data in this range.</div>{% endif %}</div>

@@ -1,0 +1,14 @@
+<h3 class="sec">Matches</h3>
+{% if error and not free %}<p class="err">{{ error }}</p>{% endif %}
+{% for w in waiting %}<div class="card c-ask"><div class="mute">A friend said yes. Your call.</div>
+<div class="big">{{ w.offer.plan.title }} · {{ w.when }}</div>
+{% if w.group %}<div class="mute" data-group>Group dinner: {{ w.group }} so far</div>{% endif %}
+{% if w.offer.reason %}<p class="why">{{ w.offer.reason }}{% if w.reason_model %} <span class="model">{{ w.reason_model }}</span>{% endif %}</p>{% endif %}
+<p><b>{{ w.offer.person.name }}</b> can come{% if w.place %}, at <b>{{ w.place.name }}</b> ({{ w.place.address|default:w.place.area.name }}){% endif %}.</p>
+<form method="post" action="{% url 'dashboard_answer' w.offer.pk %}" class="chips">{% csrf_token %}
+<button class="chip primary" name="answer" value="accept">Approve</button><button class="chip" name="answer" value="decline">Not this time</button></form></div>{% endfor %}
+{% for y in said_yes %}<div class="card"><div class="mute">You said yes</div>
+<div class="big">{{ y.offer.plan.title }} · with {{ y.owner }}</div>
+<p>{{ y.text }}</p>{% if y.place %}<div class="mute">{{ y.place.address|default:y.place.area.name }}</div>{% endif %}</div>{% endfor %}
+{% for m in matches %}{% include "planner/_ticket.html" %}
+{% empty %}{% if not waiting and not said_yes %}<p class="mute">No matches yet.</p>{% endif %}{% endfor %}

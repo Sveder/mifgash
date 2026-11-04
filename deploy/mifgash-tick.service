@@ -1,0 +1,10 @@
+[Unit]
+Description=Mifgash clock: expire due offers, ask the next friend
+
+[Service]
+Type=oneshot
+User=mifgash
+Group=mifgash
+WorkingDirectory=/srv/www/mifgash/app
+EnvironmentFile=/srv/www/mifgash/mifgash.env
+ExecStart=/srv/www/mifgash/venv/bin/python manage.py tick

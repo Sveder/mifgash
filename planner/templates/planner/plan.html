@@ -1,0 +1,32 @@
+{% extends "planner/base.html" %}
+{% block body %}
+<div class="card"><div class="mute">Plan · {{ plan.title }} · near {{ plan.area.name }}</div>
+<div class="big" id="headline">{% if status == "final" %}It is set{% elif status == "confirmed" %}Pick the time{% elif status == "no_match" %}Not this time{% elif owner_wait %}A friend said yes{% else %}Asking friends<span class="dots"><span>.</span><span>.</span><span>.</span></span>{% endif %}</div>
+<p id="owner_text">{{ owner_text }}</p>
+{% if owner_wait %}<p id="owner_wait">{{ owner_wait_text }} <span class="mute">Your agent asks you, or you answer on your dashboard.</span></p>{% endif %}
+<div id="actions">{% if status == "confirmed" or status == "final" %}<a class="chip primary" href="{% url 'outing' plan.uid %}">Open the outing card</a>{% endif %}
+</div>
+<p class="mute" id="human" {% if not waiting_human %}hidden{% endif %}>One friend has no agent and got a link. I wait for the answer or for the invite to expire.
+<a id="hlink" href="{% if waiting_human %}{% url 'human_offer' waiting_human.token %}{% endif %}">Open the link as that friend</a></p>
+<form method="post" action="{% url 'plan_expire' plan.uid %}" id="expire" {% if not waiting_human %}hidden{% endif %}>{% csrf_token %}<button class="chip">Demo: move the clock past the expiry</button></form>
+</div>
+<div class="card demo"><div class="mute">Demo view: the agents' messages (protocol mifgash/0.1). The owner's app never shows this. <a href="{% url 'plan_log' plan.uid %}">Full JSON</a></div>
+<div class="log" id="log"></div></div>
+<script>
+const csrf = "{{ csrf_token }}"; let busy = false, done = {% if status == "asking" %}false{% else %}true{% endif %};
+function render(d){
+  const L = document.getElementById('log');
+  L.innerHTML = d.log.map(r => `<div class="l"><span class="mute">${r.t}</span> <span class="who">${r.from} → ${r.to}</span> <span class="ty">${r.type}</span><br>${r.summary.replace(/</g,'&lt;')}</div>`).join('');
+  L.scrollTop = L.scrollHeight;
+  document.getElementById('human').hidden = !d.waiting_human; if (d.human_link) document.getElementById('hlink').href = d.human_link; document.getElementById('expire').hidden = !d.waiting_human;
+}
+async function tick(){
+  if (busy) return; busy = true;
+  const r = await fetch("{% url 'plan_step' plan.uid %}", {method:'POST', headers:{'X-CSRFToken':csrf}});
+  const d = await r.json(); render(d); busy = false;
+  if ((d.status !== 'asking' && !done) || d.owner_wait !== {% if owner_wait %}true{% else %}false{% endif %}) { location.reload(); }
+  if (d.result === 'waiting') setTimeout(tick, 4000); else if (d.status === 'asking') setTimeout(tick, 1400);
+}
+tick();
+</script>
+{% endblock %}

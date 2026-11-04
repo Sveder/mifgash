@@ -1,0 +1,8140 @@
+{
+ "source": "(c) OpenStreetMap contributors, ODbL; Overpass API",
+ "fetched": "2026-11-03",
+ "failed_areas": [],
+ "venues": [
+  {
+   "name": "Sai's Vietnamese Restaurant",
+   "area": "Financial District",
+   "address": "42 Columbus Avenue",
+   "tags": [
+    "vietnamese",
+    "noodle",
+    "pho",
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Sa 10:00-21:00",
+   "url": "https://saisvietnameserestaurant.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/696034559",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sam Wo Restaurant",
+   "area": "Financial District",
+   "address": "713 Clay Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: We-Sa 11:00-20:00; Su-Mo 11:00-18:00",
+   "url": "https://samworestaurant.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1221046206",
+   "kind": "lunch"
+  },
+  {
+   "name": "Peet's Coffee",
+   "area": "Financial District",
+   "address": "155 Montgomery Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Fr 05:30-17:00; Sa-Su off",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/335444374",
+   "kind": "lunch"
+  },
+  {
+   "name": "Coi",
+   "area": "Financial District",
+   "address": "373 Broadway",
+   "tags": [
+    "new american"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371251268",
+   "kind": "lunch"
+  },
+  {
+   "name": "Empress by Boon",
+   "area": "Financial District",
+   "address": "838 Grant Avenue",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.theempresssf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371011277",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mixt",
+   "area": "Financial District",
+   "address": "240 Kearny Street",
+   "tags": [
+    "salad",
+    "soup"
+   ],
+   "note": "Hours: Mo-Fr 10:30-15:00",
+   "url": "https://www.mixt.com/locations/240-kearny-street/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1223019575",
+   "kind": "lunch"
+  },
+  {
+   "name": "Blue Bottle Coffee",
+   "area": "Financial District",
+   "address": "199 Sutter Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 06:30-17:30",
+   "url": "https://bluebottlecoffee.com/cafes/sutter-street",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1246390510",
+   "kind": "lunch"
+  },
+  {
+   "name": "Café de la Presse",
+   "area": "Financial District",
+   "address": "352 Grant Avenue",
+   "tags": [
+    "french"
+   ],
+   "note": "Hours: Mo off; Tu,We 08:00-18:30; Th,Fr,Sa 08:00-20:00; Su 08:00-16:00",
+   "url": "https://www.cafedelapresse.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/841414821",
+   "kind": "lunch"
+  },
+  {
+   "name": "Akiko's Sushi Bar",
+   "area": "Financial District",
+   "address": "542 Mason Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "Hours: 11:00-14:45,16:15-22:00",
+   "url": "https://akikossushibar.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/621818322",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cesario's",
+   "area": "Financial District",
+   "address": "601 Sutter Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Th,Su 11:30-22:00; Fr-Sa 11:30-22:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/621851563",
+   "kind": "lunch"
+  },
+  {
+   "name": "Matador",
+   "area": "Financial District",
+   "address": "679 Sutter Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Su,Mo-Th 12:00-22:00; Fr,Sa 12:00-23:00",
+   "url": "https://matadorsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/621851561",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mixt Greens",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "salad"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/630985352",
+   "kind": "lunch"
+  },
+  {
+   "name": "Radiator",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/775379090",
+   "kind": "lunch"
+  },
+  {
+   "name": "Chinatown Restaurant",
+   "area": "Financial District",
+   "address": "744 Washington Street",
+   "tags": [],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/806236997",
+   "kind": "lunch"
+  },
+  {
+   "name": "Grumpy's Restaurant Pub",
+   "area": "Financial District",
+   "address": "125 Vallejo Street",
+   "tags": [],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/359102192",
+   "kind": "lunch"
+  },
+  {
+   "name": "Henry's Hunan",
+   "area": "Financial District",
+   "address": "",
+   "tags": [],
+   "note": "Hours: Su-Th 11:30-21:00; Fr-Sa 11:30-21:30",
+   "url": "https://www.henryshunanrestaurant.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/709871143",
+   "kind": "lunch"
+  },
+  {
+   "name": "The White Horse",
+   "area": "Financial District",
+   "address": "",
+   "tags": [],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/621851558",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cigar Bar",
+   "area": "Financial District",
+   "address": "850 Montgomery Street",
+   "tags": [
+    "spanish",
+    "burger",
+    "bar",
+    "beer",
+    "outdoor"
+   ],
+   "note": "Hours: We-Fr 17:30-26:00; Sa 18:00-26:00; Su 19:00-24:00; Mo,Tu off",
+   "url": "https://www.cigarbarandgrill.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/371007095",
+   "kind": "evening"
+  },
+  {
+   "name": "Atlas Tap Room",
+   "area": "Financial District",
+   "address": "606 Mission Street",
+   "tags": [
+    "american",
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo-We 11:00-22:00; Th,Fr 11:00-23:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1320562876",
+   "kind": "evening"
+  },
+  {
+   "name": "Irish Times",
+   "area": "Financial District",
+   "address": "500 Sacramento Street",
+   "tags": [
+    "bar",
+    "beer",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61692712",
+   "kind": "evening"
+  },
+  {
+   "name": "Sutter Station Tavern",
+   "area": "Financial District",
+   "address": "554 Market Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Sa 11:00-02:00",
+   "url": "https://sutterstationtavern.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1617288110",
+   "kind": "evening"
+  },
+  {
+   "name": "Madarae",
+   "area": "Financial District",
+   "address": "46 Minna Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.madarae.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1613924529",
+   "kind": "evening"
+  },
+  {
+   "name": "DaDa Bar",
+   "area": "Financial District",
+   "address": "86 2nd Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1613829042",
+   "kind": "evening"
+  },
+  {
+   "name": "House of Shields",
+   "area": "Financial District",
+   "address": "39 New Montgomery Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 14:00-02:00; Sa,Su 15:00-02:00",
+   "url": "https://www.thehouseofshields.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/479491671",
+   "kind": "evening"
+  },
+  {
+   "name": "Tunnel Top",
+   "area": "Financial District",
+   "address": "601 Bush Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo-Su,PH 16:00-02:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/371025500",
+   "kind": "evening"
+  },
+  {
+   "name": "Old Ship Saloon",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61692857",
+   "kind": "evening"
+  },
+  {
+   "name": "Yerba Buena Bar",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1613829038",
+   "kind": "evening"
+  },
+  {
+   "name": "Willie \"Woo Woo\" Wong Park",
+   "area": "Financial District",
+   "address": "830 Sacramento Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/35049434",
+   "kind": "kids"
+  },
+  {
+   "name": "Willie \"Woo Woo\" Wong Park",
+   "area": "Financial District",
+   "address": "830 Sacramento Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/35049434",
+   "kind": "weekend"
+  },
+  {
+   "name": "Rooftop Park",
+   "area": "Financial District",
+   "address": "100 1st Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/148288769",
+   "kind": "kids"
+  },
+  {
+   "name": "Rooftop Park",
+   "area": "Financial District",
+   "address": "100 1st Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/148288769",
+   "kind": "weekend"
+  },
+  {
+   "name": "Maritime Plaza",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Maritime-Plaza-350",
+   "price": 0,
+   "source": "osm",
+   "osm": "node/12440345641",
+   "kind": "kids"
+  },
+  {
+   "name": "Maritime Plaza",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Maritime-Plaza-350",
+   "price": 0,
+   "source": "osm",
+   "osm": "node/12440345641",
+   "kind": "weekend"
+  },
+  {
+   "name": "Sydney G. Walton Square",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/23916482",
+   "kind": "kids"
+  },
+  {
+   "name": "Sydney G. Walton Square",
+   "area": "Financial District",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/23916482",
+   "kind": "weekend"
+  },
+  {
+   "name": "Lam Hoa Thun",
+   "area": "Golden Gate Park",
+   "address": "2337 Irving Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4018792601",
+   "kind": "lunch"
+  },
+  {
+   "name": "SK Tea",
+   "area": "Golden Gate Park",
+   "address": "2250 Irving Street",
+   "tags": [
+    "bubble tea",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/4018792607",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sawaii Ramen",
+   "area": "Golden Gate Park",
+   "address": "2240 Irving Street",
+   "tags": [
+    "japanese",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/4018792609",
+   "kind": "lunch"
+  },
+  {
+   "name": "Steam Rice Roll King",
+   "area": "Golden Gate Park",
+   "address": "2228 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: Th-We 08:00-17:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4018792610",
+   "kind": "lunch"
+  },
+  {
+   "name": "TC Pastry",
+   "area": "Golden Gate Park",
+   "address": "2222 Irving Street",
+   "tags": [
+    "dim sum",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/4018792706",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bei Fang Style",
+   "area": "Golden Gate Park",
+   "address": "2218 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4018792707",
+   "kind": "lunch"
+  },
+  {
+   "name": "Happy Bakery / Dim Sum To Go",
+   "area": "Golden Gate Park",
+   "address": "2249;2253 Irving Street",
+   "tags": [
+    "dim sum",
+    "chinese",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/4018792593",
+   "kind": "lunch"
+  },
+  {
+   "name": "Marnee Thai",
+   "area": "Golden Gate Park",
+   "address": "2225 Irving Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "Hours: Mo-Su 11:30-22:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4018792691",
+   "kind": "lunch"
+  },
+  {
+   "name": "Wok Station",
+   "area": "Golden Gate Park",
+   "address": "2154 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3993039684",
+   "kind": "lunch"
+  },
+  {
+   "name": "iTea",
+   "area": "Golden Gate Park",
+   "address": "2150 Irving Street",
+   "tags": [
+    "bubble tea",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: 11:00-22:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3993039693",
+   "kind": "lunch"
+  },
+  {
+   "name": "Quê Huong Vietnamese Deli",
+   "area": "Golden Gate Park",
+   "address": "2138 Irving Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: 08:00-17:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3993039688",
+   "kind": "lunch"
+  },
+  {
+   "name": "Yuanbao Jiaozi",
+   "area": "Golden Gate Park",
+   "address": "2110 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3993039686",
+   "kind": "lunch"
+  },
+  {
+   "name": "Guangdong Barbecue Restaurant",
+   "area": "Golden Gate Park",
+   "address": "2191 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: 10:00-19:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4018792617",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sunrise Deli",
+   "area": "Golden Gate Park",
+   "address": "2115 Irving Street",
+   "tags": [
+    "middle eastern",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sunrisedelisf.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3993039692",
+   "kind": "lunch"
+  },
+  {
+   "name": "1011 Sip Tea",
+   "area": "Golden Gate Park",
+   "address": "2127 Irving Street",
+   "tags": [
+    "bubble tea",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/4018792616",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sun Maxim's",
+   "area": "Golden Gate Park",
+   "address": "2034 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: Mo 10:00-19:00; Tu-Su 08:00-19:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4017234506",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sushi Uma",
+   "area": "Golden Gate Park",
+   "address": "2026 Irving Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "Hours: Mo-Su 11:00-23:30",
+   "url": "https://www.thesushiuma.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3993039690",
+   "kind": "lunch"
+  },
+  {
+   "name": "Saigon BBQ Noodle House",
+   "area": "Golden Gate Park",
+   "address": "1936 Irving Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Mo-Sa 11:00-21:00; Su 11:00-20:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4017234503",
+   "kind": "lunch"
+  },
+  {
+   "name": "Szechuan Cuisine",
+   "area": "Golden Gate Park",
+   "address": "1920 Irving Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: Mo-Su 11:00-21:00",
+   "url": "https://www.szechuancuisinesf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4017234793",
+   "kind": "lunch"
+  },
+  {
+   "name": "Noori",
+   "area": "Golden Gate Park",
+   "address": "1924 Irving Street",
+   "tags": [
+    "indian",
+    "pakistani"
+   ],
+   "note": "Hours: Tu-Su 11:00-15:00,16:00-21:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4017234794",
+   "kind": "lunch"
+  },
+  {
+   "name": "Gao Viet Kitchen",
+   "area": "Golden Gate Park",
+   "address": "1900 Irving Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://gaokitchen.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4017234895",
+   "kind": "lunch"
+  },
+  {
+   "name": "Oh Dessert Cafe",
+   "area": "Golden Gate Park",
+   "address": "1919 Irving Street",
+   "tags": [
+    "dessert",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Tu-Fr 18:00-23:00; Sa 16:00-22:00; Su 14:00-21:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/4017234697",
+   "kind": "lunch"
+  },
+  {
+   "name": "Durty Nelly's",
+   "area": "Golden Gate Park",
+   "address": "2328 Irving Street",
+   "tags": [
+    "pub",
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "way/276641699",
+   "kind": "evening"
+  },
+  {
+   "name": "Casa Barajas / Chug Pub",
+   "area": "Golden Gate Park",
+   "address": "1849 Lincoln Way",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo,Tu 16:30-22:00; Th 11:00-22:00; Fr,Sa 11:00-22:30; Su 11:00-22:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1211157016",
+   "kind": "evening"
+  },
+  {
+   "name": "Silver Spur",
+   "area": "Golden Gate Park",
+   "address": "1914 Irving Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4017234499",
+   "kind": "evening"
+  },
+  {
+   "name": "Trad'r Sam",
+   "area": "Golden Gate Park",
+   "address": "6150 Geary Boulevard",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1618687933",
+   "kind": "evening"
+  },
+  {
+   "name": "Hockey Haven",
+   "area": "Golden Gate Park",
+   "address": "3625 Balboa Street",
+   "tags": [
+    "bar",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/287411301",
+   "kind": "evening"
+  },
+  {
+   "name": "The Blarney Stone",
+   "area": "Golden Gate Park",
+   "address": "5625 Geary Boulevard",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 14:00-02:00; Sa-Su 10:00-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6486930284",
+   "kind": "evening"
+  },
+  {
+   "name": "The Sage & Drifter",
+   "area": "Golden Gate Park",
+   "address": "1368 Irving Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4071080789",
+   "kind": "evening"
+  },
+  {
+   "name": "Goemon Izakaya",
+   "area": "Golden Gate Park",
+   "address": "3129 Clement Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2655525665",
+   "kind": "evening"
+  },
+  {
+   "name": "Boomerang",
+   "area": "Golden Gate Park",
+   "address": "1430 Noriega Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6502703601",
+   "kind": "evening"
+  },
+  {
+   "name": "Tiki Haven",
+   "area": "Golden Gate Park",
+   "address": "1334 Noriega Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4199804593",
+   "kind": "evening"
+  },
+  {
+   "name": "Sunset Playground",
+   "area": "Golden Gate Park",
+   "address": "2201 Lawton Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/86124617",
+   "kind": "kids"
+  },
+  {
+   "name": "Sunset Playground",
+   "area": "Golden Gate Park",
+   "address": "2201 Lawton Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/86124617",
+   "kind": "weekend"
+  },
+  {
+   "name": "Golden Gate Park",
+   "area": "Golden Gate Park",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/158602261",
+   "kind": "kids"
+  },
+  {
+   "name": "Golden Gate Park",
+   "area": "Golden Gate Park",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/158602261",
+   "kind": "weekend"
+  },
+  {
+   "name": "Fulton Playground",
+   "area": "Golden Gate Park",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85796801",
+   "kind": "kids"
+  },
+  {
+   "name": "Fulton Playground",
+   "area": "Golden Gate Park",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85796801",
+   "kind": "weekend"
+  },
+  {
+   "name": "Cabrillo Playground",
+   "area": "Golden Gate Park",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/162518012",
+   "kind": "kids"
+  },
+  {
+   "name": "Cabrillo Playground",
+   "area": "Golden Gate Park",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/162518012",
+   "kind": "weekend"
+  },
+  {
+   "name": "Mashaallah",
+   "area": "SoMa",
+   "address": "315 5th Street",
+   "tags": [
+    "pakistani"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.mashallahhalalfood.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1362359508",
+   "kind": "lunch"
+  },
+  {
+   "name": "Nosh Box",
+   "area": "SoMa",
+   "address": "1116 Folsom Street",
+   "tags": [
+    "pastry",
+    "sandwich",
+    "coffee",
+    "tea",
+    "cafe"
+   ],
+   "note": "Hours: Mo-Sa 08:00-15:00",
+   "url": "https://www.noshboxsf.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/761916174",
+   "kind": "lunch"
+  },
+  {
+   "name": "Teo Restaurant & Bar",
+   "area": "SoMa",
+   "address": "1111 Mission Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: Mo-Th 16:00-21:30; Fr 11:30-14:00,17:00-21:30; Sa-Su 12:00-15:00,17:00-21:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/370194862",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tú Lan",
+   "area": "SoMa",
+   "address": "8 6th Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Mo-Fr 11:00-20:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/370198231",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sushi Hashiri",
+   "area": "SoMa",
+   "address": "4 Mint Plaza",
+   "tags": [
+    "sushi"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/765404278",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mel's Drive-In",
+   "area": "SoMa",
+   "address": "801 Mission Street",
+   "tags": [
+    "american"
+   ],
+   "note": "Hours: Mo-Th,Su 07:00-23:00; Fr-Sa 07:00-27:00",
+   "url": "https://melsdrive-in.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/904139678",
+   "kind": "lunch"
+  },
+  {
+   "name": "Feng Cha",
+   "area": "SoMa",
+   "address": "99 Mission Street",
+   "tags": [
+    "bubble tea",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th,Su 11:00-20:00; Fr-Sa 11:00-21:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1282343098",
+   "kind": "lunch"
+  },
+  {
+   "name": "John's Grill Live Jazz",
+   "area": "SoMa",
+   "address": "63 Ellis Street",
+   "tags": [
+    "steak",
+    "seafood",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.johnsgrill.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/317081652",
+   "kind": "lunch"
+  },
+  {
+   "name": "New Delhi",
+   "area": "SoMa",
+   "address": "160 Ellis Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/808884842",
+   "kind": "lunch"
+  },
+  {
+   "name": "King Kee",
+   "area": "SoMa",
+   "address": "101 Cyril Magnin Street",
+   "tags": [
+    "chinese",
+    "bubble tea"
+   ],
+   "note": "Hours: Mo-Sa 11:30-21:30; Su 14:00-21:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/808884908",
+   "kind": "lunch"
+  },
+  {
+   "name": "Miyabiya Sushi and Grill",
+   "area": "SoMa",
+   "address": "115 Cyril Magnin Street",
+   "tags": [
+    "japanese",
+    "sushi"
+   ],
+   "note": "Hours: Mo-Su 11:00-23:00",
+   "url": "https://www.miyabiyasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/808884850",
+   "kind": "lunch"
+  },
+  {
+   "name": "Hinodeya Ramen & Bar",
+   "area": "SoMa",
+   "address": "219 O'Farrell Street",
+   "tags": [
+    "noodle",
+    "ramen"
+   ],
+   "note": "Hours: Mo-Th,Su 10:00-03:30; Fr-Sa 10:00-01:30",
+   "url": "https://hinodeyaramen.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/808930715",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cafe Mason",
+   "area": "SoMa",
+   "address": "320 Mason Street",
+   "tags": [
+    "international",
+    "mexican"
+   ],
+   "note": "Hours: 06:30-14:30",
+   "url": "https://www.masondiner.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/383502127",
+   "kind": "lunch"
+  },
+  {
+   "name": "Marrakech",
+   "area": "SoMa",
+   "address": "419 O'Farrell Street",
+   "tags": [
+    "moroccan"
+   ],
+   "note": "Hours: Su,Mo-Th 17:00-24:00; Fr-Sa 17:00-02:00",
+   "url": "https://www.marrakechsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/818060781",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pinecrest Diner",
+   "area": "SoMa",
+   "address": "401 Geary Street",
+   "tags": [
+    "american"
+   ],
+   "note": "Hours: Mo-We 07:00-23:00; Th 07:00-24:00; Fr-Sa 00:00-24:00; Su 00:00-23:00",
+   "url": "https://pinecrestdiner.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/383507544",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pakwan",
+   "area": "SoMa",
+   "address": "501 O'Farrell Street",
+   "tags": [
+    "indian",
+    "pakistani"
+   ],
+   "note": "Hours: Mo-Su 11:00-23:00",
+   "url": "https://pakwanrestaurant.com/oferrell/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/818060761",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Thonglor",
+   "area": "SoMa",
+   "address": "420 Geary Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "Hours: 11:00-15:00,16:00-23:00",
+   "url": "https://www.thonglorsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/725096408",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bentotaro",
+   "area": "SoMa",
+   "address": "430 Geary Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "http://www.katanayausa.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/725096410",
+   "kind": "lunch"
+  },
+  {
+   "name": "Starbucks",
+   "area": "SoMa",
+   "address": "442 Geary Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/725100826",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tratto",
+   "area": "SoMa",
+   "address": "501 Geary Street",
+   "tags": [
+    "italian",
+    "pizza"
+   ],
+   "note": "Hours: Mo-Th 07:00-10:00, 11:30-14:00, 16:00-21:00; Fr 07:00-10:00, 11:30-14:00, 16:00-22:00; Sa 07:00-10:45, 11:00-14:00, 16:00-22:00; Su 07:00-10:45, 11:00-14",
+   "url": "https://www.tratto-sf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/725096451",
+   "kind": "lunch"
+  },
+  {
+   "name": "David's Delicatessen & Diner",
+   "area": "SoMa",
+   "address": "474 Geary Street",
+   "tags": [
+    "deli"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/725100821",
+   "kind": "lunch"
+  },
+  {
+   "name": "Shalimar",
+   "area": "SoMa",
+   "address": "532 Jones Street",
+   "tags": [
+    "pakistani",
+    "indian"
+   ],
+   "note": "Hours: 12:00-24:00",
+   "url": "https://www.shalimarrestaurants.us/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/927572195",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Chieftain Irish Pub & Restaurant",
+   "area": "SoMa",
+   "address": "198 5th Street",
+   "tags": [
+    "burger",
+    "wings",
+    "fish and chips",
+    "irish",
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo-Th,Su 16:00-25:30; Fr-Sa 12:00-25:30",
+   "url": "https://www.thechieftain.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/621179351",
+   "kind": "evening"
+  },
+  {
+   "name": "Johnny Foley's Irish House",
+   "area": "SoMa",
+   "address": "243 O'Farrell Street",
+   "tags": [
+    "irish",
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: We,Th,Fr 17:00-22:00+; Sa,Su 11:00-22:00+; Mo,Tu off",
+   "url": "https://www.johnnyfoleys.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/808930729",
+   "kind": "evening"
+  },
+  {
+   "name": "Zombie Village",
+   "area": "SoMa",
+   "address": "441 Jones Street",
+   "tags": [
+    "tiki bar",
+    "bar"
+   ],
+   "note": "Hours: Su,Mo-Tu off; We 17:00-24:00; Th-Sa 17:00-26:00",
+   "url": "https://www.thezombievillage.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1844653896",
+   "kind": "evening"
+  },
+  {
+   "name": "Tempest",
+   "area": "SoMa",
+   "address": "431 Natoma Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo-Fr 11:30-26:00; Sa, Su 12:00-26:00",
+   "url": "https://www.pourguys.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/346585378",
+   "kind": "evening"
+  },
+  {
+   "name": "Bloodhound",
+   "area": "SoMa",
+   "address": "1145 Folsom Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/761906611",
+   "kind": "evening"
+  },
+  {
+   "name": "Azucar Lounge",
+   "area": "SoMa",
+   "address": "299 9th Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1880217201",
+   "kind": "evening"
+  },
+  {
+   "name": "The View Lounge",
+   "area": "SoMa",
+   "address": "55 4th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Su 16:00-24:00",
+   "url": "https://www.sfmarquis.com/theview",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1612808193",
+   "kind": "evening"
+  },
+  {
+   "name": "Press Club",
+   "area": "SoMa",
+   "address": "20 Yerba Buena Lane",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Th 16:00-22:00; Fr 16:00+; Sa 14:00+; Su closed",
+   "url": "https://pressclubsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1844915443",
+   "kind": "evening"
+  },
+  {
+   "name": "Lava Restaurant & Lounge",
+   "area": "SoMa",
+   "address": "527 Bryant Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2240869181",
+   "kind": "evening"
+  },
+  {
+   "name": "Jasper's",
+   "area": "SoMa",
+   "address": "401 Taylor Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/808930684",
+   "kind": "evening"
+  },
+  {
+   "name": "Yerba Buena Gardens",
+   "area": "SoMa",
+   "address": "750 Howard Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: Mo-Su,PH sunrise-22:00",
+   "url": "https://www.yerbabuenagardens.com",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/28842443",
+   "kind": "kids"
+  },
+  {
+   "name": "Yerba Buena Gardens",
+   "area": "SoMa",
+   "address": "750 Howard Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Su,PH sunrise-22:00",
+   "url": "https://www.yerbabuenagardens.com",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/28842443",
+   "kind": "weekend"
+  },
+  {
+   "name": "Boeddeker Park",
+   "area": "SoMa",
+   "address": "240 Eddy Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: 09:00-19:00",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/33619301",
+   "kind": "kids"
+  },
+  {
+   "name": "Boeddeker Park",
+   "area": "SoMa",
+   "address": "240 Eddy Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: 09:00-19:00",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/33619301",
+   "kind": "weekend"
+  },
+  {
+   "name": "Victoria Manalo Draves Park",
+   "area": "SoMa",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Victoria-Manalo-Draves-Park-386",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/43100742",
+   "kind": "kids"
+  },
+  {
+   "name": "Victoria Manalo Draves Park",
+   "area": "SoMa",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Victoria-Manalo-Draves-Park-386",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/43100742",
+   "kind": "weekend"
+  },
+  {
+   "name": "Turk-Hyde Mini Park",
+   "area": "SoMa",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/turk-hyde-mini-park/turk-hyde-childrens-play-area/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/37191966",
+   "kind": "kids"
+  },
+  {
+   "name": "Turk-Hyde Mini Park",
+   "area": "SoMa",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/turk-hyde-mini-park/turk-hyde-childrens-play-area/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/37191966",
+   "kind": "weekend"
+  },
+  {
+   "name": "Flour + Water",
+   "area": "Mission",
+   "address": "2401 Harrison Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: 17:00-20:30",
+   "url": "https://flourandwater.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2131700907",
+   "kind": "lunch"
+  },
+  {
+   "name": "Heirloom Cafe",
+   "area": "Mission",
+   "address": "2500 Folsom Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo,Su off; Tu-Sa 17:45-21:30",
+   "url": "https://heirloom-sf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2131713351",
+   "kind": "lunch"
+  },
+  {
+   "name": "La Playa",
+   "area": "Mission",
+   "address": "2331 Mission Street",
+   "tags": [
+    "seafood"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1430564725",
+   "kind": "lunch"
+  },
+  {
+   "name": "Stable Cafe",
+   "area": "Mission",
+   "address": "2128 Folsom Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Tu-Su 08:00-15:00",
+   "url": "https://www.stablecafe.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1610994013",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mission Chinese Food",
+   "area": "Mission",
+   "address": "2234 Mission Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: 11:30-15:00,17:00-22:30; Tu,We 17:00-22:30",
+   "url": "https://www.missionchinesefood.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1374010118",
+   "kind": "lunch"
+  },
+  {
+   "name": "Murales Wine Bar & Tapas",
+   "area": "Mission",
+   "address": "2199 Mission Street",
+   "tags": [
+    "tapas"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1609848215",
+   "kind": "lunch"
+  },
+  {
+   "name": "Starbucks",
+   "area": "Mission",
+   "address": "2727 Mariposa Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Fr 04:00-21:00; Sa-Su 04:30-21:00",
+   "url": "https://www.starbucks.com/store-locator/store/13383/mariposa-bryant-2727-mariposa-st-san-francisco-ca-941101472-us",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2403914322",
+   "kind": "lunch"
+  },
+  {
+   "name": "Aaha Indian Cuisine",
+   "area": "Mission",
+   "address": "3316 17th Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "Hours: Tu-Th 11:30-14:30, 17:00-22:30; Fr, Sa 12:00-23:00; Su 12:00-22:00",
+   "url": "https://www.aahasfo.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2026996074",
+   "kind": "lunch"
+  },
+  {
+   "name": "Ritual Coffee Roasters",
+   "area": "Mission",
+   "address": "1026 Valencia Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th 06:30-19:00; Fr-Su 06:30-20:00",
+   "url": "https://ritualroasters.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/443372068",
+   "kind": "lunch"
+  },
+  {
+   "name": "Thanh Tam II",
+   "area": "Mission",
+   "address": "577 Valencia Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Mo-Sa 11:00-21:00; Su 11:00-21:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2198198539",
+   "kind": "lunch"
+  },
+  {
+   "name": "Aditi",
+   "area": "Mission",
+   "address": "1101 Valencia Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2069159603",
+   "kind": "lunch"
+  },
+  {
+   "name": "Flying Pig Bistro",
+   "area": "Mission",
+   "address": "433 South Van Ness Avenue",
+   "tags": [
+    "sandwich",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th 07:30-21:00; Fr 07:30-23:00; Sa 09:00-23:00; Su 09:00-17:00",
+   "url": "https://flyingpigbistropub.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2095344770",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pancho Villa",
+   "area": "Mission",
+   "address": "3071 16th Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Mo-Su 10:00-22:00",
+   "url": "https://sfpanchovilla.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/418513730",
+   "kind": "lunch"
+  },
+  {
+   "name": "Puerto Allegre",
+   "area": "Mission",
+   "address": "546 Valencia Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/497304213",
+   "kind": "lunch"
+  },
+  {
+   "name": "La Corneta",
+   "area": "Mission",
+   "address": "2731 Mission Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: 10:00-22:00",
+   "url": "https://lacorneta.com/lacornetamissionst",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/774058165",
+   "kind": "lunch"
+  },
+  {
+   "name": "Raw Sugar Factory",
+   "area": "Mission",
+   "address": "530 Valencia Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2026996083",
+   "kind": "lunch"
+  },
+  {
+   "name": "Panchita's Pupuseria To-Go",
+   "area": "Mission",
+   "address": "509 Valencia Street",
+   "tags": [
+    "salvadoran"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2337474422",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bir Kitchen",
+   "area": "Mission",
+   "address": "3111 24th Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1256305829",
+   "kind": "lunch"
+  },
+  {
+   "name": "Beretta",
+   "area": "Mission",
+   "address": "1199 Valencia Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Th 17:00-22:00; Fr 17:00-23:30; Sa 11:00-23:30; Su 11:00-22:00",
+   "url": "https://berettasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1193723957",
+   "kind": "lunch"
+  },
+  {
+   "name": "Delfina",
+   "area": "Mission",
+   "address": "3621 18th Street",
+   "tags": [
+    "italian",
+    "pizza",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Sa 16:30-22:00; Su 16:30-21:00",
+   "url": "https://www.delfinasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/540452285",
+   "kind": "lunch"
+  },
+  {
+   "name": "Taqueria El Farolito",
+   "area": "Mission",
+   "address": "2779 Mission Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Mo-Su 10:00-03:00",
+   "url": "https://elfarolitosf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1974596596",
+   "kind": "lunch"
+  },
+  {
+   "name": "Giordano Bros.",
+   "area": "Mission",
+   "address": "3108 16th Street",
+   "tags": [
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Fr 16:00-23:00; Sa-Su 10:00-23:00",
+   "url": "https://www.giordanobros.com/mission/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/999083604",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Sycamore",
+   "area": "Mission",
+   "address": "2140 Mission Street",
+   "tags": [
+    "american",
+    "bar"
+   ],
+   "note": "Hours: Mo-Su 11:30-00:00",
+   "url": "https://www.thesycamoresf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2454979580",
+   "kind": "evening"
+  },
+  {
+   "name": "Southern Pacific Brewing",
+   "area": "Mission",
+   "address": "620 Treat Avenue",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.southernpacificbrewing.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1805750179",
+   "kind": "evening"
+  },
+  {
+   "name": "Shotwell's",
+   "area": "Mission",
+   "address": "3349 20th Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/281652933",
+   "kind": "evening"
+  },
+  {
+   "name": "Trick Dog",
+   "area": "Mission",
+   "address": "3010 20th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Su,Mo-Th 16:00-24:00; Fr-Sa 16:00-25:00",
+   "url": "https://www.trickdogbar.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4030143560",
+   "kind": "evening"
+  },
+  {
+   "name": "Rite Spot Cafe",
+   "area": "Mission",
+   "address": "2099 Folsom Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.ritespotcafe.net/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1206794862",
+   "kind": "evening"
+  },
+  {
+   "name": "Wildhawk",
+   "area": "Mission",
+   "address": "3464 19th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.lexingtonclub.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1649867191",
+   "kind": "evening"
+  },
+  {
+   "name": "Asiento",
+   "area": "Mission",
+   "address": "2730 21st Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-We 17:00-22:00; Th 17:00-23:00; Fr-Sa 17:00-02:00; Su off",
+   "url": "https://asientosf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3279458748",
+   "kind": "evening"
+  },
+  {
+   "name": "Balancoire",
+   "area": "Mission",
+   "address": "2565 Mission Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "http://balancoiresf.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4467802664",
+   "kind": "evening"
+  },
+  {
+   "name": "Make Out Room",
+   "area": "Mission",
+   "address": "3225 22nd Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1839527429",
+   "kind": "evening"
+  },
+  {
+   "name": "Verdi Club",
+   "area": "Mission",
+   "address": "2424 Mariposa Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.verdiclub.net/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/281652962",
+   "kind": "evening"
+  },
+  {
+   "name": "Potrero Hill Recreation Center",
+   "area": "Mission",
+   "address": "801 Arkansas Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sfparksalliance.org/our-parks/parks/potrero-hill-playground-rec-center",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/116771007",
+   "kind": "kids"
+  },
+  {
+   "name": "Potrero Hill Recreation Center",
+   "area": "Mission",
+   "address": "801 Arkansas Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sfparksalliance.org/our-parks/parks/potrero-hill-playground-rec-center",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/116771007",
+   "kind": "weekend"
+  },
+  {
+   "name": "Alioto Mini Park",
+   "area": "Mission",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/alioto-mini-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/69029501",
+   "kind": "kids"
+  },
+  {
+   "name": "Alioto Mini Park",
+   "area": "Mission",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/alioto-mini-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/69029501",
+   "kind": "weekend"
+  },
+  {
+   "name": "Parque Niños Unidos",
+   "area": "Mission",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/68881693",
+   "kind": "kids"
+  },
+  {
+   "name": "Parque Niños Unidos",
+   "area": "Mission",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/68881693",
+   "kind": "weekend"
+  },
+  {
+   "name": "Mission Playground",
+   "area": "Mission",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/147777246",
+   "kind": "kids"
+  },
+  {
+   "name": "Mission Playground",
+   "area": "Mission",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/147777246",
+   "kind": "weekend"
+  },
+  {
+   "name": "Morella",
+   "area": "Marina",
+   "address": "2001 Chestnut Street",
+   "tags": [
+    "italian",
+    "argentinian"
+   ],
+   "note": "Hours: Tu-Th 16:30-22:00; Fr 16:00-23:00; Sa 10:00-15:00,16:30-23:00; Su 10:00-15:00; 16:30-22:00",
+   "url": "https://www.morellasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340007153",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pacific Catch",
+   "area": "Marina",
+   "address": "2027 Chestnut Street",
+   "tags": [
+    "seafood",
+    "outdoor"
+   ],
+   "note": "Hours: 11:00 -22:00",
+   "url": "https://pacificcatch.com/location/marina/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340007197",
+   "kind": "lunch"
+  },
+  {
+   "name": "Asian Box",
+   "area": "Marina",
+   "address": "Chestnut Street",
+   "tags": [
+    "asian",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340884147",
+   "kind": "lunch"
+  },
+  {
+   "name": "United Dumplings",
+   "area": "Marina",
+   "address": "2015 Chestnut Street",
+   "tags": [
+    "chinese",
+    "dumpling"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.uniteddumplings.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3379321524",
+   "kind": "lunch"
+  },
+  {
+   "name": "Nippon Curry",
+   "area": "Marina",
+   "address": "3347 Fillmore Street",
+   "tags": [
+    "japanese",
+    "curry"
+   ],
+   "note": "Hours: Tu 17:00-21:00; We-Fr 11:00-15:00,17:00-21:00; Sa 11:00-21:00; Su 11:00-15:00",
+   "url": "https://www.nipponcurry.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340007195",
+   "kind": "lunch"
+  },
+  {
+   "name": "Isa",
+   "area": "Marina",
+   "address": "3324 Steiner Street",
+   "tags": [
+    "french"
+   ],
+   "note": "Hours: Mo-Fr 17:30-22:00;Sa 17:00-22:00;Su 17:00-21:00",
+   "url": "https://www.isarestaurant.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1419473685",
+   "kind": "lunch"
+  },
+  {
+   "name": "Ristorante Parma",
+   "area": "Marina",
+   "address": "3314 Steiner Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Sa 17:00-22:30",
+   "url": "https://www.sfparma.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340006084",
+   "kind": "lunch"
+  },
+  {
+   "name": "Ace Wasabi's",
+   "area": "Marina",
+   "address": "3339 Steiner Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340083046",
+   "kind": "lunch"
+  },
+  {
+   "name": "Toma Mexican Restaurant",
+   "area": "Marina",
+   "address": "3318 Steiner Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Mo-Th 11:00-22:00;Fr 11:00-23:00;Sa 10:30-23:00;Su 10:30-21:30",
+   "url": "https://www.tomasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3379321536",
+   "kind": "lunch"
+  },
+  {
+   "name": "Indigo",
+   "area": "Marina",
+   "address": "3321 Steiner Street",
+   "tags": [
+    "modern american"
+   ],
+   "note": "Hours: Tu-We 17:00-22:00; Th 17:00-23:00; Fr-Sa 17:00-24:00; Su 15:00-22:00, Sa-Su 11:00-15:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2340083601",
+   "kind": "lunch"
+  },
+  {
+   "name": "Home Plate",
+   "area": "Marina",
+   "address": "2274 Lombard Street",
+   "tags": [
+    "regional"
+   ],
+   "note": "Hours: 07:00-15:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2328579239",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bonita Taqueria Y Rotisserie",
+   "area": "Marina",
+   "address": "2257 Chestnut Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Mo-Su 11:00-22:00",
+   "url": "https://sfbonita.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3379996809",
+   "kind": "lunch"
+  },
+  {
+   "name": "Squat & Gobble",
+   "area": "Marina",
+   "address": "2263 Chestnut Street",
+   "tags": [
+    "american",
+    "outdoor"
+   ],
+   "note": "Hours: 08:00-22:00",
+   "url": "https://squatandgobble.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/416783945",
+   "kind": "lunch"
+  },
+  {
+   "name": "Réveille",
+   "area": "Marina",
+   "address": "2268 Chestnut Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2339603601",
+   "kind": "lunch"
+  },
+  {
+   "name": "Phat Thai",
+   "area": "Marina",
+   "address": "2380 Lombard Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.phatthaisf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2328928015",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mamacita",
+   "area": "Marina",
+   "address": "2317 Chestnut Street",
+   "tags": [
+    "mexican",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "http://www.mamacitasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3380825008",
+   "kind": "lunch"
+  },
+  {
+   "name": "A16",
+   "area": "Marina",
+   "address": "2355 Chestnut Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Th 17:00-21:00; Sa 12:00-21:30; Su 12:00-21:00",
+   "url": "https://www.a16pizza.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3380825006",
+   "kind": "lunch"
+  },
+  {
+   "name": "Asa Sushi",
+   "area": "Marina",
+   "address": "2365 Chestnut Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "Hours: Mo-Th 11:30-14:30,17:30-22:00;Fr 11:30-14:30,17:30-23:00;Sa 14:30-15:00,17:30-23:00",
+   "url": "http://www.asasushisf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/416683850",
+   "kind": "lunch"
+  },
+  {
+   "name": "Casario Ostaria",
+   "area": "Marina",
+   "address": "2136 Union Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.casaroosteria.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4509844217",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mezes Kitchen & Wine Bar",
+   "area": "Marina",
+   "address": "2373 Chestnut Street",
+   "tags": [
+    "greek"
+   ],
+   "note": "Hours: Mo-Th 17:00-21:00;Fr-Sa 17:00-22:00;Su 17:00-21:00",
+   "url": "https://mezessf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3380825010",
+   "kind": "lunch"
+  },
+  {
+   "name": "Rose's Café",
+   "area": "Marina",
+   "address": "2298 Union Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4064166469",
+   "kind": "lunch"
+  },
+  {
+   "name": "KAIYŌ",
+   "area": "Marina",
+   "address": "1838 Union Street",
+   "tags": [
+    "japanese",
+    "peruvian",
+    "asian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://kaiyosf.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/693507981",
+   "kind": "lunch"
+  },
+  {
+   "name": "Final final",
+   "area": "Marina",
+   "address": "Lombard Street",
+   "tags": [
+    "hot dog",
+    "pizza",
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/5796524756",
+   "kind": "evening"
+  },
+  {
+   "name": "Stock in Trade",
+   "area": "Marina",
+   "address": "2036 Lombard Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: 14:00-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3960697185",
+   "kind": "evening"
+  },
+  {
+   "name": "California Wine Merchant",
+   "area": "Marina",
+   "address": "2113 Chestnut Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Th 13:00-22:00; Fr-Sa 13:00-24:00; Su 14:00-19:00",
+   "url": "https://www.californiawinemerchant.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/9341171152",
+   "kind": "evening"
+  },
+  {
+   "name": "Marina Lounge",
+   "area": "Marina",
+   "address": "2138;2142;2144;2146 Chestnut Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/272647185",
+   "kind": "evening"
+  },
+  {
+   "name": "delarosa",
+   "area": "Marina",
+   "address": "2175 Chestnut Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4548821898",
+   "kind": "evening"
+  },
+  {
+   "name": "Cellar Door",
+   "area": "Marina",
+   "address": "3131 Fillmore Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2340019960",
+   "kind": "evening"
+  },
+  {
+   "name": "Mauna Loa Cocktails",
+   "area": "Marina",
+   "address": "Fillmore Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2750810774",
+   "kind": "evening"
+  },
+  {
+   "name": "The Brixton",
+   "area": "Marina",
+   "address": "2140 Union Street",
+   "tags": [
+    "bar",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.brixtonsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3799946959",
+   "kind": "evening"
+  },
+  {
+   "name": "Bar None",
+   "area": "Marina",
+   "address": "1980 Union Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfbarnone.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4987099522",
+   "kind": "evening"
+  },
+  {
+   "name": "Bus Stop",
+   "area": "Marina",
+   "address": "1901 Union Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.busstop-sf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4482434591",
+   "kind": "evening"
+  },
+  {
+   "name": "moscone dog play area",
+   "area": "Marina",
+   "address": "1895 Chestnut Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/1214385020",
+   "kind": "kids"
+  },
+  {
+   "name": "moscone dog play area",
+   "area": "Marina",
+   "address": "1895 Chestnut Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/1214385020",
+   "kind": "weekend"
+  },
+  {
+   "name": "Allyne Park",
+   "area": "Marina",
+   "address": "2609 Gough Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/allyne-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/68705976",
+   "kind": "kids"
+  },
+  {
+   "name": "Allyne Park",
+   "area": "Marina",
+   "address": "2609 Gough Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/allyne-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/68705976",
+   "kind": "weekend"
+  },
+  {
+   "name": "Presidio Tunnel Tops",
+   "area": "Marina",
+   "address": "210 Lincoln Boulevard",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.presidiotunneltops.gov/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/91114607",
+   "kind": "kids"
+  },
+  {
+   "name": "Presidio Tunnel Tops",
+   "area": "Marina",
+   "address": "210 Lincoln Boulevard",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.presidiotunneltops.gov/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/91114607",
+   "kind": "weekend"
+  },
+  {
+   "name": "Moscone Recreation Center",
+   "area": "Marina",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/24562872",
+   "kind": "kids"
+  },
+  {
+   "name": "Moscone Recreation Center",
+   "area": "Marina",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/24562872",
+   "kind": "weekend"
+  },
+  {
+   "name": "Suppenküche",
+   "area": "Hayes Valley",
+   "address": "525 Laguna Street",
+   "tags": [
+    "german",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th 17:00-21:00; Fr 17:00-22:00; Sa 15:00-22:00; Su 15:00-20:00",
+   "url": "https://www.suppenkuche.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/529772421",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kate's Kitchen",
+   "area": "Hayes Valley",
+   "address": "471 Haight Street",
+   "tags": [
+    "american",
+    "breakfast",
+    "sandwich"
+   ],
+   "note": "Hours: Mo 09:00-14:45; Tu-Fr 08:00-14:45; Sa-Su 08:30-15:45",
+   "url": "http://katieskitchen.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/647656759",
+   "kind": "lunch"
+  },
+  {
+   "name": "House of Thai 2",
+   "area": "Hayes Valley",
+   "address": "494 Haight Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/647656762",
+   "kind": "lunch"
+  },
+  {
+   "name": "Nara",
+   "area": "Hayes Valley",
+   "address": "518 Haight Street",
+   "tags": [
+    "japanese"
+   ],
+   "note": "Hours: Mo-Su 17:00-23:30",
+   "url": "https://www.naraonhaight.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1364959567",
+   "kind": "lunch"
+  },
+  {
+   "name": "Indian Oven",
+   "area": "Hayes Valley",
+   "address": "233 Fillmore Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://indianovensf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/647656805",
+   "kind": "lunch"
+  },
+  {
+   "name": "Nepalese Indian Cusine",
+   "area": "Hayes Valley",
+   "address": "1298 Market Street",
+   "tags": [
+    "indian",
+    "nepali"
+   ],
+   "note": "Hours: 11:00-22:00 \"to go 11:00-02:00\"",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/983388325",
+   "kind": "lunch"
+  },
+  {
+   "name": "Uva Enoteca",
+   "area": "Hayes Valley",
+   "address": "568 Haight Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.uvaenoteca.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/647656754",
+   "kind": "lunch"
+  },
+  {
+   "name": "Memphis Minnie's BBQ Joint",
+   "area": "Hayes Valley",
+   "address": "576 Haight Street",
+   "tags": [
+    "barbecue"
+   ],
+   "note": "Hours: Mo off; Tu-Sa 11:00-22:00; Su 11:00-21:00",
+   "url": "https://memphisminniesbbq.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/647656796",
+   "kind": "lunch"
+  },
+  {
+   "name": "Round Table Pizza",
+   "area": "Hayes Valley",
+   "address": "801 Van Ness Avenue",
+   "tags": [
+    "pizza"
+   ],
+   "note": "Hours: Su-Th 10:00-22:30; Fr,Sa 10:00-23:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/432817704",
+   "kind": "lunch"
+  },
+  {
+   "name": "Ike's Kitchen",
+   "area": "Hayes Valley",
+   "address": "800 Van Ness Avenue",
+   "tags": [
+    "sushi"
+   ],
+   "note": "Hours: Mo-Th 11:00-14:30,17:00-21:30; Fr,Sa 11:00-14:30,17:00-22:30; Su 17:00-21:00",
+   "url": "https://www.ikeskitchensf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/432817745",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cafe Réveille",
+   "area": "Hayes Valley",
+   "address": "201 Steiner Street",
+   "tags": [
+    "sandwich",
+    "coffee shop",
+    "salad",
+    "breakfast",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Su 07:00-19:30",
+   "url": "https://www.cafereveille.com/lowerhaight",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/647656706",
+   "kind": "lunch"
+  },
+  {
+   "name": "Dancing Yak",
+   "area": "Hayes Valley",
+   "address": "280 Valencia Street",
+   "tags": [
+    "nepalese"
+   ],
+   "note": "Hours: Tu-Fr 17:00-22:00; Sa-Su 12:00-15:00,17:00-22:00",
+   "url": "https://dancingyaksf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/998993721",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mezze and Mooore",
+   "area": "Hayes Valley",
+   "address": "198 Guerrero Street",
+   "tags": [
+    "lebanese"
+   ],
+   "note": "Hours: Mo-Sa 12:00-21:00; Su off",
+   "url": "https://www.mezzeandmooore.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/302448629",
+   "kind": "lunch"
+  },
+  {
+   "name": "Beit Rima",
+   "area": "Hayes Valley",
+   "address": "138 Church Street",
+   "tags": [
+    "arab"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://beitrimasf.com/locations/castro/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1106966263",
+   "kind": "lunch"
+  },
+  {
+   "name": "Palmyra Restaurant",
+   "area": "Hayes Valley",
+   "address": "700 Haight Street",
+   "tags": [
+    "mediterranean",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1125115617",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mel's Kitchen",
+   "area": "Hayes Valley",
+   "address": "1050 Van Ness Avenue",
+   "tags": [
+    "american",
+    "breakfast"
+   ],
+   "note": "Hours: Mo-Su 07:00-22:00",
+   "url": "https://melsdrive-in.com/locations/northern-california/mels-kitchen-now-open/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/732009035",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Little Chihuahua",
+   "area": "Hayes Valley",
+   "address": "292 Divisadero Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Mo-Fr 11:00-22:00; Sa-Su 10:00-22:00",
+   "url": "https://www.thelittlechihuahua.com/locations/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1274907133",
+   "kind": "lunch"
+  },
+  {
+   "name": "Napoli Pizza",
+   "area": "Hayes Valley",
+   "address": "1045 Polk Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Su 15:00-27:00",
+   "url": "https://www.napolipizzaofsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/818671268",
+   "kind": "lunch"
+  },
+  {
+   "name": "House of Thai",
+   "area": "Hayes Valley",
+   "address": "901 Larkin Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.houseofthaisf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/732005643",
+   "kind": "lunch"
+  },
+  {
+   "name": "Moulin Rouge Restaurant",
+   "area": "Hayes Valley",
+   "address": "887 Geary Street",
+   "tags": [
+    "american"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/731989597",
+   "kind": "lunch"
+  },
+  {
+   "name": "A La Turca",
+   "area": "Hayes Valley",
+   "address": "869 Geary Street",
+   "tags": [
+    "turkish"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/731950222",
+   "kind": "lunch"
+  },
+  {
+   "name": "Piroo",
+   "area": "Hayes Valley",
+   "address": "1101 Polk Street",
+   "tags": [
+    "nepalese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/732009028",
+   "kind": "lunch"
+  },
+  {
+   "name": "Danny Coyle's",
+   "area": "Hayes Valley",
+   "address": "668 Haight Street",
+   "tags": [
+    "irish",
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo 16:00-22:00; Tu 14:00-22:00; We-Fr 14:00-26:00; Sa 07:00-26:00; Su 07:00-22:00",
+   "url": "http://www.dannycoyles.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61673273",
+   "kind": "evening"
+  },
+  {
+   "name": "Shovels Bar",
+   "area": "Hayes Valley",
+   "address": "460 Larkin Street",
+   "tags": [
+    "burger",
+    "hot dog",
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://shovelsbar.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2259028667",
+   "kind": "evening"
+  },
+  {
+   "name": "Smuggler's Cove",
+   "area": "Hayes Valley",
+   "address": "650 Gough Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Su 17:00-01:45",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1295101185",
+   "kind": "evening"
+  },
+  {
+   "name": "Martuni's",
+   "area": "Hayes Valley",
+   "address": "4 Valencia Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/61675193",
+   "kind": "evening"
+  },
+  {
+   "name": "The Function",
+   "area": "Hayes Valley",
+   "address": "1414 Market Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.thefunctionsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1493456455",
+   "kind": "evening"
+  },
+  {
+   "name": "The Orbit Room",
+   "area": "Hayes Valley",
+   "address": "1900 Market Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Su 16:00+",
+   "url": "https://www.orbitroomsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/529771968",
+   "kind": "evening"
+  },
+  {
+   "name": "Woods Lowside",
+   "area": "Hayes Valley",
+   "address": "530 Haight Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Su,Mo-We 13:00-22:00; Th 13:00-23:00; Fr-Sa 13:00-24:00",
+   "url": "https://www.woodsbeer.com/lowside",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61670779",
+   "kind": "evening"
+  },
+  {
+   "name": "Toronado",
+   "area": "Hayes Valley",
+   "address": "547 Haight Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: 11:00-02:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61671096",
+   "kind": "evening"
+  },
+  {
+   "name": "Noc Noc",
+   "area": "Hayes Valley",
+   "address": "557 Haight Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.nocnocs.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61672275",
+   "kind": "evening"
+  },
+  {
+   "name": "Molotov's",
+   "area": "Hayes Valley",
+   "address": "582 Haight Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: 15:00-02:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/61671382",
+   "kind": "evening"
+  },
+  {
+   "name": "Patricia's Green",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/28015862",
+   "kind": "kids"
+  },
+  {
+   "name": "Patricia's Green",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/28015862",
+   "kind": "weekend"
+  },
+  {
+   "name": "Hayes Valley Playground",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/389991180",
+   "kind": "kids"
+  },
+  {
+   "name": "Hayes Valley Playground",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/389991180",
+   "kind": "weekend"
+  },
+  {
+   "name": "Page & Laguna Mini Park",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/page-laguna-mini-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/137911952",
+   "kind": "kids"
+  },
+  {
+   "name": "Page & Laguna Mini Park",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/page-laguna-mini-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/137911952",
+   "kind": "weekend"
+  },
+  {
+   "name": "Koshland Park",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: 05:00-24:00",
+   "url": "https://sfrecpark.org/facilities/facility/details/koshlandpark-181",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/153905784",
+   "kind": "kids"
+  },
+  {
+   "name": "Koshland Park",
+   "area": "Hayes Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: 05:00-24:00",
+   "url": "https://sfrecpark.org/facilities/facility/details/koshlandpark-181",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/153905784",
+   "kind": "weekend"
+  },
+  {
+   "name": "Sausalito Equator",
+   "area": "Sausalito",
+   "address": "1201 Bridgeway",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "brunch",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Fr 07:30-17:00; Sa-Su 07:30-17:00",
+   "url": "https://www.equatorcoffees.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3069429133",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sushi Ran",
+   "area": "Sausalito",
+   "address": "107 Caledonia Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "Hours: Su-Th 11:45-14:30, 17:00-22:00; Fr 11:45-14:30, 17:00-23:00; Sa 17:00-23:00",
+   "url": "https://www.sushiran.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4595556508",
+   "kind": "lunch"
+  },
+  {
+   "name": "Arawan Thai",
+   "area": "Sausalito",
+   "address": "47 Caledonia Street",
+   "tags": [
+    "thai",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Fr 11:30-14:30,16:30-20:30; Sa-Su 12:00-20:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/9708091633",
+   "kind": "lunch"
+  },
+  {
+   "name": "Salito's Crab House and Prime Rib",
+   "area": "Sausalito",
+   "address": "1200 Bridgeway",
+   "tags": [
+    "seafood",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Su 12:00-20:00",
+   "url": "https://salitoscrabhouse.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2823281301",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sartaj",
+   "area": "Sausalito",
+   "address": "39 Caledonia Street",
+   "tags": [
+    "indian",
+    "nepali"
+   ],
+   "note": "Hours: Mo-We 11:00-21:00; Th-Su 09:00-21:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/5541085222",
+   "kind": "lunch"
+  },
+  {
+   "name": "Osteria Divino",
+   "area": "Sausalito",
+   "address": "37 Caledonia Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Tu off; We-Th,Su 17:00-21:00; Fr-Sa 17:00-22:00",
+   "url": "https://osteriadivino.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/482141195",
+   "kind": "lunch"
+  },
+  {
+   "name": "Joinery",
+   "area": "Sausalito",
+   "address": "300 Turney Street",
+   "tags": [
+    "regional",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Su 11:00-20:00",
+   "url": "https://www.joineryca.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/772808815",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sausalito Gourmet Delicatessen",
+   "area": "Sausalito",
+   "address": "209 Caledonia Street",
+   "tags": [
+    "deli",
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Su 11:00-18:00",
+   "url": "https://www.sausalitogourmet.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2936291077",
+   "kind": "lunch"
+  },
+  {
+   "name": "Firehouse Coffee",
+   "area": "Sausalito",
+   "address": "317 Johnson Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: 06:00-19:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "way/306018332",
+   "kind": "lunch"
+  },
+  {
+   "name": "Poggio",
+   "area": "Sausalito",
+   "address": "777 Bridgeway",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1832805252",
+   "kind": "lunch"
+  },
+  {
+   "name": "Copita",
+   "area": "Sausalito",
+   "address": "739 Bridgeway",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6317172604",
+   "kind": "lunch"
+  },
+  {
+   "name": "Frank & Co",
+   "area": "Sausalito",
+   "address": "721 Bridgeway",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/13124392641",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Spinnaker",
+   "area": "Sausalito",
+   "address": "100 Spinnaker Drive",
+   "tags": [
+    "seafood"
+   ],
+   "note": "Hours: Mo-Su 11:00-23:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/388154189",
+   "kind": "lunch"
+  },
+  {
+   "name": "Napa Valley Burger Company",
+   "area": "Sausalito",
+   "address": "670 Bridgeway",
+   "tags": [
+    "burger",
+    "diner",
+    "american"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6326626490",
+   "kind": "lunch"
+  },
+  {
+   "name": "Le Garage Bistro",
+   "area": "Sausalito",
+   "address": "85 Liberty Ship Way",
+   "tags": [
+    "french",
+    "bistro"
+   ],
+   "note": "Hours: Mo-Th 11:30-20:00; Fr 11:30-20:30; Sa 10:00-14:30, 17:00-20:30; Su 10:00-14:30, 17:00-20:00",
+   "url": "https://legaragesausalito.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3912186535",
+   "kind": "lunch"
+  },
+  {
+   "name": "Venice Pizza",
+   "area": "Sausalito",
+   "address": "629 Bridgeway",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/13398414994",
+   "kind": "lunch"
+  },
+  {
+   "name": "Angelino",
+   "area": "Sausalito",
+   "address": "621 Bridgeway",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/13398414995",
+   "kind": "lunch"
+  },
+  {
+   "name": "Scoma's",
+   "area": "Sausalito",
+   "address": "588 Bridgeway",
+   "tags": [
+    "seafood"
+   ],
+   "note": "Hours: Su-Mo, We-Th 11:30-20:00; Fr-Sa 11:30-21:00",
+   "url": "https://www.scomassausalito.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/669137815",
+   "kind": "lunch"
+  },
+  {
+   "name": "Fred's Coffee Shop",
+   "area": "Sausalito",
+   "address": "1917 Bridgeway",
+   "tags": [
+    "burger"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2684689895",
+   "kind": "lunch"
+  },
+  {
+   "name": "Fish",
+   "area": "Sausalito",
+   "address": "350 Harbor Drive",
+   "tags": [
+    "seafood",
+    "outdoor"
+   ],
+   "note": "Hours: Su-Th 11:30-19:30; Fr,Sa 11:30-20:30",
+   "url": "https://www.331fish.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/482137684",
+   "kind": "lunch"
+  },
+  {
+   "name": "Avatar's",
+   "area": "Sausalito",
+   "address": "2656 Bridgeway",
+   "tags": [
+    "indian"
+   ],
+   "note": "Hours: Mo-Sa 11:00-15:00,17:00-21:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3940890113",
+   "kind": "lunch"
+  },
+  {
+   "name": "Louie’s Delicatessen",
+   "area": "Sausalito",
+   "address": "2656 Bridgeway",
+   "tags": [
+    "sandwich"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://louiesdelisausalito.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2723913162",
+   "kind": "lunch"
+  },
+  {
+   "name": "Smitty’s",
+   "area": "Sausalito",
+   "address": "214 Caledonia Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 14:00-26:00; Sa-Su 13:00-26:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/13124392689",
+   "kind": "evening"
+  },
+  {
+   "name": "No Name Bar",
+   "area": "Sausalito",
+   "address": "757 Bridgeway",
+   "tags": [
+    "bar",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/13124392651",
+   "kind": "evening"
+  },
+  {
+   "name": "Cloud View Park",
+   "area": "Sausalito",
+   "address": "Cloud View Road",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sausalito.gov/Home/Components/FacilityDirectory/FacilityDirectory/28/451",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/1548507239",
+   "kind": "kids"
+  },
+  {
+   "name": "Cloud View Park",
+   "area": "Sausalito",
+   "address": "Cloud View Road",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sausalito.gov/Home/Components/FacilityDirectory/FacilityDirectory/28/451",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/1548507239",
+   "kind": "weekend"
+  },
+  {
+   "name": "Mary Ann Sears Park",
+   "area": "Sausalito",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/1108101765",
+   "kind": "kids"
+  },
+  {
+   "name": "Mary Ann Sears Park",
+   "area": "Sausalito",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/1108101765",
+   "kind": "weekend"
+  },
+  {
+   "name": "Cazneau Park",
+   "area": "Sausalito",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sausalito.gov/Home/Components/FacilityDirectory/FacilityDirectory/26/449",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/544285506",
+   "kind": "kids"
+  },
+  {
+   "name": "Cazneau Park",
+   "area": "Sausalito",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sausalito.gov/Home/Components/FacilityDirectory/FacilityDirectory/26/449",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/544285506",
+   "kind": "weekend"
+  },
+  {
+   "name": "Robin Sweeny Park",
+   "area": "Sausalito",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/667107212",
+   "kind": "kids"
+  },
+  {
+   "name": "Robin Sweeny Park",
+   "area": "Sausalito",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/667107212",
+   "kind": "weekend"
+  },
+  {
+   "name": "Broken Dreams",
+   "area": "Oakland - Downtown",
+   "address": "1312 Broadway",
+   "tags": [
+    "vietnamese",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.brokendreamsoakland.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1629071719",
+   "kind": "lunch"
+  },
+  {
+   "name": "Edible Happy Pizzeria",
+   "area": "Oakland - Downtown",
+   "address": "1438 Broadway",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3927998696",
+   "kind": "lunch"
+  },
+  {
+   "name": "Awaken Cafe",
+   "area": "Oakland - Downtown",
+   "address": "1429 Broadway",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 07:30-18:30",
+   "url": "https://www.awakencafe.com",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2722259999",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tita Becca's",
+   "area": "Oakland - Downtown",
+   "address": "400 15th Street",
+   "tags": [
+    "filipino"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1191700993",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pintoh Thai",
+   "area": "Oakland - Downtown",
+   "address": "1442 Franklin Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "Hours: Mo-Sa 11:30-14:30; 16:30-21:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3927998682",
+   "kind": "lunch"
+  },
+  {
+   "name": "Que Rico",
+   "area": "Oakland - Downtown",
+   "address": "381 15th Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3796598567",
+   "kind": "lunch"
+  },
+  {
+   "name": "Highwire Coffee Roasters",
+   "area": "Oakland - Downtown",
+   "address": "1111 Broadway",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Fr 07:00-15:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1186413846",
+   "kind": "lunch"
+  },
+  {
+   "name": "Biryani Kabab Halal Indian and Pakistani Cuisine",
+   "area": "Oakland - Downtown",
+   "address": "377 13th Street",
+   "tags": [
+    "pakistani",
+    "indian"
+   ],
+   "note": "Hours: Mo-Th 11:00-24:00; Fr 11:00-01:00; Sa-Su 17:00-01:00",
+   "url": "https://thebiryanikabab.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3796482765",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sana'a Café",
+   "area": "Oakland - Downtown",
+   "address": "1200 Clay Street",
+   "tags": [
+    "yemeni",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1186413938",
+   "kind": "lunch"
+  },
+  {
+   "name": "Spices 3!",
+   "area": "Oakland - Downtown",
+   "address": "372 12th Street",
+   "tags": [
+    "chinese",
+    "szechuan"
+   ],
+   "note": "Hours: Mo-Fr 10:30-22:00; Sa 11:30-22:00; Su 11:30-21:30",
+   "url": "https://spices3-oakland.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3796482766",
+   "kind": "lunch"
+  },
+  {
+   "name": "Uccello Coffee",
+   "area": "Oakland - Downtown",
+   "address": "340 14th Street",
+   "tags": [
+    "coffee shop",
+    "wings",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Su-We 07:00-16:00; Th-Sa 07:00-21:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1057316365",
+   "kind": "lunch"
+  },
+  {
+   "name": "Spices Noodle House",
+   "area": "Oakland - Downtown",
+   "address": "369 12th Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "Hours: Th-Tu 10:30-21:30",
+   "url": "https://www.spicesnoodlehouse-oakland.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3796482771",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tay Ho Restaurant",
+   "area": "Oakland - Downtown",
+   "address": "344 12th Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.tayho-oakland.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2399743605",
+   "kind": "lunch"
+  },
+  {
+   "name": "Naan n Curry",
+   "area": "Oakland - Downtown",
+   "address": "1615 Clay Street",
+   "tags": [
+    "indian",
+    "pakistani"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1556251744",
+   "kind": "lunch"
+  },
+  {
+   "name": "Binh Minh Quan",
+   "area": "Oakland - Downtown",
+   "address": "338 12th Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Mo-Sa 11:00-20:30; Su off",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3796482764",
+   "kind": "lunch"
+  },
+  {
+   "name": "Lucuma Kitchen & Bar",
+   "area": "Oakland - Downtown",
+   "address": "1700 Franklin Street",
+   "tags": [
+    "peruvian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.lucumakitchen.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1068562666",
+   "kind": "lunch"
+  },
+  {
+   "name": "Basil Pizzeria",
+   "area": "Oakland - Downtown",
+   "address": "300 13th Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.basilpizzeriaoakland.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/694029464",
+   "kind": "lunch"
+  },
+  {
+   "name": "Take It Easy Thai Food",
+   "area": "Oakland - Downtown",
+   "address": "351 17th Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1068562674",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pho 84",
+   "area": "Oakland - Downtown",
+   "address": "354 17th Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Mo-Fr 11:00-15:00; Sa 12:00-15:00; Mo-Th 17:00-21:00; Fr 17:30-22:00; Sa 17:30-21:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1068562672",
+   "kind": "lunch"
+  },
+  {
+   "name": "Aburaya",
+   "area": "Oakland - Downtown",
+   "address": "362 17th Street",
+   "tags": [
+    "fried chicken",
+    "japanese"
+   ],
+   "note": "Hours: Mo-Fr 11:00-21:00; Sa 17:00-21:00",
+   "url": "https://aburayaoakland.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3641807732",
+   "kind": "lunch"
+  },
+  {
+   "name": "Shooting Star Cafe",
+   "area": "Oakland - Downtown",
+   "address": "1022 Webster Street",
+   "tags": [
+    "chinese",
+    "hong kong"
+   ],
+   "note": "Hours: Mo-Su 07:30-24:00",
+   "url": "https://www.shootingstarhkcafe.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1585385137",
+   "kind": "lunch"
+  },
+  {
+   "name": "Curry Up Now",
+   "area": "Oakland - Downtown",
+   "address": "1745 San Pablo Avenue",
+   "tags": [
+    "indian"
+   ],
+   "note": "Hours: Mo-Th 11:00-21:00; Fr,Sa 11:00-22:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1280974508",
+   "kind": "lunch"
+  },
+  {
+   "name": "Five & Dime",
+   "area": "Oakland - Downtown",
+   "address": "329 14th Street",
+   "tags": [
+    "american",
+    "bar",
+    "beer",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/8881535868",
+   "kind": "evening"
+  },
+  {
+   "name": "Sláinte Pub & Grub",
+   "area": "Oakland - Downtown",
+   "address": "131 Broadway",
+   "tags": [
+    "irish",
+    "bar",
+    "beer",
+    "outdoor"
+   ],
+   "note": "Hours: Tu-Th, Su 10:00-23:00; Fr-Sa 10:00-24:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/430548096",
+   "kind": "evening"
+  },
+  {
+   "name": "Little Bird",
+   "area": "Oakland - Downtown",
+   "address": "435 13th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3056134585",
+   "kind": "evening"
+  },
+  {
+   "name": "Sessions on 15th",
+   "area": "Oakland - Downtown",
+   "address": "406 15th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/10288955935",
+   "kind": "evening"
+  },
+  {
+   "name": "The Hatch",
+   "area": "Oakland - Downtown",
+   "address": "402 15th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3796598573",
+   "kind": "evening"
+  },
+  {
+   "name": "Golden Ratio",
+   "area": "Oakland - Downtown",
+   "address": "1517 Franklin Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1186413940",
+   "kind": "evening"
+  },
+  {
+   "name": "Bar Shiru",
+   "area": "Oakland - Downtown",
+   "address": "1600 Telegraph Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.barshiru.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6522076752",
+   "kind": "evening"
+  },
+  {
+   "name": "Cafe Van Kleef",
+   "area": "Oakland - Downtown",
+   "address": "1621 Telegraph Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://cafevankleef.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/8895940363",
+   "kind": "evening"
+  },
+  {
+   "name": "Theory",
+   "area": "Oakland - Downtown",
+   "address": "1644 Telegraph Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1191708023",
+   "kind": "evening"
+  },
+  {
+   "name": "Shadow Ultra Lounge",
+   "area": "Oakland - Downtown",
+   "address": "341 13th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2722205800",
+   "kind": "evening"
+  },
+  {
+   "name": "Frank H. Ogawa Plaza",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/22921484",
+   "kind": "kids"
+  },
+  {
+   "name": "Frank H. Ogawa Plaza",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/22921484",
+   "kind": "weekend"
+  },
+  {
+   "name": "Henry J. Kaiser Memorial Park",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.oaklandca.gov/services/parks-and-recreation-index/parks",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/28011729",
+   "kind": "kids"
+  },
+  {
+   "name": "Henry J. Kaiser Memorial Park",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.oaklandca.gov/services/parks-and-recreation-index/parks",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/28011729",
+   "kind": "weekend"
+  },
+  {
+   "name": "Lafayette Square",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/25172961",
+   "kind": "kids"
+  },
+  {
+   "name": "Lafayette Square",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/25172961",
+   "kind": "weekend"
+  },
+  {
+   "name": "Lincoln Square Park",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/25173034",
+   "kind": "kids"
+  },
+  {
+   "name": "Lincoln Square Park",
+   "area": "Oakland - Downtown",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/25173034",
+   "kind": "weekend"
+  },
+  {
+   "name": "Il Pollaio",
+   "area": "North Beach",
+   "address": "555 Columbus Avenue",
+   "tags": [
+    "chicken"
+   ],
+   "note": "Hours: Mo-Sa 11:30-14:30, 16:00-21:00",
+   "url": "https://www.ilpollaiosf.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371250730",
+   "kind": "lunch"
+  },
+  {
+   "name": "Compton's Coffe House",
+   "area": "North Beach",
+   "address": "543 Columbus Avenue",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 07:00-17:00",
+   "url": "https://www.comptonscoffee.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/613270075",
+   "kind": "lunch"
+  },
+  {
+   "name": "Original Joe's",
+   "area": "North Beach",
+   "address": "601 Union Street",
+   "tags": [
+    "italian",
+    "burger",
+    "pasta",
+    "steak",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th 15:00-22:00; Fr 12:00-22:00; Sa,Su 10:00-22:00",
+   "url": "https://originaljoes.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/366701342",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cavalli Cafe",
+   "area": "North Beach",
+   "address": "1441 Stockton Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/366700371",
+   "kind": "lunch"
+  },
+  {
+   "name": "Caffé Sport",
+   "area": "North Beach",
+   "address": "574 Green Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/334976777",
+   "kind": "lunch"
+  },
+  {
+   "name": "Chubby Noodle",
+   "area": "North Beach",
+   "address": "570 Green Street",
+   "tags": [
+    "noodle",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Fr 17:00-22:00; Sa,Su 10:00-22:00",
+   "url": "https://www.chubbynoodle.com/north-beach",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/440104799",
+   "kind": "lunch"
+  },
+  {
+   "name": "Barbara Pinseria & Cocktail Bar",
+   "area": "North Beach",
+   "address": "431 Columbus Avenue",
+   "tags": [
+    "italian",
+    "pizza",
+    "pinsa"
+   ],
+   "note": "Hours: Su-Th 12:00-22:00; Fr-Sa 12:00-23:00",
+   "url": "https://www.sfbarbara.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/366699257",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sotto Mare",
+   "area": "North Beach",
+   "address": "552 Green Street",
+   "tags": [
+    "italian",
+    "seafood",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th 11:30-21:00; Fr,Sa 11:30-22:00; Su 11:30-21:00",
+   "url": "https://www.sottomaresf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/440110077",
+   "kind": "lunch"
+  },
+  {
+   "name": "Don Pistos",
+   "area": "North Beach",
+   "address": "510 Union Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.donpistos.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371252330",
+   "kind": "lunch"
+  },
+  {
+   "name": "North Beach Pizza",
+   "area": "North Beach",
+   "address": "1462 Grant Avenue",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.northbeachpizza.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371002317",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sushi on North Beach - Katsu",
+   "area": "North Beach",
+   "address": "745 Columbus Avenue",
+   "tags": [
+    "japanese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371250373",
+   "kind": "lunch"
+  },
+  {
+   "name": "Dupont Thai",
+   "area": "North Beach",
+   "address": "1398 Grant Avenue",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/331389382",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bocce Cafe",
+   "area": "North Beach",
+   "address": "478 Green Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/331665706",
+   "kind": "lunch"
+  },
+  {
+   "name": "Maykadeh Persian Restaurant",
+   "area": "North Beach",
+   "address": "470 Green Street",
+   "tags": [
+    "persian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/331665816",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mo's Grill",
+   "area": "North Beach",
+   "address": "1322 Grant Avenue",
+   "tags": [
+    "burger"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371251496",
+   "kind": "lunch"
+  },
+  {
+   "name": "Caffe Trieste",
+   "area": "North Beach",
+   "address": "601 Vallejo Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 07:00-22:00",
+   "url": "https://caffetrieste.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/331389010",
+   "kind": "lunch"
+  },
+  {
+   "name": "La Trappe",
+   "area": "North Beach",
+   "address": "800 Greenwich Street",
+   "tags": [
+    "belgian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.latrappecafe.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371251141",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tommaso's Ristorante Italiano",
+   "area": "North Beach",
+   "address": "1042 Kearny Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Tu-Sa 17:00-22:30; Su 16:00-21:30",
+   "url": "https://www.tommasos.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/331666407",
+   "kind": "lunch"
+  },
+  {
+   "name": "Freddie's Sandwiches",
+   "area": "North Beach",
+   "address": "300 Francisco Street",
+   "tags": [
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Fr 07:30-16:00; Sa 08:30-16:00",
+   "url": "http://orderfreddiessandwiches.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/371250864",
+   "kind": "lunch"
+  },
+  {
+   "name": "Leopold's",
+   "area": "North Beach",
+   "address": "2400 Polk Street",
+   "tags": [
+    "german"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.leopoldssf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/766264586",
+   "kind": "lunch"
+  },
+  {
+   "name": "Hummus Mediterranean Kitchen",
+   "area": "North Beach",
+   "address": "2164 Polk Street",
+   "tags": [
+    "mediterranean"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/747853234",
+   "kind": "lunch"
+  },
+  {
+   "name": "Little Kitchen",
+   "area": "North Beach",
+   "address": "2401 Polk Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/412086707",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kennedy's Irish Pub & Curry House",
+   "area": "North Beach",
+   "address": "1040 Columbus Avenue",
+   "tags": [
+    "indian",
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.kennedyscurry.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/371251931",
+   "kind": "evening"
+  },
+  {
+   "name": "The Boardroom",
+   "area": "North Beach",
+   "address": "1609 Powell Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/366723406",
+   "kind": "evening"
+  },
+  {
+   "name": "Columbus Cafe",
+   "area": "North Beach",
+   "address": "562 Green Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 14:00-26:00; Sa,Su 12:00-26:00",
+   "url": "https://www.columbuscafesf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/440106745",
+   "kind": "evening"
+  },
+  {
+   "name": "Grant and Green",
+   "area": "North Beach",
+   "address": "1371 Grant Avenue",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/366722014",
+   "kind": "evening"
+  },
+  {
+   "name": "Otherwise Brewing",
+   "area": "North Beach",
+   "address": "1402 Grant Avenue",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.otherwisebrewing.com/taproom#menu",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1680714458",
+   "kind": "evening"
+  },
+  {
+   "name": "The Saloon",
+   "area": "North Beach",
+   "address": "1232 Grant Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.sfblues.net/Saloon.html",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1607230272",
+   "kind": "evening"
+  },
+  {
+   "name": "15 Romolo",
+   "area": "North Beach",
+   "address": "15 Romolo Place",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo-Fr 17:00-02:00; Sa-Su 12:00-02:00",
+   "url": "https://www.15romolo.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/366713190",
+   "kind": "evening"
+  },
+  {
+   "name": "Long Weekend Havana",
+   "area": "North Beach",
+   "address": "270 Columbus Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1617351128",
+   "kind": "evening"
+  },
+  {
+   "name": "Specs Bar",
+   "area": "North Beach",
+   "address": "12 Saroyan Place",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/366710420",
+   "kind": "evening"
+  },
+  {
+   "name": "Cafe Tosca",
+   "area": "North Beach",
+   "address": "242 Columbus Avenue",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/366711368",
+   "kind": "evening"
+  },
+  {
+   "name": "Joe DiMaggio Playground",
+   "area": "North Beach",
+   "address": "651 Lombard Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "http://dimaggioplayground.org/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/35065721",
+   "kind": "kids"
+  },
+  {
+   "name": "Joe DiMaggio Playground",
+   "area": "North Beach",
+   "address": "651 Lombard Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "http://dimaggioplayground.org/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/35065721",
+   "kind": "weekend"
+  },
+  {
+   "name": "Broadway Tunnel West Mini Park",
+   "area": "North Beach",
+   "address": "1201 Broadway",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Broadway-Tunnel-West-Mini-Park-327",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/72024278",
+   "kind": "kids"
+  },
+  {
+   "name": "Broadway Tunnel West Mini Park",
+   "area": "North Beach",
+   "address": "1201 Broadway",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Broadway-Tunnel-West-Mini-Park-327",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/72024278",
+   "kind": "weekend"
+  },
+  {
+   "name": "Marini Plaza",
+   "area": "North Beach",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/32857635",
+   "kind": "kids"
+  },
+  {
+   "name": "Marini Plaza",
+   "area": "North Beach",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/32857635",
+   "kind": "weekend"
+  },
+  {
+   "name": "Washington Square Park",
+   "area": "North Beach",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/18583270",
+   "kind": "kids"
+  },
+  {
+   "name": "Washington Square Park",
+   "area": "North Beach",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/18583270",
+   "kind": "weekend"
+  },
+  {
+   "name": "Hamano Sushi",
+   "area": "Noe Valley",
+   "address": "1332 Castro Street",
+   "tags": [
+    "japanese",
+    "sushi",
+    "omakase"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://hamanosushi.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713279742",
+   "kind": "lunch"
+  },
+  {
+   "name": "Subs, Inc.",
+   "area": "Noe Valley",
+   "address": "1300 Castro Street",
+   "tags": [
+    "sandwich",
+    "ice cream"
+   ],
+   "note": "Hours: Mo-Su 10:30-18:00",
+   "url": "https://www.subsincsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713256844",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bonita",
+   "area": "Noe Valley",
+   "address": "4063 24th Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Su-Th 10:00-21:00; Fr-Sa 10:00-22:00",
+   "url": "https://sfbonita.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713269531",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tung Sing Restaurant",
+   "area": "Noe Valley",
+   "address": "4015 24th Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://tung-sing-restaurant.hub.biz/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713269593",
+   "kind": "lunch"
+  },
+  {
+   "name": "Barney's Gourmet Hamburgers",
+   "area": "Noe Valley",
+   "address": "4138 24th Street",
+   "tags": [
+    "burger"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.barneyshamburgers.com/barneys-san-francisco",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713256896",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pancake Boy",
+   "area": "Noe Valley",
+   "address": "4007 24th Street",
+   "tags": [
+    "american",
+    "breakfast"
+   ],
+   "note": "Hours: Mo-Su 09:00-14:00",
+   "url": "https://pancakeboysf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713269628",
+   "kind": "lunch"
+  },
+  {
+   "name": "Novy",
+   "area": "Noe Valley",
+   "address": "4000 24th Street",
+   "tags": [
+    "greek",
+    "california"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.novysf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713269583",
+   "kind": "lunch"
+  },
+  {
+   "name": "Noe Indian Kitchen",
+   "area": "Noe Valley",
+   "address": "4166 24th Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713256899",
+   "kind": "lunch"
+  },
+  {
+   "name": "Starbucks",
+   "area": "Noe Valley",
+   "address": "3995 24th Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.starbucks.com/store-locator/store/12166/24th-noe-3995-24th-street-san-francisco-ca-941143703-us",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1713269532",
+   "kind": "lunch"
+  },
+  {
+   "name": "Dash",
+   "area": "Noe Valley",
+   "address": "737 Diamond Street",
+   "tags": [
+    "japanese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713256857",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bernie's",
+   "area": "Noe Valley",
+   "address": "3966 24th Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1713269606",
+   "kind": "lunch"
+  },
+  {
+   "name": "Dumpling Kitchen",
+   "area": "Noe Valley",
+   "address": "3913 24th Street",
+   "tags": [
+    "chinese",
+    "outdoor"
+   ],
+   "note": "Hours: Mo,Tu,Th 11:00-15:00, 17:00-20:30; We off; Fr 11:00-15:00, 17:00-20:45; Sa,Su 11:00-20:45",
+   "url": "https://dumplingkitchenca.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2622986361",
+   "kind": "lunch"
+  },
+  {
+   "name": "Firefly",
+   "area": "Noe Valley",
+   "address": "4288 24th Street",
+   "tags": [
+    "regional"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/360451646",
+   "kind": "lunch"
+  },
+  {
+   "name": "Philz Coffee",
+   "area": "Noe Valley",
+   "address": "4298 24th Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/360450263",
+   "kind": "lunch"
+  },
+  {
+   "name": "Noe Cafe",
+   "area": "Noe Valley",
+   "address": "1299 Sanchez Street",
+   "tags": [
+    "coffee shop",
+    "beer",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://noecafe.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/360463558",
+   "kind": "lunch"
+  },
+  {
+   "name": "Rin's Thai",
+   "area": "Noe Valley",
+   "address": "4301 24th Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://rinthaisf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/994218560",
+   "kind": "lunch"
+  },
+  {
+   "name": "Saru",
+   "area": "Noe Valley",
+   "address": "3856 24th Street",
+   "tags": [
+    "japanese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1713269574",
+   "kind": "lunch"
+  },
+  {
+   "name": "Ingredients",
+   "area": "Noe Valley",
+   "address": "1298 Church Street",
+   "tags": [
+    "fusion"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://ingredientssf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2625069265",
+   "kind": "lunch"
+  },
+  {
+   "name": "Lovejoy's Tea Room",
+   "area": "Noe Valley",
+   "address": "1351 Church Street",
+   "tags": [
+    "tea",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-We off; Th-Su 11:00-17:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/360464463",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bernal Heights Pizzeria",
+   "area": "Noe Valley",
+   "address": "1361 Church Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.bernalheightspizzeria.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/360464146",
+   "kind": "lunch"
+  },
+  {
+   "name": "Eric's Chinese Restaurant",
+   "area": "Noe Valley",
+   "address": "1500 Church Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2528136835",
+   "kind": "lunch"
+  },
+  {
+   "name": "Alice's",
+   "area": "Noe Valley",
+   "address": "1599 Sanchez Street",
+   "tags": [
+    "chinese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://alicesrestaurantsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2629023876",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Peaks",
+   "area": "Noe Valley",
+   "address": "1316 Castro Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1713269638",
+   "kind": "evening"
+  },
+  {
+   "name": "The Valley Tavern",
+   "area": "Noe Valley",
+   "address": "4054 24th Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1713269625",
+   "kind": "evening"
+  },
+  {
+   "name": "The Dubliner",
+   "area": "Noe Valley",
+   "address": "3838 24th Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1713269598",
+   "kind": "evening"
+  },
+  {
+   "name": "The Bar on Dolores",
+   "area": "Noe Valley",
+   "address": "1600 Dolores Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Sa 15:00-02:00, Fr 14:00-02:00, Sa 09:00-02:00,09:30-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3577376253",
+   "kind": "evening"
+  },
+  {
+   "name": "Dovre Club",
+   "area": "Noe Valley",
+   "address": "1498 Valencia Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Su 14:00-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/582781745",
+   "kind": "evening"
+  },
+  {
+   "name": "Rock Bar",
+   "area": "Noe Valley",
+   "address": "80 29th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://rockbarsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3441484302",
+   "kind": "evening"
+  },
+  {
+   "name": "Royal Cuckoo",
+   "area": "Noe Valley",
+   "address": "3202 Mission Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Th 16:00-02:00, Fr,Sa 15:00-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2627676156",
+   "kind": "evening"
+  },
+  {
+   "name": "El Rio",
+   "area": "Noe Valley",
+   "address": "3158 Mission Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.elriosf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2317662705",
+   "kind": "evening"
+  },
+  {
+   "name": "Mothership",
+   "area": "Noe Valley",
+   "address": "3152 Mission Street",
+   "tags": [
+    "bar",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://mothershipbar.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4114603089",
+   "kind": "evening"
+  },
+  {
+   "name": "Fat Cat x The Mantis",
+   "area": "Noe Valley",
+   "address": "3215 Mission Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.fatcatsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4139840856",
+   "kind": "evening"
+  },
+  {
+   "name": "Duncan-Castro Open Space",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/duncan-castro-open-space/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85689113",
+   "kind": "kids"
+  },
+  {
+   "name": "Duncan-Castro Open Space",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/duncan-castro-open-space/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85689113",
+   "kind": "weekend"
+  },
+  {
+   "name": "Noe Valley Courts",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85687774",
+   "kind": "kids"
+  },
+  {
+   "name": "Noe Valley Courts",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85687774",
+   "kind": "weekend"
+  },
+  {
+   "name": "Douglass Playground",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/douglass-playground/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85684053",
+   "kind": "kids"
+  },
+  {
+   "name": "Douglass Playground",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/douglass-playground/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85684053",
+   "kind": "weekend"
+  },
+  {
+   "name": "29th & Diamond Open Space",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/29th-Diamond-Open-Space-322",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85888165",
+   "kind": "kids"
+  },
+  {
+   "name": "29th & Diamond Open Space",
+   "area": "Noe Valley",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/29th-Diamond-Open-Space-322",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85888165",
+   "kind": "weekend"
+  },
+  {
+   "name": "La Tortilla",
+   "area": "Castro",
+   "address": "495 Castro Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141844",
+   "kind": "lunch"
+  },
+  {
+   "name": "Oz Pizza",
+   "area": "Castro",
+   "address": "508 Castro Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "Hours: Su-We 11:00-24:00, Th-Sa 11:00-02:00",
+   "url": "https://www.ozpizzasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1966302662",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Posh Bagel",
+   "area": "Castro",
+   "address": "495 Castro Street",
+   "tags": [
+    "bagel"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141925",
+   "kind": "lunch"
+  },
+  {
+   "name": "Wasabi Bistro",
+   "area": "Castro",
+   "address": "524 Castro Street",
+   "tags": [
+    "sushi"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "http://www.wasabibistrosf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2321299131",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tanglad",
+   "area": "Castro",
+   "address": "469 Castro Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Mo-Th 11:00-21:00; Fr-Su 11:00-22:00",
+   "url": "https://tangladsf.webflow.io/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141892",
+   "kind": "lunch"
+  },
+  {
+   "name": "Fratelli Pizza",
+   "area": "Castro",
+   "address": "460 Castro Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/586756670",
+   "kind": "lunch"
+  },
+  {
+   "name": "Thailand Restaurant",
+   "area": "Castro",
+   "address": "438A Castro Street",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://thailandrestaurantsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/586754870",
+   "kind": "lunch"
+  },
+  {
+   "name": "Marcello's Pizza",
+   "area": "Castro",
+   "address": "420 Castro Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://marcellospizzasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141869",
+   "kind": "lunch"
+  },
+  {
+   "name": "El Tucàn",
+   "area": "Castro",
+   "address": "3600 16th Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1493707716",
+   "kind": "lunch"
+  },
+  {
+   "name": "Dinosaurs",
+   "area": "Castro",
+   "address": "2275 Market Street",
+   "tags": [
+    "vietnamese",
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Su 10:00-19:00",
+   "url": "https://www.eatdinosaurs.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1901076576",
+   "kind": "lunch"
+  },
+  {
+   "name": "U Dessert Story",
+   "area": "Castro",
+   "address": "3489 16th Street",
+   "tags": [
+    "dessert",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1586380649",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tara Indian Cuisine",
+   "area": "Castro",
+   "address": "2217 Market Street",
+   "tags": [
+    "indian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/586719219",
+   "kind": "lunch"
+  },
+  {
+   "name": "L'ardoise Bistro",
+   "area": "Castro",
+   "address": "151 Noe Street",
+   "tags": [
+    "french"
+   ],
+   "note": "Hours: Mo,Su off",
+   "url": "https://www.ardoisesf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1901021509",
+   "kind": "lunch"
+  },
+  {
+   "name": "Church Street Cafe",
+   "area": "Castro",
+   "address": "260 Church Street",
+   "tags": [
+    "coffee shop",
+    "sandwich",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2187987262",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Slice",
+   "area": "Castro",
+   "address": "719 14th Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1507839214",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tavola Rustica",
+   "area": "Castro",
+   "address": "215 Church Street",
+   "tags": [
+    "italian"
+   ],
+   "note": "Hours: Mo-Th 16:00-21:00; Fr-Sa 11:00-22:00; Su 11:00-21:00",
+   "url": "https://www.tavolarustica.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/459507740",
+   "kind": "lunch"
+  },
+  {
+   "name": "Beit Rima",
+   "area": "Castro",
+   "address": "86 Carl Street",
+   "tags": [
+    "middle eastern",
+    "outdoor"
+   ],
+   "note": "Hours: Fr,Sa 11:00-21:30; We,Th,Su,Mo 11:00-21:00",
+   "url": "https://beitrimasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/974267676",
+   "kind": "lunch"
+  },
+  {
+   "name": "Blue Barn Cole Valley",
+   "area": "Castro",
+   "address": "901 Cole Street",
+   "tags": [
+    "salad",
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Su 11:00-20:00",
+   "url": "http://bluebarngourmet.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/974267637",
+   "kind": "lunch"
+  },
+  {
+   "name": "Abu Salim Middle Eastern Grill",
+   "area": "Castro",
+   "address": "1599 Haight Street",
+   "tags": [
+    "middle eastern"
+   ],
+   "note": "Hours: Mo-Su 11:00-21:00",
+   "url": "https://www.abusalimsf.com/home",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1983510725",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bite Me Sandwiches",
+   "area": "Castro",
+   "address": "701 Cole Street",
+   "tags": [
+    "sandwich",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 10:00-18:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1014031956",
+   "kind": "lunch"
+  },
+  {
+   "name": "Lava Java",
+   "area": "Castro",
+   "address": "852 Stanyan Street",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 07:00-17:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/666369832",
+   "kind": "lunch"
+  },
+  {
+   "name": "Fish in the Box",
+   "area": "Castro",
+   "address": "800 Masonic Avenue",
+   "tags": [
+    "japanese",
+    "sushi",
+    "poke",
+    "donburi"
+   ],
+   "note": "Hours: Mo-Sa 11:30-14:00,16:30-20:30",
+   "url": "https://www.fishinthebox-sf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1957272522",
+   "kind": "lunch"
+  },
+  {
+   "name": "Bar 49",
+   "area": "Castro",
+   "address": "2295 Market Street",
+   "tags": [
+    "mexican",
+    "salvadorean",
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2624201225",
+   "kind": "evening"
+  },
+  {
+   "name": "Cervecería de MateVeza",
+   "area": "Castro",
+   "address": "3801 18th Street",
+   "tags": [
+    "empanada",
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 15:00-21:00; Sa,Su 12:00-21:00",
+   "url": "http://cerveceriasf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2629113680",
+   "kind": "evening"
+  },
+  {
+   "name": "Copper",
+   "area": "Castro",
+   "address": "4092 18th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318159223",
+   "kind": "evening"
+  },
+  {
+   "name": "Blush! Wine Bar",
+   "area": "Castro",
+   "address": "476 Castro Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://blushwinebar.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141915",
+   "kind": "evening"
+  },
+  {
+   "name": "The Mix",
+   "area": "Castro",
+   "address": "18th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2624201230",
+   "kind": "evening"
+  },
+  {
+   "name": "QBar",
+   "area": "Castro",
+   "address": "456 Castro Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://qbar-sf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141894",
+   "kind": "evening"
+  },
+  {
+   "name": "Toad Hall",
+   "area": "Castro",
+   "address": "4146 18th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://toadhallbar.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2321383079",
+   "kind": "evening"
+  },
+  {
+   "name": "The Edge",
+   "area": "Castro",
+   "address": "4149 18th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://edgesf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318796883",
+   "kind": "evening"
+  },
+  {
+   "name": "Moby Dick",
+   "area": "Castro",
+   "address": "4049 18th Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.facebook.com/MobyDickBar/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3684500782",
+   "kind": "evening"
+  },
+  {
+   "name": "Twin Peaks Tavern",
+   "area": "Castro",
+   "address": "401 Castro Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://twinpeakstavern.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2318141907",
+   "kind": "evening"
+  },
+  {
+   "name": "Harvey Milk Plaza",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.harveymilkplaza.org/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/225526801",
+   "kind": "kids"
+  },
+  {
+   "name": "Harvey Milk Plaza",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.harveymilkplaza.org/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/225526801",
+   "kind": "weekend"
+  },
+  {
+   "name": "Pink Triangle Memorial",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://pinktrianglememorial.org/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/219036309",
+   "kind": "kids"
+  },
+  {
+   "name": "Pink Triangle Memorial",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://pinktrianglememorial.org/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/219036309",
+   "kind": "weekend"
+  },
+  {
+   "name": "Noe & Beaver Mini Park Community Garden",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/noe-beaver-mini-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/115433818",
+   "kind": "kids"
+  },
+  {
+   "name": "Noe & Beaver Mini Park Community Garden",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/destination/noe-beaver-mini-park/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/115433818",
+   "kind": "weekend"
+  },
+  {
+   "name": "Community Park",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/156681276",
+   "kind": "kids"
+  },
+  {
+   "name": "Community Park",
+   "area": "Castro",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/156681276",
+   "kind": "weekend"
+  },
+  {
+   "name": "Genki Ramen",
+   "area": "Richmond",
+   "address": "4014 Geary Boulevard",
+   "tags": [
+    "japanese",
+    "ramen"
+   ],
+   "note": "Hours: Mo 17:00-20:30; We-Su 17:00-20:30; Tu off",
+   "url": "http://genkiramen.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1763183949",
+   "kind": "lunch"
+  },
+  {
+   "name": "Yuubi Japanese Restaurant",
+   "area": "Richmond",
+   "address": "501 Balboa Street",
+   "tags": [
+    "japanese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.yuubisf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1827268752",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cantina Los Mayos",
+   "area": "Richmond",
+   "address": "431 Balboa Street",
+   "tags": [
+    "mexican",
+    "brunch"
+   ],
+   "note": "Hours: Mo-Tu off; We-Th 17:00-21:00; Fr 17:00-22:00; Sa 10:00-14:00,17:00-22:00; Su 10:00-14:00,17:00-21:00",
+   "url": "https://cantinalosmayas.com",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1765718671",
+   "kind": "lunch"
+  },
+  {
+   "name": "Muguboka",
+   "area": "Richmond",
+   "address": "401 Balboa Street",
+   "tags": [
+    "korean"
+   ],
+   "note": "Hours: Mo,We-Th 16:30-21:00; Tu off; Fr-Sa 11:30-21:00; Su 12:00-21:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1765718669",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kitchen Istanbul",
+   "area": "Richmond",
+   "address": "349 Clement Street",
+   "tags": [
+    "turkish",
+    "mediterranean"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.kitchenistanbulsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1819811607",
+   "kind": "lunch"
+  },
+  {
+   "name": "Burma Superstar",
+   "area": "Richmond",
+   "address": "309 Clement Street",
+   "tags": [
+    "asian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.burmasuperstar.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1769223515",
+   "kind": "lunch"
+  },
+  {
+   "name": "Hamburger Haven",
+   "area": "Richmond",
+   "address": "800 Clement Street",
+   "tags": [
+    "burger"
+   ],
+   "note": "Hours: Mo-Fr 07:30-14:00; Sa-Su 07:30-21:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/448038877",
+   "kind": "lunch"
+  },
+  {
+   "name": "All Stars",
+   "area": "Richmond",
+   "address": "901 Clement Street",
+   "tags": [
+    "donut",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-We 05:00-18:00; Th 05:00-24:00; Fr 00:00-01:00,05:00-24:00; Sa 00:00-24:00; Su 00:00-18:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/448036312",
+   "kind": "lunch"
+  },
+  {
+   "name": "lily",
+   "area": "Richmond",
+   "address": "225 Clement Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "Hours: Fr-Su 11:00-14:00,17:00-21:00; Mo,We,Th 17:00-21:00",
+   "url": "https://www.lilyonclement.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1819811595",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pasta Supply Co",
+   "area": "Richmond",
+   "address": "236 Clement Street",
+   "tags": [
+    "italian",
+    "pasta"
+   ],
+   "note": "Hours: Mo-Su 11:00-16:00,16:30-21:00",
+   "url": "https://www.pastasupplyco.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2581514561",
+   "kind": "lunch"
+  },
+  {
+   "name": "Giorgio's Pizza",
+   "area": "Richmond",
+   "address": "151 Clement Street",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.giorgiospizza.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/448038881",
+   "kind": "lunch"
+  },
+  {
+   "name": "Shabu club",
+   "area": "Richmond",
+   "address": "951 Clement Street",
+   "tags": [
+    "asian",
+    "japanese"
+   ],
+   "note": "Hours: 17:00-21:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/448036308",
+   "kind": "lunch"
+  },
+  {
+   "name": "Le Soleil",
+   "area": "Richmond",
+   "address": "133 Clement Street",
+   "tags": [
+    "vietnamese",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1819811593",
+   "kind": "lunch"
+  },
+  {
+   "name": "B Star",
+   "area": "Richmond",
+   "address": "127 Clement Street",
+   "tags": [
+    "asian",
+    "burmese",
+    "thai",
+    "chinese",
+    "filipino",
+    "korean",
+    "indian",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.bstarbar.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1819811580",
+   "kind": "lunch"
+  },
+  {
+   "name": "Eats",
+   "area": "Richmond",
+   "address": "50 Clement Street",
+   "tags": [
+    "american"
+   ],
+   "note": "Hours: Mo-Fr,Su 08:00-18:45; Sa 08:00-14:30; PH closed",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1819811583",
+   "kind": "lunch"
+  },
+  {
+   "name": "Rose Pizzeria",
+   "area": "Richmond",
+   "address": "1 Clement Street",
+   "tags": [
+    "pizza",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.rosepizzeria.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/448038883",
+   "kind": "lunch"
+  },
+  {
+   "name": "Lou's Cafe",
+   "area": "Richmond",
+   "address": "5017 Geary Boulevard",
+   "tags": [
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Fr 08:00-19:00; Sa 08:00-16:00; Su 09:00-16:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1816911117",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cup & Cake Cafe",
+   "area": "Richmond",
+   "address": "3500 Geary Boulevard",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3189444968",
+   "kind": "lunch"
+  },
+  {
+   "name": "Native Burger",
+   "area": "Richmond",
+   "address": "3420 Geary Boulevard",
+   "tags": [
+    "burger"
+   ],
+   "note": "Hours: Mo-Sa 11:00-21:00; Su 11:00-15:30; PH closed",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2783222076",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kabuto Restaurant",
+   "area": "Richmond",
+   "address": "5121 Geary Boulevard",
+   "tags": [
+    "japanese",
+    "outdoor"
+   ],
+   "note": "Hours: Mo off; Tu-Sa 11:30-14:30,17:30-22:30; Su 17:00-21:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1718708780",
+   "kind": "lunch"
+  },
+  {
+   "name": "Earth's Coffee",
+   "area": "Richmond",
+   "address": "3400 Geary Boulevard",
+   "tags": [
+    "coffee shop",
+    "ice cream",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3189444967",
+   "kind": "lunch"
+  },
+  {
+   "name": "Mel's Drive-In",
+   "area": "Richmond",
+   "address": "3355 Geary Boulevard",
+   "tags": [
+    "american",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3189444970",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Pig & Whistle",
+   "area": "Richmond",
+   "address": "2801 Geary Boulevard",
+   "tags": [
+    "fish and chips",
+    "british",
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: 11:30-02:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1982439159",
+   "kind": "evening"
+  },
+  {
+   "name": "Maggie & Mac's",
+   "area": "Richmond",
+   "address": "1326 9th Avenue",
+   "tags": [
+    "pizza",
+    "sandwich",
+    "salad",
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "way/267055246",
+   "kind": "evening"
+  },
+  {
+   "name": "The Bitter End",
+   "area": "Richmond",
+   "address": "Clement Street",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1819811599",
+   "kind": "evening"
+  },
+  {
+   "name": "High Treason",
+   "area": "Richmond",
+   "address": "443 Clement Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6791676291",
+   "kind": "evening"
+  },
+  {
+   "name": "540 Club",
+   "area": "Richmond",
+   "address": "540 Clement Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 14:00-26:00; Sa-Su 00:00-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4161865223",
+   "kind": "evening"
+  },
+  {
+   "name": "Richmond Republic Draught House",
+   "area": "Richmond",
+   "address": "642 Clement Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.richmondrepublicsf.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4814206526",
+   "kind": "evening"
+  },
+  {
+   "name": "O'Keeffe's",
+   "area": "Richmond",
+   "address": "598 5th Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/6836067589",
+   "kind": "evening"
+  },
+  {
+   "name": "Scarlet Lounge",
+   "area": "Richmond",
+   "address": "408 Clement Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 16:00+; Sa-Su 12:00+",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1819811597",
+   "kind": "evening"
+  },
+  {
+   "name": "Neck of the Woods",
+   "area": "Richmond",
+   "address": "406 Clement Street",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/4513023134",
+   "kind": "evening"
+  },
+  {
+   "name": "Buckshot",
+   "area": "Richmond",
+   "address": "3848 Geary Boulevard",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/610183472",
+   "kind": "evening"
+  },
+  {
+   "name": "Richmond Recreation Center",
+   "area": "Richmond",
+   "address": "251 18th Avenue",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Richmond-Rec-Center-105",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85796808",
+   "kind": "kids"
+  },
+  {
+   "name": "Richmond Recreation Center",
+   "area": "Richmond",
+   "address": "251 18th Avenue",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sfrecpark.org/Facilities/Facility/Details/Richmond-Rec-Center-105",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/85796808",
+   "kind": "weekend"
+  },
+  {
+   "name": "Muriel Leff Mini Park",
+   "area": "Richmond",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: 05:00-24:00",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/162518010",
+   "kind": "kids"
+  },
+  {
+   "name": "Muriel Leff Mini Park",
+   "area": "Richmond",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: 05:00-24:00",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/162518010",
+   "kind": "weekend"
+  },
+  {
+   "name": "Rossi Playground Edward St Annex",
+   "area": "Richmond",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/605504214",
+   "kind": "kids"
+  },
+  {
+   "name": "Rossi Playground Edward St Annex",
+   "area": "Richmond",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/605504214",
+   "kind": "weekend"
+  },
+  {
+   "name": "Angelo Rossi Park",
+   "area": "Richmond",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/69032470",
+   "kind": "kids"
+  },
+  {
+   "name": "Angelo Rossi Park",
+   "area": "Richmond",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/69032470",
+   "kind": "weekend"
+  },
+  {
+   "name": "Benc⑁ Patisserie Cafe",
+   "area": "Berkeley - Downtown",
+   "address": "1947 Martin Luther King Jr Way",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/778894332",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sun Sun Sushi Shop",
+   "area": "Berkeley - Downtown",
+   "address": "2033 Martin Luther King Junior Way",
+   "tags": [
+    "japanese",
+    "sushi"
+   ],
+   "note": "Hours: Mo-Sa 11:00-19:30",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1762442382",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kinda Izakaya",
+   "area": "Berkeley - Downtown",
+   "address": "1941 University Avenue",
+   "tags": [
+    "japanese",
+    "izakaya"
+   ],
+   "note": "Hours: Su, Mo, Th 17:30-22:00; Fr, Sa 17:30-23:30",
+   "url": "https://kindaizakaya6.godaddysites.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2059093052",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cafe Étoile",
+   "area": "Berkeley - Downtown",
+   "address": "1930 Martin Luther King Jr Way",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 08:00-15:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/778894377",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Butcher's Son",
+   "area": "Berkeley - Downtown",
+   "address": "1954 University Avenue",
+   "tags": [
+    "sandwich"
+   ],
+   "note": "Hours: Mo-Fr 11:00-20:00; Sa 10:00-20:00; Su 10:00-16:00",
+   "url": "https://www.thebutchersveganson.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2247181637",
+   "kind": "lunch"
+  },
+  {
+   "name": "MY Coffee Roastery",
+   "area": "Berkeley - Downtown",
+   "address": "2080 Martin Luther King Jr Way",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Sa,Su 09:00-17:00; We-Fr 08:00-16:00",
+   "url": "https://www.mycoffeeroastery.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/354067005",
+   "kind": "lunch"
+  },
+  {
+   "name": "Rose Pizzeria",
+   "area": "Berkeley - Downtown",
+   "address": "1960 University Avenue",
+   "tags": [
+    "pizza",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Tu off; We-Su 12:00-21:00",
+   "url": "https://www.rosepizzeria.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2247184686",
+   "kind": "lunch"
+  },
+  {
+   "name": "Las Cabanas",
+   "area": "Berkeley - Downtown",
+   "address": "1916 Martin Luther King Jr Way",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://lascabanasgrill.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/778894118",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pho Tasty",
+   "area": "Berkeley - Downtown",
+   "address": "2101 Milvia Street",
+   "tags": [
+    "vietnamese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/831726074",
+   "kind": "lunch"
+  },
+  {
+   "name": "Red Tomato Pizza House",
+   "area": "Berkeley - Downtown",
+   "address": "2017 University Avenue",
+   "tags": [
+    "pizza"
+   ],
+   "note": "Hours: Mo-Su 11:00-21:00",
+   "url": "https://redtomatoberkeley.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2263422860",
+   "kind": "lunch"
+  },
+  {
+   "name": "North Beach Pizza",
+   "area": "Berkeley - Downtown",
+   "address": "2072 University Avenue",
+   "tags": [
+    "pizza",
+    "italian",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1419796896",
+   "kind": "lunch"
+  },
+  {
+   "name": "Gusto",
+   "area": "Berkeley - Downtown",
+   "address": "1986 Shattuck Avenue",
+   "tags": [
+    "algerian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.instagram.com/gusto_2026/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/314115688",
+   "kind": "lunch"
+  },
+  {
+   "name": "Comal Next Door",
+   "area": "Berkeley - Downtown",
+   "address": "2024 Shattuck Avenue",
+   "tags": [
+    "mexican"
+   ],
+   "note": "Hours: Mo-Su 11:00-20:30",
+   "url": "https://www.comalnextdoor.com/location/comal-next-door-berkeley/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/540609033",
+   "kind": "lunch"
+  },
+  {
+   "name": "Lucia’s Pizzeria",
+   "area": "Berkeley - Downtown",
+   "address": "2016 Shattuck Avenue",
+   "tags": [
+    "pizza"
+   ],
+   "note": "Hours: We, Th, Su 17:00-21:00; Fr, Sa 17:00-21:45",
+   "url": "https://www.luciasberkeley.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/540609042",
+   "kind": "lunch"
+  },
+  {
+   "name": "Revival Kitchen",
+   "area": "Berkeley - Downtown",
+   "address": "2102 Shattuck Avenue",
+   "tags": [
+    "regional",
+    "pizza",
+    "california",
+    "seafood",
+    "mediterranean"
+   ],
+   "note": "Hours: Mo-Th 16:00-22:00; Fr 15:30-22:00; Sa 17:00-22:00; Sa, Su 10:30-14:00; Su 16:30-21:00",
+   "url": "https://www.revivalbarandkitchen.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/540608969",
+   "kind": "lunch"
+  },
+  {
+   "name": "Lox Stock & Bagel",
+   "area": "Berkeley - Downtown",
+   "address": "2043 Allston Way",
+   "tags": [
+    "bagel",
+    "salad",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Fr 08:00-15:00",
+   "url": "https://orderloxstocknbagel.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/2261143233",
+   "kind": "lunch"
+  },
+  {
+   "name": "The Noodle",
+   "area": "Berkeley - Downtown",
+   "address": "1936 Shattuck Avenue",
+   "tags": [
+    "thai"
+   ],
+   "note": "Hours: Mo off; Tu-Su 12:00-15:00, 17:00-20:00",
+   "url": "https://thenoodlebay.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/314115684",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tsuruya",
+   "area": "Berkeley - Downtown",
+   "address": "1926 Shattuck Avenue",
+   "tags": [
+    "ramen"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.instagram.com/tsuruyaramen_berkeley/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2281419391",
+   "kind": "lunch"
+  },
+  {
+   "name": "Pollo's",
+   "area": "Berkeley - Downtown",
+   "address": "100 Berkeley Square",
+   "tags": [
+    "american"
+   ],
+   "note": "Hours: Mo-Sa 07:00-16:00",
+   "url": "http://orderoriginalpollo.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/540608998",
+   "kind": "lunch"
+  },
+  {
+   "name": "Berkeley Espresso",
+   "area": "Berkeley - Downtown",
+   "address": "1900 Shattuck Avenue",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 06:00-21:00",
+   "url": "https://www.berkeleyespresso.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/314115682",
+   "kind": "lunch"
+  },
+  {
+   "name": "Cholita Linda",
+   "area": "Berkeley - Downtown",
+   "address": "2000 Kala Bagai Way",
+   "tags": [
+    "mexican",
+    "latin american"
+   ],
+   "note": "Hours: Mo-Fr 11:00-21:30",
+   "url": "https://www.cholitalinda.com/location-berkeley",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1140526023",
+   "kind": "lunch"
+  },
+  {
+   "name": "Juice Appeal",
+   "area": "Berkeley - Downtown",
+   "address": "150 Berkeley Square",
+   "tags": [
+    "juice",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Fr 08:00-18:00; Sa 09:00-18:00; Su 10:00-17:00",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1454232936",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tip-Sea",
+   "area": "Berkeley - Downtown",
+   "address": "2327 Shattuck Avenue",
+   "tags": [
+    "burger",
+    "wings",
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2379687561",
+   "kind": "evening"
+  },
+  {
+   "name": "Tap In Lounge",
+   "area": "Berkeley - Downtown",
+   "address": "2012 Shattuck Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.eastbayspiceco.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/10592570803",
+   "kind": "evening"
+  },
+  {
+   "name": "Spats",
+   "area": "Berkeley - Downtown",
+   "address": "1974 Shattuck Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Mo-Fr 17:00-02:00; Sa, Su 12:00-02:00",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3781573621",
+   "kind": "evening"
+  },
+  {
+   "name": "Triple Rock Brewery",
+   "area": "Berkeley - Downtown",
+   "address": "1920 Shattuck Avenue",
+   "tags": [
+    "bar",
+    "beer",
+    "outdoor"
+   ],
+   "note": "Hours: Tu, Sa 12:00-22:00; We-Fr 12:00-23:00; Su 12:00-21:00",
+   "url": "https://triplerock.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/282601069",
+   "kind": "evening"
+  },
+  {
+   "name": "The BreakRoom",
+   "area": "Berkeley - Downtown",
+   "address": "2021 Shattuck Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.breakroomberkeley.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/5791412962",
+   "kind": "evening"
+  },
+  {
+   "name": "Jupiter",
+   "area": "Berkeley - Downtown",
+   "address": "2181 Shattuck Avenue",
+   "tags": [
+    "bar",
+    "beer",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Th,Su 11:30-22:00; Fr-Sa 11:30-24:00",
+   "url": "http://www.jupiterbeer.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3191146332",
+   "kind": "evening"
+  },
+  {
+   "name": "Study Hall Rooftop Lounge",
+   "area": "Berkeley - Downtown",
+   "address": "2121 Center Street",
+   "tags": [
+    "bar",
+    "outdoor"
+   ],
+   "note": "Hours: Su-Th 16:30-22:00; Fr-Sa 16:30-24:00",
+   "url": "https://www.studyhallrooftoplounge.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/9910789304",
+   "kind": "evening"
+  },
+  {
+   "name": "Tupper & Reed",
+   "area": "Berkeley - Downtown",
+   "address": "2271 Shattuck Avenue",
+   "tags": [
+    "bar"
+   ],
+   "note": "Hours: Tu-We 17:00-24:00; Th-Sa 17:00-02:00; Su 17:00-24:00",
+   "url": "https://www.tupperandreed.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3520885167",
+   "kind": "evening"
+  },
+  {
+   "name": "Cornerstone Craft Beer & Live Music",
+   "area": "Berkeley - Downtown",
+   "address": "2367 Shattuck Avenue",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.cornerstoneberkeley.com/",
+   "price": 1,
+   "source": "osm",
+   "osm": "way/1022312146",
+   "kind": "evening"
+  },
+  {
+   "name": "Beta Lounge",
+   "area": "Berkeley - Downtown",
+   "address": "2129 Durant Avenue",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://betalounge.net",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/540608832",
+   "kind": "evening"
+  },
+  {
+   "name": "Martin Luther King Jr. Civic Center Park",
+   "area": "Berkeley - Downtown",
+   "address": "2151 Martin Luther King Jr Way",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: 24/7",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/martin-luther-king-jr-civic-center-park-0",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/36985264",
+   "kind": "kids"
+  },
+  {
+   "name": "Martin Luther King Jr. Civic Center Park",
+   "area": "Berkeley - Downtown",
+   "address": "2151 Martin Luther King Jr Way",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: 24/7",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/martin-luther-king-jr-civic-center-park-0",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/36985264",
+   "kind": "weekend"
+  },
+  {
+   "name": "Virginia-McGee Totland",
+   "area": "Berkeley - Downtown",
+   "address": "1644 Virginia Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/virginia-mcgee-totland",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/143297539",
+   "kind": "kids"
+  },
+  {
+   "name": "Virginia-McGee Totland",
+   "area": "Berkeley - Downtown",
+   "address": "1644 Virginia Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/virginia-mcgee-totland",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/143297539",
+   "kind": "weekend"
+  },
+  {
+   "name": "Presentation Park",
+   "area": "Berkeley - Downtown",
+   "address": "2199 California Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/presentation-park",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/255316895",
+   "kind": "kids"
+  },
+  {
+   "name": "Presentation Park",
+   "area": "Berkeley - Downtown",
+   "address": "2199 California Street",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/presentation-park",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/255316895",
+   "kind": "weekend"
+  },
+  {
+   "name": "Becky Temko Tot Park",
+   "area": "Berkeley - Downtown",
+   "address": "2424 Roosevelt Avenue",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: Mo-Su 06:00-22:00",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/becky-temko-tot-park",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/41871651",
+   "kind": "kids"
+  },
+  {
+   "name": "Becky Temko Tot Park",
+   "area": "Berkeley - Downtown",
+   "address": "2424 Roosevelt Avenue",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Su 06:00-22:00",
+   "url": "https://berkeleyca.gov/community-recreation/parks-recreation/parks/becky-temko-tot-park",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/41871651",
+   "kind": "weekend"
+  },
+  {
+   "name": "CyBelles Pizza",
+   "area": "Daly City",
+   "address": "2985 Junipero Serra Boulevard",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.cybellespizzadalycity.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/2624313649",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tselogs",
+   "area": "Daly City",
+   "address": "11b San Pedro Road",
+   "tags": [
+    "filipino",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "way/692063656",
+   "kind": "lunch"
+  },
+  {
+   "name": "Guerrero's Taqueria",
+   "area": "Daly City",
+   "address": "2408 87th Street",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/8261048487",
+   "kind": "lunch"
+  },
+  {
+   "name": "IHOP",
+   "area": "Daly City",
+   "address": "2398 Junipero Serra Boulevard",
+   "tags": [
+    "breakfast",
+    "pancake"
+   ],
+   "note": "Hours: 24/7",
+   "url": "https://restaurants.ihop.com/en-us/ca/daly-city/breakfast-2398-junipero-serra-blvd-1709",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/8888562410",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tomo Sushi & Teriyaki",
+   "area": "Daly City",
+   "address": "1901 Junipero Serra Boulevard",
+   "tags": [
+    "sushi",
+    "japanese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1211455624",
+   "kind": "lunch"
+  },
+  {
+   "name": "Quickly",
+   "area": "Daly City",
+   "address": "175 Southgate Avenue",
+   "tags": [
+    "bubble tea",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Su-Th 12:00-21:30; Fr-Sa 12:00-22:00",
+   "url": "http://quicklyusa.com/dalycityca.html",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/3681613477",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kan Kiin Brunch & Thai Eatery",
+   "area": "Daly City",
+   "address": "201 Southgate Avenue",
+   "tags": [
+    "thai"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.kankiineatery.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/12033648717",
+   "kind": "lunch"
+  },
+  {
+   "name": "Black Bear Diner",
+   "area": "Daly City",
+   "address": "4927 Junipero Serra Boulevard",
+   "tags": [
+    "american"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://blackbeardiner.com/location/colma/",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/143811385",
+   "kind": "lunch"
+  },
+  {
+   "name": "Round Table Pizza",
+   "area": "Daly City",
+   "address": "1901 Junipero Serra Boulevard",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1211468661",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tiger Tea and Juice",
+   "area": "Daly City",
+   "address": "79 skyline plaza",
+   "tags": [
+    "bubble tea",
+    "cafe",
+    "coffee"
+   ],
+   "note": "Hours: Mo-Su 11:30-20:00",
+   "url": "https://tigerteaandjuice.us/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/13608460199",
+   "kind": "lunch"
+  },
+  {
+   "name": "Spiral Japanese Cuisine",
+   "area": "Daly City",
+   "address": "515 Westlake Center",
+   "tags": [
+    "japanese"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3833169024",
+   "kind": "lunch"
+  },
+  {
+   "name": "Blue Line Pizza",
+   "area": "Daly City",
+   "address": "511 Westlake Center",
+   "tags": [
+    "pizza"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3833169023",
+   "kind": "lunch"
+  },
+  {
+   "name": "Nick the Greek",
+   "area": "Daly City",
+   "address": "507 Westlake Center",
+   "tags": [
+    "greek"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://www.nickthegreeksj.com/daly-city",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/3833169022",
+   "kind": "lunch"
+  },
+  {
+   "name": "Sizzler",
+   "area": "Daly City",
+   "address": "5025 Junipero Serra Boulevard",
+   "tags": [
+    "steak house"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "https://sizzler.com/locations/sizzler-colma/",
+   "price": 2,
+   "source": "osm",
+   "osm": "way/152722801",
+   "kind": "lunch"
+  },
+  {
+   "name": "Broaster Foods",
+   "area": "Daly City",
+   "address": "243 Westlake Center",
+   "tags": [
+    "american",
+    "asian",
+    "cafe",
+    "coffee"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/5314002499",
+   "kind": "lunch"
+  },
+  {
+   "name": "Tiny Sushi - Oh Baby",
+   "area": "Daly City",
+   "address": "32 Park Plaza Drive",
+   "tags": [
+    "sushi"
+   ],
+   "note": "Hours: Tu-Su 11:30-13:30; 16:30-20:00",
+   "url": "http://ohbabysushi.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/12753578004",
+   "kind": "lunch"
+  },
+  {
+   "name": "Kings West Coast Pizzeria",
+   "area": "Daly City",
+   "address": "6450 Mission Street",
+   "tags": [
+    "pizza",
+    "brazilian"
+   ],
+   "note": "Hours: Mo-Su 11:00-22:00",
+   "url": "https://www.kingswcpizza.com/",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/10823387226",
+   "kind": "lunch"
+  },
+  {
+   "name": "Starbucks",
+   "area": "Daly City",
+   "address": "990 Serramonte Boulevard",
+   "tags": [
+    "coffee shop",
+    "cafe",
+    "coffee",
+    "outdoor"
+   ],
+   "note": "Hours: Mo-Sa 04:30-22:00; Su 04:30-21:00",
+   "url": "https://www.starbucks.com/store-locator/store/20057/junipero-serra-serramonte-co-990-serramonte-blvd-a-colma-ca-940143260-us",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/1573723084",
+   "kind": "lunch"
+  },
+  {
+   "name": "Keith's Chicken and Waffles",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "chicken",
+    "waffle"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/7918451667",
+   "kind": "lunch"
+  },
+  {
+   "name": "Los Metates Taqueria",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/7918451671",
+   "kind": "lunch"
+  },
+  {
+   "name": "Taqueria Maria",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "mexican"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/1573722987",
+   "kind": "lunch"
+  },
+  {
+   "name": "Hawaiian Drive Inn",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "hawaiian"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/8880959843",
+   "kind": "lunch"
+  },
+  {
+   "name": "Gilman Brewing",
+   "area": "Daly City",
+   "address": "2001 Junipero Serra Boulevard",
+   "tags": [
+    "bar",
+    "beer"
+   ],
+   "note": "Hours: Mo,Tu off; We-Su 16:00-21:00",
+   "url": "https://gilmanbrew.com/location/daly-city/",
+   "price": 1,
+   "source": "osm",
+   "osm": "node/9980882195",
+   "kind": "evening"
+  },
+  {
+   "name": "Carlitos Club",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "bar"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 2,
+   "source": "osm",
+   "osm": "node/8245534229",
+   "kind": "evening"
+  },
+  {
+   "name": "Sterling Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: sunrise-sunset",
+   "url": "https://www.colma.ca.gov/park-facilities/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/396594502",
+   "kind": "kids"
+  },
+  {
+   "name": "Sterling Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: sunrise-sunset",
+   "url": "https://www.colma.ca.gov/park-facilities/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/396594502",
+   "kind": "weekend"
+  },
+  {
+   "name": "Hillside Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/43762729",
+   "kind": "kids"
+  },
+  {
+   "name": "Hillside Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/43762729",
+   "kind": "weekend"
+  },
+  {
+   "name": "Colma Historical Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "Hours: sunrise-sunset",
+   "url": "https://www.colma.ca.gov/park-facilities/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/396607276",
+   "kind": "kids"
+  },
+  {
+   "name": "Colma Historical Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "Hours: sunrise-sunset",
+   "url": "https://www.colma.ca.gov/park-facilities/",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/396607276",
+   "kind": "weekend"
+  },
+  {
+   "name": "Westmoor Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor",
+    "kids"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/43762826",
+   "kind": "kids"
+  },
+  {
+   "name": "Westmoor Park",
+   "area": "Daly City",
+   "address": "",
+   "tags": [
+    "park",
+    "free",
+    "outdoor"
+   ],
+   "note": "From OpenStreetMap",
+   "url": "",
+   "price": 0,
+   "source": "osm",
+   "osm": "way/43762826",
+   "kind": "weekend"
+  }
+ ]
+}

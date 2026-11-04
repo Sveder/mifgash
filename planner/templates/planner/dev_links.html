@@ -1,0 +1,7 @@
+{% extends "planner/base.html" %}
+{% block body %}
+<h2>Demo: open human links</h2>
+<p class="mute">Demo only. These are the links that friends without an agent got by email or Telegram.</p>
+{% for r in rows %}<div class="card"><b>{{ r.offer.person.name }}</b> <span class="mute">from {{ r.offer.plan.owner.name }} · {{ r.when }}</span><br><a href="{{ r.url }}">{{ r.url }}</a></div>
+{% empty %}<p class="mute">No open links.</p>{% endfor %}
+{% endblock %}

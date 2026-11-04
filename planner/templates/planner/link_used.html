@@ -1,0 +1,11 @@
+{% extends "planner/base.html" %}
+{% block title %}Link used · {{ PRODUCT_NAME }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{# T84: a person who is not logged in sees only the name in the header. #}
+{% block nav %}{% endblock %}
+{% block body %}
+<section class="human">
+<div class="card stack"><span class="status looking">{% if expired %}Expired{% else %}Used{% endif %}</span>
+<p class="big">{% if expired %}This link expired.{% else %}This link was used.{% endif %}</p><p>Ask your agent for a new one. A new link works one time. Or <a href="{% url 'login' %}">log in by email</a>.</p></div>
+</section>
+{% endblock %}

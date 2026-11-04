@@ -1,0 +1,358 @@
+/* Mifgash design tokens, "Sea, sun, meet" (UI review 29/10/2026).
+   Light is the base. Dark follows prefers-color-scheme unless <html data-theme="light|dark">
+   is set by the header toggle (localStorage "mif-theme", static/planner/theme.js).
+   Colours live ONLY in the token blocks below; every rule after them uses var(--...). */
+@font-face{font-family:"Rubik";font-style:normal;font-weight:300 800;font-display:swap;
+  src:url(fonts/rubik-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Rubik";font-style:normal;font-weight:300 800;font-display:swap;
+  src:url(fonts/rubik-hebrew.woff2) format("woff2");
+  unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
+:root{
+  color-scheme:light;
+  --bg:#F2F4F7; --surface:#FFFFFF; --surface-2:#E9EDF2; --ink:#14202B; --muted:#52606D; --line:#D6DCE3;
+  --sea:#1D5FD0; --sea-soft:#E6EEFC; --on-sea:#FFFFFF;
+  --sun:#F5B83D; --sun-soft:#FDF0D2; --sun-text:#8A5A00;
+  --meet:#0E7552; --meet-soft:#E2F3EA; --on-meet:#FFFFFF;
+  --mark-ab:#E0474C;
+  --danger:#B3261E;
+  --ink-on-sun:#14202B; --sun-soft-light:#FDF0D2;
+  --radius-s:10px; --radius-m:16px; --radius-l:24px;
+  --shadow:0 1px 2px rgba(20,32,43,.06),0 6px 20px rgba(20,32,43,.06);
+  --font:"Rubik",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --focus:0 0 0 3px var(--surface),0 0 0 5px var(--sea);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    color-scheme:dark;
+    --bg:#0E141B; --surface:#172029; --surface-2:#1F2A35; --ink:#EAF0F6; --muted:#9DAAB8; --line:#2B3744;
+    --sea:#79A6FF; --sea-soft:#1A2945; --on-sea:#0E141B;
+    --sun:#F7C25A; --sun-soft:#33291A; --sun-text:#F7C25A;
+    --meet:#4CC38A; --meet-soft:#16322A; --on-meet:#0E141B; --mark-ab:#EF5A5E;
+    --danger:#FF8A80; --shadow:none;
+  }
+}
+:root[data-theme=dark]{
+  color-scheme:dark;
+  --bg:#0E141B; --surface:#172029; --surface-2:#1F2A35; --ink:#EAF0F6; --muted:#9DAAB8; --line:#2B3744;
+  --sea:#79A6FF; --sea-soft:#1A2945; --on-sea:#0E141B;
+  --sun:#F7C25A; --sun-soft:#33291A; --sun-text:#F7C25A;
+  --meet:#4CC38A; --meet-soft:#16322A; --on-meet:#0E141B; --mark-ab:#EF5A5E;
+  --danger:#FF8A80; --shadow:none;
+}
+/* ---- end of token blocks ---- */
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--sea)}
+.wrap{max-width:520px;margin:0 auto;padding:12px 14px 90px}
+header{display:flex;align-items:center;gap:10px;padding:8px 0 12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+header .brand{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+header .brand svg{width:34px;height:24px;flex:none}
+header .brand b{font-weight:700;font-size:22px;letter-spacing:-.02em}
+.m-a{fill:var(--sea)}.m-b{fill:var(--sun)}.m-ab{fill:var(--mark-ab)}
+.site-foot{margin-top:16px;padding:8px 0;text-align:center;font-size:13px;color:var(--muted)}
+.site-foot a{color:var(--muted);text-decoration:underline}
+.site-foot a:hover{color:var(--ink)}
+.site-foot .osm-credit{font-size:12px}
+header nav{margin-left:auto;display:flex;gap:12px;font-size:14px}
+.bubble{max-width:85%;padding:9px 13px;border-radius:16px;margin:6px 0;white-space:pre-wrap}
+.me{background:var(--sea-soft);margin-left:auto;border-bottom-right-radius:4px}
+.agent{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.row{display:flex}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.chip,button.chip{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer;text-decoration:none}
+.chip.primary{background:var(--sea);border-color:var(--sea);color:var(--on-sea);font-weight:700}
+form.say{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px}
+form.say .in{max-width:520px;margin:0 auto;display:flex;gap:8px}
+form.say input{flex:1;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:10px 14px;font:inherit}
+form.say button{background:var(--sea);border:0;border-radius:20px;padding:0 16px;font-weight:700}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0}
+.card h3{margin:0 0 4px;font-size:17px}
+.mute{color:var(--muted);font-size:14px}
+.ok{color:var(--meet)}
+.big{font-size:22px;font-weight:700}
+.log{font:12.5px/1.45 var(--mono);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:46vh;overflow:auto}
+.log .l{padding:4px 0;border-bottom:1px dashed var(--line)}
+.log .ty{color:var(--sea)} .log .model{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:0 4px;white-space:nowrap} .log .who{color:var(--sea)}
+.dots span{animation:b 1.2s infinite;opacity:.2} .dots span:nth-child(2){animation-delay:.2s} .dots span:nth-child(3){animation-delay:.4s}
+@keyframes b{50%{opacity:1}}
+table{width:100%;border-collapse:collapse;font-size:14px} td,th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+.tag{display:inline-block;background:var(--surface-2);border-radius:8px;padding:0 6px;font-size:12px;margin:1px}
+.slot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.slot.both{border-color:var(--meet)}
+details summary{cursor:pointer;color:var(--muted)}
+pre{white-space:pre-wrap;word-break:break-word}
+.demo{border:1px dashed var(--line);background:var(--surface-2)}
+.dash-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.dash-head h2{margin:4px 0}
+.dash-head h2 .chip{font-size:13px;padding:4px 10px;vertical-align:middle;margin-left:4px;font-weight:400}.dash-name{margin:0 0 6px}#email-card{margin:12px 0}
+h3.sec{margin:22px 0 4px;font-size:15px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.chips button.chip{min-height:44px}
+
+.hero h1{font-size:28px;line-height:1.2;margin:18px 0 6px;color:var(--ink);letter-spacing:-.01em}
+.lead{font-size:19px;margin:0 0 18px}
+ol.steps{list-style:none;padding:0;margin:0 0 8px}
+ol.steps li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0}
+ol.steps .n{flex:none;width:32px;height:32px;border-radius:50%;background:var(--sea);color:var(--on-sea);font-weight:800;display:flex;align-items:center;justify-content:center}
+.say-line{color:var(--sea);margin-top:2px}
+.note p{margin:6px 0 0}
+.small{font-size:13px}
+.human .ask{margin:0 0 6px;font-size:22px}
+.human .facts{margin:0;font-size:17px}
+.human .place,.ask .place{display:flex;gap:12px;align-items:flex-start;min-height:48px;cursor:pointer}
+.human .place input,.ask .place input{margin-top:4px;width:20px;height:20px;flex:none}
+.hbtn{display:block;width:100%;min-height:52px;margin:10px 0;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-size:18px;cursor:pointer}
+.hbtn.primary{background:var(--sea);border-color:var(--sea);color:var(--on-sea);font-weight:700}
+.fin{margin-top:8px}.fin-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 4px}
+.fin select{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit;min-height:44px}
+.fin select.fin-place{display:block;width:100%;margin:6px 0 0}.fin select.fin-time{flex:1;min-width:96px;max-width:160px}.fin button.chip{min-height:44px}
+.err{color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:8px 12px}
+a{text-underline-offset:3px}
+:focus-visible{outline:none;box-shadow:var(--focus);border-radius:var(--radius-s)}
+.card{box-shadow:var(--shadow)}
+.card.c-ask{border-color:var(--sea)}
+.card.c-set{border-color:var(--meet)}
+.mt{margin-top:10px}.mt-l{margin-top:24px}
+header .theme-btn{margin-left:auto}header nav+.theme-btn{margin-left:4px}
+.theme-btn{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0}
+.theme-btn svg{width:20px;height:20px}
+.err{background:var(--surface)}
+form.say button{color:var(--on-sea)}
+/* The outing ticket (T120): one partial, _ticket.html, for the dashboard and /outing/<uid>/. */
+.chip.quiet{background:transparent;border-color:transparent;color:var(--muted)}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:500;padding:3px 10px 3px 8px;border-radius:999px;text-decoration:none}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.status.looking{background:var(--surface-2);color:var(--muted)}
+.status.looking::before{animation:pulse 1.6s ease-in-out infinite}
+.status.you{background:var(--sea-soft);color:var(--sea)}
+.status.set{background:var(--meet-soft);color:var(--meet)}
+.status.set::before{border-radius:2px;transform:rotate(45deg)}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.status.looking::before{animation:none}}
+.ticket{display:grid;grid-template-columns:84px 1fr;padding:0;overflow:hidden;border-radius:var(--radius-l)}
+.ticket .date{background:var(--sun);color:var(--ink-on-sun);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 6px;text-align:center}
+.ticket .date .d{font-size:34px;font-weight:700;line-height:1}
+.ticket .date .w,.ticket .date .mo{font-size:14px;font-weight:600}
+.ticket .date .t{margin-top:8px;font-size:17px;font-weight:600;background:var(--ink-on-sun);color:var(--sun-soft-light);border-radius:8px;padding:2px 8px}
+.ticket .body{padding:16px;border-left:2px dashed var(--line);min-width:0}
+.ticket.pending .date{background:var(--surface-2);color:var(--ink)}
+.ticket.pending .date .t{background:transparent;color:var(--muted);border:1px dashed var(--line)}
+.ticket h3{font-size:20px;margin:6px 0 2px}
+.facts{margin:10px 0 0;padding:0;list-style:none;font-size:15px}
+.facts li{display:flex;gap:8px;padding:3px 0}
+.facts svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+/* Human offer page, link pages and open times (T121): mock-outing.html, right half. */
+.stack{display:flex;flex-direction:column;gap:8px}
+.label{font-size:14px;color:var(--muted);margin:18px 0 8px}
+.human .hi{display:flex;gap:12px;align-items:center}.human .hi p,.human .hi h2{margin:0}
+.human .ask{font-size:24px;line-height:1.25;margin:6px 0 2px}
+.human .when{font-size:18px;font-weight:500}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:15px;flex:none;border:2px solid var(--surface)}
+.av.you{background:var(--sea);color:var(--on-sea)}
+.choice{display:flex;gap:12px;align-items:center;min-height:56px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--surface);cursor:pointer}
+.choice input{accent-color:var(--sea);width:20px;height:20px;flex:none;margin:0}
+.choice:has(input:checked){border-color:var(--sea);background:var(--sea-soft)}
+.hbtn{border-radius:999px;font-size:17px;margin:0}
+.hbtn.outline{background:transparent;border-color:var(--line)}
+.human form>p.mute{margin-top:12px}
+.pick-me{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.pick-me .label{margin:0}
+.pick-me select{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit;min-height:44px}
+/* Landing (T122): the hero. */
+.hero-mark{width:68px;height:48px;display:block;margin:14px 0 0}
+.land .hero h1{margin-top:10px}
+.land .lead{margin-bottom:10px}
+/* F1 (T236): the explainer animation on the landing. One 34 s loop; keyframes from scripts/explainer_css.py.
+   The static styles are the last frame (x-fin), so reduced motion shows the outcome only. */
+.explainer{margin:4px 0}
+.xp{display:block;width:100%;max-width:460px;height:auto;margin:0 auto;font-family:var(--font)}
+.xp text{fill:var(--ink);text-anchor:middle}
+.xp .mute{fill:var(--muted)}
+.x-ln{stroke:var(--muted);stroke-width:2.5;stroke-dasharray:6 5;stroke-linecap:round;opacity:.75}
+.x-hl{stroke-width:4;stroke-linecap:round}.x-hl.sea{stroke:var(--sea)}.x-hl.meet{stroke:var(--meet)}
+.x-fig{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.x-fig.you .x-head{fill:var(--sea)}.x-fig.mar .x-head{fill:var(--sun)}.x-fig.sam .x-head{fill:var(--surface-2)}
+.x-name{font-size:17px;font-weight:500}
+.xp .x-bl{font-size:12px;fill:var(--muted)}
+.xp .x-cap{font-size:18px;font-weight:600}
+.x-bub{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.x-bub.you{fill:var(--sea-soft);stroke:var(--sea)}
+.x-bub.taste{fill:var(--sun-soft);stroke:var(--sun)}
+.x-bub.no{fill:var(--surface-2);stroke:var(--line)}
+.x-bub.yes{fill:var(--meet-soft);stroke:var(--meet)}
+.xp .x-bt{font-size:16px}.xp .x-bt.no{fill:var(--muted)}.xp .x-bt.yes{fill:var(--meet);font-weight:600}
+.xp .x-tt{font-size:13.5px;fill:var(--sun-text);font-weight:500}
+.x-pulse{fill:var(--sea);opacity:0}
+.x-tk{fill:var(--surface);stroke:var(--meet);stroke-width:1.5}.x-tk-bar{fill:var(--meet)}
+.xp .x-tk-h,.xp .x-tk-l{text-anchor:start}.xp .x-tk-h{font-size:18px;font-weight:600}.xp .x-tk-l{font-size:15px}
+.x-anim{opacity:0}.xp .x-fin{opacity:1}
+/* the agent badges: plain drawn marks with the agent name next to them, not the vendors' own art */
+.bot-defs{position:absolute;width:0;height:0;overflow:hidden}
+.bot-ring{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.bot-muse{fill:var(--sea)}.bot-instinct{fill:var(--sun)}
+.bot-claw{fill:none;stroke:var(--mark-ab);stroke-width:2.6;stroke-linecap:round}
+.bot-any{fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linejoin:round}.bot-dot{fill:var(--muted)}
+.works{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:2px 0 8px}
+.works .wk{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink)}
+.works svg{width:26px;height:26px;flex:none}
+@keyframes xp-c1{0%{opacity:0}0.88%{opacity:0}2.35%{opacity:1}7.35%{opacity:1}8.82%{opacity:0}100%{opacity:0}}
+.xp.play .x-c1{animation:xp-c1 34s linear infinite}
+@keyframes xp-say{0%{opacity:0}1.47%{opacity:0}2.94%{opacity:1}16.47%{opacity:1}17.94%{opacity:0}100%{opacity:0}}
+.xp.play .x-say{animation:xp-say 34s linear infinite}
+@keyframes xp-c2{0%{opacity:0}8.82%{opacity:0}10.29%{opacity:1}15%{opacity:1}16.47%{opacity:0}100%{opacity:0}}
+.xp.play .x-c2{animation:xp-c2 34s linear infinite}
+@keyframes xp-taste{0%{opacity:0}9.41%{opacity:0}10.88%{opacity:1}98.24%{opacity:1}99.71%{opacity:0}100%{opacity:0}}
+.xp.play .x-taste{animation:xp-taste 34s linear infinite}
+@keyframes xp-c3{0%{opacity:0}16.47%{opacity:0}17.94%{opacity:1}22.65%{opacity:1}24.12%{opacity:0}100%{opacity:0}}
+.xp.play .x-c3{animation:xp-c3 34s linear infinite}
+@keyframes xp-c4{0%{opacity:0}24.12%{opacity:0}25.59%{opacity:1}30.29%{opacity:1}31.76%{opacity:0}100%{opacity:0}}
+.xp.play .x-c4{animation:xp-c4 34s linear infinite}
+@keyframes xp-lsam{0%{opacity:0}24.12%{opacity:0}25.59%{opacity:1}31.76%{opacity:1}33.24%{opacity:0}100%{opacity:0}}
+.xp.play .x-l-sam{animation:xp-lsam 34s linear infinite}
+@keyframes xp-sam{0%{opacity:0}24.71%{opacity:0}26.18%{opacity:1}31.76%{opacity:1}33.24%{opacity:0}100%{opacity:0}}
+.xp.play .x-sam{animation:xp-sam 34s linear infinite}
+@keyframes xp-c5{0%{opacity:0}31.76%{opacity:0}33.24%{opacity:1}37.94%{opacity:1}39.41%{opacity:0}100%{opacity:0}}
+.xp.play .x-c5{animation:xp-c5 34s linear infinite}
+@keyframes xp-lmar{0%{opacity:0}31.76%{opacity:0}33.24%{opacity:1}98.24%{opacity:1}99.71%{opacity:0}100%{opacity:0}}
+.xp.play .x-l-mar{animation:xp-lmar 34s linear infinite}
+@keyframes xp-mar{0%{opacity:0}32.35%{opacity:0}33.82%{opacity:1}98.24%{opacity:1}99.71%{opacity:0}100%{opacity:0}}
+.xp.play .x-mar{animation:xp-mar 34s linear infinite}
+@keyframes xp-c6{0%{opacity:0}39.41%{opacity:0}40.88%{opacity:1}98.24%{opacity:1}99.71%{opacity:0}100%{opacity:0}}
+.xp.play .x-c6{animation:xp-c6 34s linear infinite}
+@keyframes xp-card{0%{opacity:0}40%{opacity:0}41.47%{opacity:1}98.24%{opacity:1}99.71%{opacity:0}100%{opacity:0}}
+.xp.play .x-card{animation:xp-card 34s linear infinite}
+@keyframes xp-rise{0%,40%{transform:translateY(14px)}42.65%,100%{transform:translateY(0)}}
+.xp.play .x-card-in{animation:xp-rise 34s ease-out infinite}
+@keyframes xp-pu{0%,16.18%{opacity:0;transform:translate(0,0)}17.06%{opacity:1;transform:translate(0,0)}22.35%{opacity:1;transform:translate(112px,25px)}23.24%,100%{opacity:0;transform:translate(112px,25px)}}
+.xp.play .x-pu{animation:xp-pu 34s ease-in-out infinite}
+@keyframes xp-pm{0%,16.47%{opacity:0;transform:translate(0,0)}17.35%{opacity:1;transform:translate(0,0)}22.65%{opacity:1;transform:translate(-118px,83px)}23.53%,100%{opacity:0;transform:translate(-118px,83px)}}
+.xp.play .x-pm{animation:xp-pm 34s ease-in-out infinite}
+@keyframes xp-ps{0%,16.76%{opacity:0;transform:translate(0,0)}17.65%{opacity:1;transform:translate(0,0)}22.94%{opacity:1;transform:translate(-118px,-57px)}23.82%,100%{opacity:0;transform:translate(-118px,-57px)}}
+.xp.play .x-ps{animation:xp-ps 34s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.xp.play *{animation:none!important}}
+h2.sec-l{font-size:18px;margin:26px 0 4px}
+.code-chip{display:flex;gap:8px;align-items:center;margin:10px 0 6px}
+.code-chip code{flex:1;min-width:0;overflow-wrap:anywhere;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);padding:10px 12px;font-size:14px}
+.code-chip .chip{min-height:44px}
+@media (min-width:960px){
+  .wrap.wide{max-width:1040px}
+  .wrap.wide .land{display:grid;grid-template-columns:1fr 460px;gap:48px;align-items:center;padding:28px 0 8px}
+  .wrap.wide .land .hero h1{font-size:36px}
+  /* T143: below the hero the steps and the cards use the full width, so no column stays empty. */
+  .wrap.wide .below ol.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .wrap.wide .below ol.steps.four{grid-template-columns:repeat(4,1fr)}
+  .wrap.wide .below ol.steps li{margin:10px 0 0}
+  .wrap.wide .below .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .wrap.wide .below .pair>.card{margin:10px 0}
+}
+/* T78: the model's one sentence 'why this fits' on a proposal */
+.why{margin:8px 0 0;font-style:italic} .why .model{font-style:normal;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:0 4px;white-space:nowrap}
+/* M5 (T165): the visitor page on /d/ */
+.visitor a.hbtn{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
+.email-form input[type=email]{display:block;width:100%;box-sizing:border-box;min-height:48px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:17px}
+.visitor .label{margin:8px 0 6px}
+.status-line{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:16px}
+/* M6a (T175): /join/ web signup, and the 'no agent' card on the landing */
+.join-form input[type=text],.join-form input[type=email],.join-form select{display:block;width:100%;box-sizing:border-box;min-height:48px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:17px}
+.join-form [aria-invalid=true]{border-color:var(--danger)}
+.join-form .err{margin:6px 0 0}
+.join-form .small{margin:6px 0 0}
+.join-form button.hbtn{width:100%}
+#no-agent a.hbtn{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box;margin-top:8px}
+header nav a{white-space:nowrap}
+@media (max-width:420px){header nav{gap:10px;font-size:13px}header .brand b{font-size:20px}header{gap:8px}}
+/* M6b (T176): 'I am free' and 'Add a friend' on the dashboard of a person with no agent */
+.free-form .two{display:grid;grid-template-columns:1fr;gap:0 12px}
+@media (min-width:560px){.free-form .two{grid-template-columns:1fr 1fr}}
+.free-form .label,.friend-form .label{margin:10px 0 6px}
+.friend-form .row{display:flex;gap:8px}.friend-form .row input{flex:1;min-width:0}
+.friend-form .row .chip,.found .chip{min-height:48px}
+.found{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.found form{margin:0}
+#dash-note{margin-top:12px}
+/* M7a (T178): the quick demo */
+.hero-try{margin:0}
+/* F2a (T250): 'Set me up' is the big button, 'Demo' the small one beside it */
+.hero-acts{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}
+.hero-acts .hbtn{display:inline-flex;align-items:center;justify-content:center;width:auto;text-decoration:none;padding:0 22px}
+.hero-acts .hbtn.big{min-height:56px;font-size:19px;padding:0 30px;flex:1 1 200px;max-width:280px}
+.hero-acts .hbtn.outline{min-height:48px;font-size:16px}
+.hero-note{margin:4px 0 14px}
+.agent-line{margin:6px 0 0;overflow-wrap:anywhere}.agent-line a{font-family:ui-monospace,monospace}
+.prompt-chip{align-items:stretch}
+.prompt-chip code{font-size:15px;line-height:1.45}
+.sandbox-banner{border:1px solid var(--meet);background:var(--meet-soft)}
+.try-steps{margin:8px 0 0;padding-left:22px;font-size:16px;line-height:1.5}
+/* M8a (T181): three use-case cards under the hero; 1 column on a phone, 3 from 720 px */
+.m-meet{fill:var(--meet)}
+.uses{display:grid;grid-template-columns:1fr;gap:12px;margin:18px 0 6px}
+.uses .use{margin:0;padding:14px 16px}
+.uses .use h3{font-size:17px;margin:8px 0 6px}
+.uses .use p{margin:8px 0 0;font-size:15px}
+.use-ic{width:62px;height:44px;display:block}
+@media (min-width:720px){.uses{grid-template-columns:repeat(3,1fr);gap:16px}}
+.faq-list details{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:10px 0;padding:0 14px}
+.faq-list summary{cursor:pointer;font-weight:700;padding:13px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary::after{content:"+";color:var(--sea);font-weight:800;flex:none}
+.faq-list details[open] summary::after{content:"−"}
+.faq-list .faq-a{margin:0 0 14px;line-height:1.55}.faq-list code{font-size:13px;word-break:break-all}
+.privacy ul{padding-left:20px;line-height:1.55}.privacy li{margin:4px 0}
+.faq h2{font-size:18px;margin:24px 0 6px}.faq .faq-a{margin:0;line-height:1.55}.faq code{font-size:13px;word-break:break-all}
+.linkbtn{background:none;border:0;padding:4px 0;color:var(--sea);font:inherit;text-decoration:underline;cursor:pointer;text-align:left}
+/* M11a (T171): Facebook import button on the Add a friend card */
+.chip.fb-import{display:inline-flex;align-items:center;min-height:44px;margin-top:12px}
+.chip.fb-import:disabled{opacity:.55;cursor:not-allowed}
+.invite-card .code-chip code{font-size:13px}.invite-card .chip{white-space:nowrap}
+/* F4a (T253): the circle link page and the Copy + Share pair on the dashboard card */
+.mt-m{margin-top:12px}
+.invite-acts{display:flex;gap:8px;margin-top:6px}.invite-acts .chip{min-height:44px;flex:1 1 0;max-width:160px}
+.agent-path summary.hbtn{display:flex;align-items:center;justify-content:center;list-style:none;color:var(--on-sea)}
+.agent-path summary.hbtn::-webkit-details-marker{display:none}
+.agent-path[open] summary.hbtn{margin-bottom:10px}
+.visitor #invite-web{margin-top:12px}
+.value-lines p{margin:0}.value-lines p+p{margin-top:8px}
+/* F5a (T254): dashboard tabs and the desktop grid. Without JS every panel shows, one under the other. */
+.tabs{display:flex;gap:4px;margin:14px 0 4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs .tab{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-weight:600}
+.tabs .tab[aria-selected=true]{color:var(--ink,inherit);border-bottom-color:var(--sea)}
+.tabs .tab:focus-visible{outline:2px solid var(--sea);outline-offset:-2px}
+.tabs .count{font:12px var(--mono);border:1px solid var(--line);border-radius:999px;padding:0 6px}
+.tab-panel[hidden]{display:none}
+@media (min-width:960px){
+  .wrap.dash{max-width:1200px}
+  .dash-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:32px;align-items:start}
+  .dash-grid .dash-main{grid-column:1;grid-row:1}
+  .dash-grid .dash-side,.dash-grid .dash-side[hidden]{display:block;grid-column:2;grid-row:1;position:sticky;top:12px}
+  .dash-grid .dash-side .log{max-height:calc(100vh - 120px)}
+  .tabs .tab-activity{display:none}
+}
+/* F5b (T257): the 'Set up a meetup' modal with its own date grid */
+.hbtn.meet-open{min-height:56px;font-size:19px;margin:4px 0 0}
+.meet-dialog{width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-sizing:border-box;padding:0;border:1px solid var(--line);border-radius:var(--radius-l);background:var(--surface);color:var(--ink);box-shadow:0 12px 48px rgba(0,0,0,.35)}
+.meet-dialog::backdrop{background:rgba(8,12,18,.6)}
+.meet-dialog form{padding:16px 18px 18px;margin:0}
+.meet-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meet-head h2{margin:0;font-size:22px}
+.meet-close{min-width:44px;min-height:44px;font-size:26px;line-height:1;padding:0}
+.meet-cal{border:0;padding:0;margin:8px 0 0;min-width:0}
+.meet-cal legend{padding:0;margin:10px 0 6px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between}
+.cal-nav .chip{min-width:44px;min-height:44px;font-size:24px;padding:0}
+.cal-nav .chip:disabled{opacity:.3;cursor:default}
+.cal-label{font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:4px}
+.cal-dow{font-size:12px;color:var(--muted);text-align:center;padding:2px 0}
+.cal-day{position:relative;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:12px;background:var(--surface-2);cursor:pointer;font-variant-numeric:tabular-nums}
+.cal-day input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.cal-day.pad{background:transparent;cursor:default}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--sea)}
+.cal-day.off{opacity:.35;cursor:not-allowed}.cal-day.off input{cursor:not-allowed}
+.cal-day:has(input:checked){background:var(--sea);color:var(--on-sea);font-weight:700}
+.cal-day:has(input:focus-visible){box-shadow:var(--focus)}
+.free-form textarea{display:block;width:100%;box-sizing:border-box;min-height:104px;resize:vertical;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:17px}
+.free-form textarea::placeholder{color:var(--muted)}
+.free-form textarea[aria-invalid=true]{border-color:var(--danger)}
+.free-form textarea::placeholder{opacity:.75;font-style:italic}
+.free-form #meet-err{margin:8px 0 4px}
+#meet-picked{margin-left:4px;font-weight:700;color:var(--ink)}
