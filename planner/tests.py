@@ -4736,6 +4736,63 @@ class MatchReasonTests(ProposalBase):
         with override_settings(LLM_BACKEND="claude"), mock.patch("planner.llm._reason_call", return_value=sentence):
             self.assertEqual(llm.match_reason(plan, self.people["bb"]), (sentence, "claude"))
 
+    def test_reason_uses_only_given_facts_no_dm_date_no_both_in_a_group(self):
+        """T322: a model sentence that invents where people live or work, writes 5/11, or says
+        'both' in a group falls back; the facts hold the 'Sun Nov 8' form and no home or work."""
+        from .models import Person
+        Person.objects.filter(pk=self.people["bb"].pk).update(home_area=area("Mission"), work_area=area("SoMa"))
+        self.people["bb"].refresh_from_db()
+        plan = Plan.objects.create(owner=self.people["aa"], kind="lunch", date=SUNDAY, part="lunch",
+                                   area=area("SoMa"), radius_km=3.0)
+        facts = llm.reason_facts(plan, self.people["bb"], None)
+        self.assertIn(messages.us_day(SUNDAY), facts)
+        self.assertNotRegex(facts, r"\b\d{1,2}/\d{1,2}\b")
+        self.assertNotIn("live", facts)
+        self.assertNotIn("work", facts)
+        self.assertIn("Two people", facts)
+        fallback = "You are both free for lunch near SoMa."
+        for bad in ("You both are free and want to meet near SoMa where you live and work.",
+                    f"You are both free on Sun {SUNDAY.day}/{SUNDAY.month} near SoMa."):
+            with override_settings(LLM_BACKEND="meta"), mock.patch("planner.llm._reason_call", return_value=bad), \
+                    self.assertLogs("planner.llm", "WARNING"):
+                self.assertEqual(llm.match_reason(plan, self.people["bb"]), (fallback, ""), bad)
+        self.assertEqual(llm.reason_ok("Near SoMa where you live and work.", set()),
+                         "a fact not in the input: live, work")
+        self.assertIsNone(llm.reason_ok("Near SoMa where you live.", set(), "Plan: you live near SoMa."))
+        good = f"You are both free on {messages.us_day(SUNDAY)} near SoMa."
+        with override_settings(LLM_BACKEND="meta"), mock.patch("planner.llm._reason_call", return_value=good):
+            self.assertEqual(llm.match_reason(plan, self.people["bb"]), (good, "meta"))
+        # a group: 'both' fails, the fallback has no 'both', the facts say 'A group'
+        group = Plan.objects.create(owner=self.people["aa"], kind="group_dinner", date=SUNDAY, part="evening",
+                                    area=area("SoMa"), radius_km=3.0, group_size=3)
+        self.assertIn("A group of friends", llm.reason_facts(group, self.people["bb"], None))
+        with override_settings(LLM_BACKEND="meta"), mock.patch("planner.llm._reason_call", return_value=good), \
+                self.assertLogs("planner.llm", "WARNING"):
+            text, backend = llm.match_reason(group, self.people["bb"])
+        self.assertEqual(backend, "")
+        self.assertNotIn("both", text)
+        self.assertIn("with a few friends", text)
+        ok = "You are free Sunday evening near SoMa, a good spot for a group dinner."
+        with override_settings(LLM_BACKEND="meta"), mock.patch("planner.llm._reason_call", return_value=ok):
+            self.assertEqual(llm.match_reason(group, self.people["bb"]), (ok, "meta"))
+
+    def test_client_owner_approve_line_in_a_group_never_says_both(self):
+        """T322: the owner's approve reply for a group of 4 reads 'You are in: 4 people'."""
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("mif", Path(settings.BASE_DIR) / "integrations/openclaw/mif.py")
+        mif = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mif)
+        outing = {"plan_id": 9, "when_text": "Fri Nov 6", "place": {"name": "Foreign Cinema"},
+                  "with": ["Noah", "Sofia", "Mia"], "who": [], "time": None}
+        with mock.patch.object(mif, "call", return_value={"outing": outing}):
+            line, _ = mif.cmd_respond(mock.Mock(answer="accept", choice=None, note="", id=5))
+        self.assertIn("You are in: 4 people, Fri Nov 6, Foreign Cinema, with Noah, Sofia, Mia.", line)
+        self.assertNotIn("both", line)
+        outing["with"] = ["Noah"]
+        with mock.patch.object(mif, "call", return_value={"outing": outing}):
+            line, _ = mif.cmd_respond(mock.Mock(answer="accept", choice=None, note="", id=5))
+        self.assertIn("You are both in: Fri Nov 6", line)
+
     def test_client_why_line_carries_the_reason_and_model(self):
         import importlib.util
         spec = importlib.util.spec_from_file_location("mif", Path(settings.BASE_DIR) / "integrations/openclaw/mif.py")

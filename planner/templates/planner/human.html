@@ -25,7 +25,7 @@
 {% elif state == "waiting" %}
 <div class="card c-ask"><p class="big">Thank you.</p><p>I tell you as soon as it is set.</p></div>
 {% elif state == "set" %}
-{% if plan.status != "final" %}<p class="big ok mt-l">You are both in. <span class="mute">Now you and {{ who }} pick the exact time.</span></p>{% endif %}
+{% if plan.status != "final" %}<p class="big ok mt-l">{% if plan.group_size > 1 or plan.kind == "group_dinner" %}You are in.{% else %}You are both in.{% endif %} <span class="mute">Now you and {{ who }} pick the exact time.</span></p>{% endif %}
 {% if error %}<p class="err">{{ error }}</p>{% endif %}
 <div class="mt-l">{% include "planner/_ticket.html" with human_page=True %}</div>
 {% elif state == "declined" %}

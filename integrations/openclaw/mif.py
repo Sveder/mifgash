@@ -437,7 +437,10 @@ def cmd_respond(args):
     if r.get("outing"):
         o = r["outing"]
         place = o["place"]["name"] if o.get("place") else "place not set"
-        line += f" You are both in: {o.get('when_text') or when(o)}, {place}, with {', '.join(o.get('with') or o['who'])}."
+        others = o.get('with') or o['who']
+        # T322: 'both' only for two people; a group reads 'You are in: 4 people'
+        who = "You are both in:" if len(others) <= 1 else f"You are in: {len(others) + 1} people,"
+        line += f" {who} {o.get('when_text') or when(o)}, {place}, with {', '.join(others)}."
         if o.get("time"):  # T258: Mifgash set the time itself
             line += (f" Mifgash set {o['time']}. {calendar_links(o)} "
                      f"To move it: 'finalize {o['plan_id']} --time HH:MM'.")
